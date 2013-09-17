@@ -1,0 +1,59 @@
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ICompanyService.cs" company="Rare Crowds Inc">
+// Copyright 2012-2013 Rare Crowds, Inc.
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+
+namespace ApiLayer
+{
+    /// <summary>
+    /// This is an interface that exposes interaction with company entity
+    /// </summary>
+    public interface ICompanyService
+    {
+        /// <summary>
+        /// Creates a new company
+        /// </summary>
+        /// <param name="jsonCompanyValue">json string value containing new company values</param>
+        /// <returns>new Company</returns>
+        Stream CreateCompany(Stream jsonCompanyValue);
+
+        /// <summary>
+        /// Returns an existing company
+        /// </summary>
+        /// <returns>the Company(s)</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
+            Justification = "This is not a property, it really is a method.")]
+        Stream GetCompany();
+
+        /// <summary>
+        /// Return an existing company based on the entityid 
+        /// </summary>
+        /// <param name="id">entity id of the company</param>
+        /// <returns>the company</returns>
+        Stream GetCompanyByEntity(string id);
+
+        /// <summary>
+        /// Updates an existing company
+        /// </summary>
+        /// <param name="id">company id</param>
+        /// <param name="jsonCompanyValue">json string value containing updated company values</param>
+        /// <returns>the updated Company</returns>
+        string Update(string id, string jsonCompanyValue);
+    }
+}
