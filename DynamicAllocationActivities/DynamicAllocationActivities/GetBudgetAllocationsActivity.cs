@@ -71,19 +71,6 @@ namespace DynamicAllocationActivities
         }
 
         /// <summary>
-        /// Gets the reallocation schedule.
-        /// The schedule is a series of time offsets from the campaign
-        /// start time at which reallocations are to be scheduled each day.
-        /// </summary>
-        private static TimeSpan[] ReallocationSchedule
-        {
-            get
-            {
-                return Config.GetTimeSpanValues("DynamicAllocation.ReallocationSchedule");
-            }
-        }
-
-        /// <summary>
         /// Gets the time after a campaign ends to schedule it for clean
         /// </summary>
         private static TimeSpan PostCampaignCleanupDelay
@@ -92,7 +79,7 @@ namespace DynamicAllocationActivities
             {
                 try
                 {
-                    return Config.GetTimeSpanValue("DynamicAllocation.CleanupDelay");
+                    return ConfigManager.Config.GetTimeSpanValue("DynamicAllocation.CleanupDelay");
                 }
                 catch (ArgumentException)
                 {
@@ -166,7 +153,7 @@ namespace DynamicAllocationActivities
                     //// which is InitialAllocationTotalPeriodDuration after the latter of start date or "now"
                     (currentTime > campaign.StartDate ? currentTime : (DateTime)campaign.StartDate) +
                     allocationParameters.InitialAllocationTotalPeriodDuration :
-                FindNextReallocation(campaign, currentTime); // the next time in the regular reallocation schedule
+                FindNextReallocation(campaign, currentTime, dac.CampaignConfig.GetTimeSpanValues("DynamicAllocation.ReallocationSchedule")); // the next time in the regular reallocation schedule
 
             // Do not schedule for reallocation if the reallocation would occur after the campaign end date.
             // This is how the reallocation chain is terminated.
@@ -232,8 +219,9 @@ namespace DynamicAllocationActivities
         /// </remarks>
         /// <param name="campaign">The campaign entity</param>
         /// <param name="now">the current time</param>
+        /// <param name="reallocationSchedule">reallocation time spans from config</param>
         /// <returns>The next reallocation time</returns>
-        internal static DateTime FindNextReallocation(CampaignEntity campaign, DateTime now)
+        internal static DateTime FindNextReallocation(CampaignEntity campaign, DateTime now, TimeSpan[] reallocationSchedule)
         {
             // TODO: account for what if this is being scheduled from the allocation of a new initialization
             var campaignStartDate = (DateTime)campaign.StartDate;
@@ -255,7 +243,7 @@ namespace DynamicAllocationActivities
             while (true)
             {
                 // Get the next reallocation on the schedule
-                nextReallocation = nextReallocation.Date + campaignStartTime + ReallocationSchedule[scheduleEntry];
+                nextReallocation = nextReallocation.Date + campaignStartTime + reallocationSchedule[scheduleEntry];
 
                 // Check if the time slot key for nextReallocation is in the future.
                 var nowTimesSlotKey = Scheduler.GetTimeSlotKey(now);
@@ -267,7 +255,7 @@ namespace DynamicAllocationActivities
                 }
 
                 // Go to the next schedule entry
-                if ((scheduleEntry = (scheduleEntry + 1) % ReallocationSchedule.Length) == 0)
+                if ((scheduleEntry = (scheduleEntry + 1) % reallocationSchedule.Length) == 0)
                 {
                     // Rolled over to the next day
                     nextReallocation = nextReallocation.Date.AddDays(1) + campaignStartTime;
