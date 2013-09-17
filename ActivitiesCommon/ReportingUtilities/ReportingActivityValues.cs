@@ -29,5 +29,11 @@ namespace ReportingUtilities
 
         /// <summary>Activity request value name for ReportType.</summary>
         public const string ReportType = "ReportType";
+
+        /// <summary>Activity result name for Reports json.</summary>
+        public const string Reports = "Reports";
+
+        /// <summary>Activity result name for Report data.</summary>
+        public const string ReportData = "ReportData";
     }
 }

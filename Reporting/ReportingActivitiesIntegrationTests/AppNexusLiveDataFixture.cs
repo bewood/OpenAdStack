@@ -122,11 +122,10 @@ namespace ReportingActivitiesIntegrationTests
             ActivityTestHelpers.AssertValidSuccessResult(result);
 
             // Assert all the data in the chain to the generated report is present
-            DateTime reportDate;
             var context = new RequestContext { ExternalCompanyId = companyEntityId };
-            var report = ActivityIntegrationTestsFixture.GetReportFromCampaign(
-                this.repository, context, campaignEntityId, ReportTypes.ClientCampaignBilling, out reportDate);
-            Assert.IsFalse(string.IsNullOrEmpty(report));
+            var reportEntity = ActivityIntegrationTestsFixture.GetReportFromCampaign(
+                this.repository, context, campaignEntityId, ReportTypes.ClientCampaignBilling);
+            Assert.IsFalse(string.IsNullOrEmpty(reportEntity.ReportData));
         }
 
         /// <summary>Generate a report from an existing legacy campaign.</summary>
@@ -168,22 +167,21 @@ namespace ReportingActivitiesIntegrationTests
             var result = activity.Run(this.request);
             ActivityTestHelpers.AssertValidSuccessResult(result);
 
-            DateTime reportDate;
-            var report = ActivityIntegrationTestsFixture.GetReportFromCampaign(
-                this.repository, context, campaignId, ReportTypes.ClientCampaignBilling, out reportDate);
-            Assert.IsFalse(string.IsNullOrEmpty(report));
+            var reportEntity = ActivityIntegrationTestsFixture.GetReportFromCampaign(
+                this.repository, context, campaignId, ReportTypes.ClientCampaignBilling);
+            Assert.IsFalse(string.IsNullOrEmpty(reportEntity.ReportData));
 
-            WriteReport(@"C:\ReportFiles", ReportTypes.ClientCampaignBilling, campaignId, report, reportDate);
+            WriteReport(@"C:\ReportFiles", ReportTypes.ClientCampaignBilling, campaignId, reportEntity.ReportData, reportEntity.LastModifiedDate);
 
             // Generate data provider billing report
             this.request.Values[ReportingActivityValues.ReportType] = ReportTypes.ClientCampaignBilling;
             result = activity.Run(this.request);
 
-            report = ActivityIntegrationTestsFixture.GetReportFromCampaign(
-                this.repository, context, campaignId, ReportTypes.ClientCampaignBilling, out reportDate);
-            Assert.IsFalse(string.IsNullOrEmpty(report));
+            reportEntity = ActivityIntegrationTestsFixture.GetReportFromCampaign(
+                this.repository, context, campaignId, ReportTypes.ClientCampaignBilling);
+            Assert.IsFalse(string.IsNullOrEmpty(reportEntity.ReportData));
 
-            WriteReport(@"C:\ReportFiles", ReportTypes.DataProviderBilling, campaignId, report, reportDate);
+            WriteReport(@"C:\ReportFiles", ReportTypes.DataProviderBilling, campaignId, reportEntity.ReportData, reportEntity.LastModifiedDate);
         }
 
         /// <summary>Write a report to a csv file.</summary>

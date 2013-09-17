@@ -92,7 +92,7 @@ namespace DynamicAllocationActivitiesUnitTests
 
             // Setup repository with default allocation blob, campaign and company stubs
             this.repository = MockRepository.GenerateStub<IEntityRepository>();
-            RepositoryStubUtilities.SetupSaveEntityStub<IEntity>(
+            RepositoryStubUtilities.SetupSaveEntityStubX<IEntity>(
                 this.repository,
                 entity => RepositoryStubUtilities.SetupGetEntityStub(
                     this.repository, entity.ExternalEntityId, entity, false),

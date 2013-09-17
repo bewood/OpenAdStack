@@ -80,7 +80,8 @@ namespace DataAccessLayer
                 {
                     ExternalEntityId = entityId,
                     EntityCategory = CategoryName,
-                    ExternalName = externalName
+                    ExternalName = externalName,
+                    LastModifiedDate = DateTime.UtcNow
                 };
 
             wrappedEntity.SetPropertyByName(ReportTypeName, reportType);

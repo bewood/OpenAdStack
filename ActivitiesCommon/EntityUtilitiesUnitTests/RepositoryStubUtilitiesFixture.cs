@@ -181,6 +181,19 @@ namespace EntityUtilitiesUnitTests
             this.repository.SaveEntity(null, this.partnerEntity);
         }
 
+        /// <summary>Test SaveEntity stub with type mismatch.</summary>
+        [TestMethod]
+        public void SetupSaveEntityStubWithTypeMismatch()
+        {
+            PartnerEntity savedEntity = null;
+            RepositoryStubUtilities.SetupSaveEntityStub<PartnerEntity>(
+                this.repository, e => savedEntity = e, false);
+
+            var mismatchedEntity = EntityTestHelpers.CreateTestCompanyEntity(new EntityId(), "NotTheOne");
+            this.repository.SaveEntity(null, mismatchedEntity);
+            Assert.IsNull(savedEntity);
+        }
+
         /// <summary>Test SaveEntity stub with request context - success.</summary>
         [TestMethod]
         public void SetupSaveEntityStubWithContextSuccess()

@@ -48,6 +48,9 @@ namespace ReportingActivitiesUnitTests
         /// <summary>Request campaign entity id for testing.</summary>
         private EntityId campaignEntityId;
 
+        /// <summary>Request report entity id for testing.</summary>
+        private EntityId reportEntityId;
+
         /// <summary>Request for testing.</summary>
         private ActivityRequest request;
 
@@ -65,6 +68,7 @@ namespace ReportingActivitiesUnitTests
             this.userId = "abcdef012345";
             this.companyEntityId = new EntityId();
             this.campaignEntityId = new EntityId();
+            this.reportEntityId = new EntityId();
             this.request = new ActivityRequest
             {
                 Values =
@@ -72,6 +76,7 @@ namespace ReportingActivitiesUnitTests
                     { EntityActivityValues.AuthUserId, this.userId },
                     { EntityActivityValues.CompanyEntityId, this.companyEntityId },
                     { EntityActivityValues.CampaignEntityId, this.campaignEntityId },
+                    { EntityActivityValues.EntityId, this.reportEntityId },
                     { ReportingActivityValues.VerboseReport, null },
                     { ReportingActivityValues.SaveLegacyConversion, null },
                     { ReportingActivityValues.ReportType, "SomeReport" }

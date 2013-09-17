@@ -22,18 +22,22 @@ using Activities;
 using Diagnostics;
 using EntityActivities;
 using EntityUtilities;
+using ReportingUtilities;
 
 namespace ReportingActivities
 {
     /// <summary>
     /// Activity to create a new campaign report.
     /// </summary>
-    [Name("CreateCampaignReportActivity")]
-    [RequiredValues(EntityActivityValues.CompanyEntityId, EntityActivityValues.CampaignEntityId, "ReportType")]
+    [Name(ReportingActivityTasks.CreateCampaignReport)]
+    [RequiredValues(
+        EntityActivityValues.CompanyEntityId, 
+        EntityActivityValues.CampaignEntityId,
+        EntityActivityValues.EntityId)]
     public class CreateCampaignReportActivity : EntityActivity
     {
         /// <summary>The activity handler factory.</summary>
-        private IActivityHandlerFactory activityHandlerFactory = new CreateCampaignReportHandlerFactory();
+        private IActivityHandlerFactory activityHandlerFactory = new CampaignReportHandlerFactory();
 
         /// <summary>Gets the handler factory override.</summary>
         protected override IActivityHandlerFactory ActivityHandlerFactory

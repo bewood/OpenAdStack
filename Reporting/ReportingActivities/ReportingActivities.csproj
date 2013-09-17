@@ -71,11 +71,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivityProvider.cs" />
+    <Compile Include="CampaignReportHandlerFactory.cs" />
+    <Compile Include="GetCampaignReportDataActivity.cs" />
+    <Compile Include="GetReportsForCampaignActivity.cs" />
+    <Compile Include="CreateCampaignReportHandler.cs" />
+    <Compile Include="GetCampaignReportDataHandler.cs" />
+    <Compile Include="GetReportsForCampaignHandler.cs" />
+    <Compile Include="ReportItem.cs" />
     <Compile Include="CreateCampaignReportActivity.cs" />
-    <Compile Include="CreateCampaignReportHandlerFactory.cs" />
-    <Compile Include="CurrentReportItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CampaignReportHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReportingTools\ReportingTools.csproj">

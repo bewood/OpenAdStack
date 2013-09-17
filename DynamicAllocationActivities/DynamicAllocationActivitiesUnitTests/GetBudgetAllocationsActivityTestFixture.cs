@@ -487,7 +487,7 @@ namespace DynamicAllocationActivitiesUnitTests
                 }
             };
 
-            RepositoryStubUtilities.SetupSaveEntityStub(this.repository, saveSideEffect, false);
+            RepositoryStubUtilities.SetupSaveEntityStubX(this.repository, saveSideEffect, false);
 
             var activity = Activity.CreateActivity(
                 typeof(GetBudgetAllocationsActivity),
@@ -548,7 +548,7 @@ namespace DynamicAllocationActivitiesUnitTests
                 }
             };
 
-            RepositoryStubUtilities.SetupSaveEntityStub(this.repository, saveSideEffect, false);
+            RepositoryStubUtilities.SetupSaveEntityStubX(this.repository, saveSideEffect, false);
 
             var activity = Activity.CreateActivity(
                 typeof(GetBudgetAllocationsActivity),

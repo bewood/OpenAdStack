@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Activities;
 using DataAccessLayer;
 using Diagnostics;
@@ -28,9 +29,11 @@ using DynamicAllocation;
 using EntityUtilities;
 using ReportingActivities;
 using ReportingUtilities;
+using RunReport.MeasureSourceProviders;
 using SimulatedDataStore;
 using TestUtilities;
 using Utilities.Serialization;
+using Utilities.Storage.Testing;
 using daName = DynamicAllocationUtilities.DynamicAllocationEntityProperties;
 
 namespace RunReport
@@ -49,6 +52,10 @@ namespace RunReport
         {
             this.Initialize(arguments);
 
+            // Setup measure source providers
+            SetUpSimulatedPersistantStorage();
+            SetUpMeasureSourceProviders("Production");
+            
             var companyId = arguments.CompanyEntityId;
             var campaignId = arguments.CampaignEntityId;
             var outputDir = arguments.OutFile.FullName;
@@ -56,8 +63,14 @@ namespace RunReport
             // Load the company and campaign to touch the local cache (and provide an early fail)
             var context = new RequestContext { ExternalCompanyId = companyId };
             this.Repository.GetEntity(context, companyId);
-            this.Repository.GetEntity(context, campaignId);
-            
+            var campaign = this.Repository.GetEntity(context, campaignId);
+
+            // Setup campaign owner
+            var owner = campaign.GetOwnerId();
+            var userId = owner;
+            var campaignOwnerEntity = CreateTestUserEntity(userId, "Test User");
+            this.Repository.SaveUser(null, campaignOwnerEntity);
+
             var reportType = ReportTypes.ClientCampaignBilling;
             if (arguments.IsDataProviderReport)
             {
@@ -69,7 +82,7 @@ namespace RunReport
             {
                 Values =
                 {
-                    { EntityActivityValues.AuthUserId, "user123" },
+                    { EntityActivityValues.AuthUserId, userId },
                     { EntityActivityValues.CompanyEntityId, companyId },
                     { EntityActivityValues.CampaignEntityId, campaignId },
                     { ReportingActivityValues.ReportType, reportType }
@@ -101,15 +114,55 @@ namespace RunReport
 
             // Load the report
             var campaignEntity = this.Repository.GetEntity<CampaignEntity>(context, campaignId);
-            var currentReportsJson = campaignEntity.TryGetPropertyByName<string>(ReportingPropertyNames.CurrentReports, null);
-            var currentReports = AppsJsonSerializer.DeserializeObject<Dictionary<string, CurrentReportItem>>(currentReportsJson);
-            var reportDate = currentReports[reportType].ReportDate;
-            var reportBlobId = currentReports[reportType].ReportEntityId;
-            var reportBlob = this.Repository.GetEntity<BlobEntity>(context, reportBlobId);
-            var report = reportBlob.DeserializeBlob<string>();
+            var reportsJson = campaignEntity.TryGetPropertyByName<string>(ReportingPropertyNames.CurrentReports, null);
+            var reportItems = AppsJsonSerializer.DeserializeObject<List<ReportItem>>(reportsJson);
+            var latestReport = reportItems.Where(r => r.ReportType == reportType).OrderByDescending(r => r.ReportDate).First();
+            var reportDate = latestReport.ReportDate;
+            var reportEntity = this.Repository.GetEntity<ReportEntity>(context, latestReport.ReportEntityId);
+            var report = reportEntity.ReportData;
 
             // Write report to file
             WriteReport(outputDir, reportType, campaignEntity.ExternalName, report, reportDate);
+        }
+
+        /// <summary>
+        /// Creates a test User entity with the specified values
+        /// </summary>
+        /// <param name="userId">User Id</param>
+        /// <param name="externalName">External Name</param>
+        /// <returns>The user entity</returns>
+        private static UserEntity CreateTestUserEntity(string userId, string externalName)
+        {
+            var user = new UserEntity(
+                new EntityId(),
+                new Entity { ExternalName = externalName, LocalVersion = 1 })
+            {
+                UserId = userId,
+            };
+            user.SetUserType(UserType.StandAlone);
+            return user;
+        }
+
+        /// <summary>
+        /// Set Up Simulated Persistant Storage
+        /// </summary>
+        private static void SetUpSimulatedPersistantStorage()
+        {
+            // Setup simulated persistent storage
+            SimulatedPersistentDictionaryFactory.Initialize();
+        }
+
+        /// <summary>
+        /// Set Up Measure Source Provider Factories
+        /// </summary>
+        /// <param name="targetProfile">The target profile</param>
+        private static void SetUpMeasureSourceProviders(string targetProfile)
+        {
+            var measureSourceProvider = new AppNexusMeasureSourceProvider(targetProfile);
+            MeasureSourceFactory.Initialize(new IMeasureSourceProvider[]
+            {
+                measureSourceProvider
+            });
         }
 
         /// <summary>Dummy method for activity call</summary>
@@ -158,7 +211,7 @@ namespace RunReport
             // TODO: This is a hacky way to get allocation params initialized. How do we have the same defaults
             // as prod?
             AllocationParametersDefaults.Initialize();
-            ConfigurationManager.AppSettings["DynamicAllocation.Margin"] = "{0}".FormatInvariant(1 / 0.85);
+            ConfigurationManager.AppSettings["DynamicAllocation.Margin"] = "{0}".FormatInvariant(1 / 0.87);
             ConfigurationManager.AppSettings["DynamicAllocation.PerMilleFees"] = "{0}".FormatInvariant(0);
 
             MeasureSourceFactory.Initialize(new IMeasureSourceProvider[]
@@ -172,7 +225,8 @@ namespace RunReport
                 ConfigurationManager.AppSettings["IndexLocal.ConnectionString"],
                 ConfigurationManager.AppSettings["EntityLocal.ConnectionString"],
                 ConfigurationManager.AppSettings["IndexReadOnly.ConnectionString"],
-                ConfigurationManager.AppSettings["EntityReadOnly.ConnectionString"]);
+                ConfigurationManager.AppSettings["EntityReadOnly.ConnectionString"],
+                true);
         }
     }
 }

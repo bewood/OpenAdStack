@@ -92,6 +92,7 @@ namespace DynamicAllocationTestUtilities
                     CampaignEntity.CategoryName, "CampaignFoo");
             var campaignEntity = EntityJsonSerializer.DeserializeCampaignEntity(campaignEntityId, campaignJson);
             campaignEntity.LastModifiedDate = DateTime.UtcNow;
+            campaignEntity.LocalVersion = 0;
 
             campaignEntity.SetOwnerId(campaignOwnerId);
 

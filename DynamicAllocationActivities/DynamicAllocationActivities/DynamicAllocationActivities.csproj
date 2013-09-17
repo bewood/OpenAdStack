@@ -31,10 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Queuing\Public\bin\Debug\Activities.dll</HintPath>
-    </Reference>
+    <Reference Include="Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="AppNexusUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ActivitiesCommon\Public\bin\Debug\AppNexusUtilities.dll</HintPath>

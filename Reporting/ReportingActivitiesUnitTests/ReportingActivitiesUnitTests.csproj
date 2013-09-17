@@ -68,8 +68,12 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CampaignReportHandlerFixture.cs" />
-    <Compile Include="CreateCampaignReportHandlerFactoryFixture.cs" />
+    <Compile Include="CampaignReportHandlerFactoryFixture.cs" />
+    <Compile Include="GetReportsForCampaignActivityFixture.cs" />
+    <Compile Include="GetCampaignReportDataActivityFixture.cs" />
+    <Compile Include="CreateCampaignReportHandlerFixture.cs" />
+    <Compile Include="GetCampaignReportDataHandlerFixture.cs" />
+    <Compile Include="GetReportsForCampaignHandlerFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CreateCampaignReportActivityFixture.cs" />
   </ItemGroup>

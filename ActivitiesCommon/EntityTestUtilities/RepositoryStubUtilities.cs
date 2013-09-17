@@ -77,7 +77,7 @@ namespace EntityTestUtilities
             }
         }
 
-        /// <summary>Set up a stub for SaveEntity.</summary>
+        /// <summary>Set up a stub for SaveEntity (can have one per entity type).</summary>
         /// <typeparam name="T">Type if IEntity</typeparam>
         /// <param name="repositoryStub">The repository stub.</param>
         /// <param name="captureEntity">
@@ -91,7 +91,7 @@ namespace EntityTestUtilities
             SetupSaveEntityStub<T>(repositoryStub, (c, e) => captureEntity(e), fail);
         }
 
-        /// <summary>Set up a stub for SaveEntity.</summary>
+        /// <summary>Set up a stub for SaveEntity (can have one per entity type).</summary>
         /// <typeparam name="T">Type if IEntity</typeparam>
         /// <param name="repositoryStub">The repository stub.</param>
         /// <param name="captureArgs">
@@ -107,8 +107,50 @@ namespace EntityTestUtilities
             {
                 repositoryStub.Stub(f => f.SaveEntity(
                     Arg<RequestContext>.Is.Anything,
-                    Arg<IEntity>.Is.Anything))
+                    Arg<IEntity>.Matches(e => e.GetType() == typeof(T))))
                     .Throw(new DataAccessStaleEntityException());
+            }
+            else
+            {
+                repositoryStub.Stub(f => f.SaveEntity(
+                    Arg<RequestContext>.Is.Anything,
+                    Arg<IEntity>.Matches(e => e.GetType() == typeof(T))))
+                    .WhenCalled(call => captureArgs((RequestContext)call.Arguments[0], (T)call.Arguments[1]));
+            }
+        }
+
+        /// <summary>Set up a stub for SaveEntity (can have one per entity type).</summary>
+        /// <typeparam name="T">Type if IEntity</typeparam>
+        /// <param name="repositoryStub">The repository stub.</param>
+        /// <param name="captureEntity">
+        /// A lambda expression to capture the entity being saved.
+        /// e => { } will do nothing.
+        /// e => { myvar = e } will capture the entity where 'myvar' is of type T
+        /// </param>
+        /// <param name="fail">True for stub to fail.</param>
+        public static void SetupSaveEntityStubX<T>(IEntityRepository repositoryStub, Action<T> captureEntity, bool fail) where T : IEntity
+        {
+            SetupSaveEntityStubX<T>(repositoryStub, (c, e) => captureEntity(e), fail);
+        }
+
+        /// <summary>Set up a stub for SaveEntity (can have one per entity type).</summary>
+        /// <typeparam name="T">Type if IEntity</typeparam>
+        /// <param name="repositoryStub">The repository stub.</param>
+        /// <param name="captureArgs">
+        /// A lambda expression to capture the entity being saved and the RequestContext.
+        /// c, e => { } will do nothing.
+        /// c, e => { myctx = c, myvar = e } will capture the context and entity where 'myvar' is of type T
+        /// </param>
+        /// <param name="fail">True for stub to fail.</param>
+        public static void SetupSaveEntityStubX<T>(
+            IEntityRepository repositoryStub, Action<RequestContext, T> captureArgs, bool fail) where T : IEntity
+        {
+            if (fail)
+            {
+                repositoryStub.Stub(f => f.SaveEntity(
+                    Arg<RequestContext>.Is.Anything,
+                    Arg<IEntity>.Is.Anything))
+                    .Throw(new DataAccessException());
             }
             else
             {

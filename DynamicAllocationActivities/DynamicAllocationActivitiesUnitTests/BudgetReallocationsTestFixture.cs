@@ -291,7 +291,7 @@ namespace DynamicAllocationActivitiesUnitTests
                 }
             };
 
-            RepositoryStubUtilities.SetupSaveEntityStub(this.repository, saveSideEffect, false);
+            RepositoryStubUtilities.SetupSaveEntityStubX<IEntity>(this.repository, saveSideEffect, false);
 
             // create an allocationsBlob with a LastModifiedDate to return in the ref call of SaveBlob
             // TODO: contrive this to be the same as the one created in the activity (the EntityId at least will be different currently)

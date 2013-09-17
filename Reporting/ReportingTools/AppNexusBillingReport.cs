@@ -392,7 +392,7 @@ namespace ReportingTools
                     // Dedupe raw data
                     foreach (var rawDeliveryRow in deliveryData)
                     {
-                        var key = rawDeliveryRow[dataName.HourFieldName].SerializationValue + rawDeliveryRow[dataName.CampaignIdFieldName].SerializationValue;
+                        var key = rawDeliveryRow[dataName.HourFieldName].SerializationValue + rawDeliveryRow[dataName.AllocationIdFieldName].SerializationValue;
                         if (dedupedRows.ContainsKey(key) && dedupedRows[key].Item1 > deliveryReportDate)
                         {
                             continue;
