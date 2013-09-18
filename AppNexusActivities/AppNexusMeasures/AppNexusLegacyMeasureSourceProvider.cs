@@ -23,7 +23,6 @@ using System.Reflection;
 using DataAccessLayer;
 using DynamicAllocation;
 using DynamicAllocationUtilities;
-////using EntityActivities;
 
 namespace AppNexusActivities.Measures
 {
@@ -72,9 +71,9 @@ namespace AppNexusActivities.Measures
                 .Where(source => source != null));
 
             // Get the embedded legacy measure map source
-            var legacyMeasures = new EmbeddedJsonMeasureSource(
-                Assembly.GetExecutingAssembly(),
-                LegacyMeasureMapResourceName);
+            var legacyMeasures = new PersistentDictionaryJsonMeasureSource(
+                "datacosts",
+                "LegacyMeasureMap.js");
             sources.Add(legacyMeasures);
 
             return sources;

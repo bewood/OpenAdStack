@@ -70,6 +70,7 @@
     <Compile Include="MeasureSources\MeasureMapCacheEntry.cs" />
     <Compile Include="MeasureSources\MeasureSourceFactory.cs" />
     <Compile Include="MeasureSources\NetworkMeasureSource.cs" />
+    <Compile Include="MeasureSources\PersistentDictionaryJsonMeasureSource.cs" />
     <Compile Include="MeasureValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

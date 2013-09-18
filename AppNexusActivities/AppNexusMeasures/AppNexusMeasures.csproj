@@ -92,12 +92,9 @@
     <EmbeddedResource Include="Resources\ageranges.csv" />
     <EmbeddedResource Include="Resources\metrocodes.csv" />
     <EmbeddedResource Include="Resources\regions.csv" />
-    <EmbeddedResource Include="Resources\SegmentDataCosts-1320[Rare Crowds Inc.].csv" />
-    <EmbeddedResource Include="Resources\SegmentDataCosts-2131[RareCrowds].csv" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppNexusBuiltin.js" />
-    <EmbeddedResource Include="Resources\LegacyMeasureMap.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppNexusClient\AppNexusClient.csproj">
