@@ -24,16 +24,4 @@ set PATH=%PATH%;%GIT_PATH%;%~dp0;%~dp0..\Public\bin\Release;%~dp0..\Public\bin\D
 ::
 cd %~dp0\..
 
-::
-:: Set the branch
-::
-setlocal enabledelayedexpansion
-for /f "tokens=1,2" %%a in ('git branch') do (
-  if '%%a'=='*' (
-    set BRANCH=%%b
-    echo Current branch is '!BRANCH!'
-  )
-)
-endlocal
-
 echo.
