@@ -1,4 +1,4 @@
-@echo off
+::@echo off
 
 ::
 :: Setup VS Environment
@@ -11,7 +11,7 @@ call "%VS100COMNTOOLS%\..\..\VC\vcvarsall.bat" x86
 if not "%GIT_PATH%"=="" goto SetPath
 
 :: TODO: Search for Git
-set GIT_PATH="C:\Program Files (x86)\Git\bin"
+set GIT_PATH=C:\Program Files (x86)\Git\bin
 
 ::
 :: Add build directory to path
