@@ -31,7 +31,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReportingTools;
 using ReportingUtilities;
 using Rhino.Mocks;
+using TestUtilities;
 using Utilities;
+using Utilities.Storage;
+using Utilities.Storage.Testing;
 
 using parseName = DynamicAllocationActivities.RawDeliveryDataParserBase;
 
@@ -63,6 +66,12 @@ namespace ReportingToolsUnitTests
         public void InitializeTest()
         {
             LogManager.Initialize(new[] { MockRepository.GenerateMock<ILogger>() });
+
+            // Initialize simulated storage
+            SimulatedPersistentDictionaryFactory.Initialize();
+            var datacosts = PersistentDictionaryFactory.CreateDictionary<string>("datacosts");
+            var legacyMeasures = EmbeddedResourceHelper.GetEmbeddedResourceAsString(this.GetType(), "Resources.LegacyMeasureMap.js");
+            datacosts["LegacyMeasureMap.js"] = legacyMeasures;
 
             MeasureSourceFactory.Initialize(new IMeasureSourceProvider[]
             {

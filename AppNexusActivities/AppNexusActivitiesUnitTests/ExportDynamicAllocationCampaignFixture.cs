@@ -39,6 +39,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Rhino.Mocks;
 using ScheduledActivities;
+using TestUtilities;
+using Utilities.Storage;
 using Utilities.Storage.Testing;
 
 namespace AppNexusActivitiesUnitTests
@@ -137,7 +139,14 @@ namespace AppNexusActivitiesUnitTests
 
             LogManager.Initialize(new[] { this.testLogger = new TestLogger() });
             Scheduler.Registries = null;
+
+            // Initialize simulated storage
             SimulatedPersistentDictionaryFactory.Initialize();
+            var datacosts = PersistentDictionaryFactory.CreateDictionary<string>("datacosts");
+            var legacyMeasures = EmbeddedResourceHelper.GetEmbeddedResourceAsString(this.GetType(), "Resources.LegacyMeasureMap.js");
+            datacosts["LegacyMeasureMap.js"] = legacyMeasures;
+
+            // Initializes measure source providers
             MeasureSourceFactory.Initialize(
                 new IMeasureSourceProvider[]
                 {
@@ -160,7 +169,7 @@ namespace AppNexusActivitiesUnitTests
             Assert.IsNotNull(activity);
         }
 
-        /// <summary>Test exporting a campaign</summary>
+        /// <summary>Test exporting a legacy campaign</summary>
         [TestMethod]
         public void ExportCampaign()
         {

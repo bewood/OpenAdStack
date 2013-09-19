@@ -33,6 +33,7 @@ using EntityTestUtilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
+using TestUtilities;
 using Utilities.Serialization;
 using Utilities.Storage;
 using Utilities.Storage.Testing;
@@ -90,6 +91,9 @@ namespace AppNexusActivitiesUnitTests
 
             // Initialize simulated storage
             SimulatedPersistentDictionaryFactory.Initialize();
+            var datacosts = PersistentDictionaryFactory.CreateDictionary<string>("datacosts");
+            var legacyMeasures = EmbeddedResourceHelper.GetEmbeddedResourceAsString(this.GetType(), "Resources.LegacyMeasureMap.js");
+            datacosts["LegacyMeasureMap.js"] = legacyMeasures;
 
             // Clear the persisted cache start times
             CachedMeasureSource.CacheUpdateStartTimes = null;
@@ -118,7 +122,7 @@ namespace AppNexusActivitiesUnitTests
         }
 
         /// <summary>
-        /// Test creating the AppNexusLegacyMeasureSourceProvider
+        /// Test creating the AppNexusLegacyMeasureSourceProvider without entity measures
         /// </summary>
         [TestMethod]
         public void CreateAppNexusLegacyMeasureSourceProviderWithoutEntityMeasures()
@@ -129,16 +133,16 @@ namespace AppNexusActivitiesUnitTests
             Assert.AreEqual(DeliveryNetworkDesignation.AppNexus, provider.DeliveryNetwork);
             
             // If created with entities that don't have any custom measures,
-            // then only the embedded LegacyMeasureMap.js should be returned.
+            // then only the persistent dictionary LegacyMeasureMap.js should be returned.
             var measureSources = provider.GetMeasureSources(this.companyEntity, this.campaignEntity);
             Assert.AreEqual(1, measureSources.Count());
-            Assert.AreEqual(1, measureSources.OfType<EmbeddedJsonMeasureSource>().Count());
+            Assert.AreEqual(1, measureSources.OfType<PersistentDictionaryJsonMeasureSource>().Count());
 
             // Check the number and range of measures
-            var embeddedMeasureSource = measureSources.OfType<EmbeddedJsonMeasureSource>().Single();
-            Assert.AreEqual(102000000000500000, embeddedMeasureSource.BaseMeasureId);
-            Assert.AreEqual(111000000002042511, embeddedMeasureSource.MaxMeasureId);
-            Assert.AreEqual(2332, embeddedMeasureSource.Measures.Count);
+            var persistentDictionaryMeasureSource = measureSources.OfType<PersistentDictionaryJsonMeasureSource>().Single();
+            Assert.AreEqual(102000000000500000, persistentDictionaryMeasureSource.BaseMeasureId);
+            Assert.AreEqual(111000000002042511, persistentDictionaryMeasureSource.MaxMeasureId);
+            Assert.AreEqual(2332, persistentDictionaryMeasureSource.Measures.Count);
         }
 
         /// <summary>

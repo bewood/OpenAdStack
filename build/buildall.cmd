@@ -51,6 +51,15 @@ if /i not '%1'=='' (
     shift /1
   )
   
+  :: Upload persistent data
+  if /i '%1'=='UploadPersistentData' (
+    set PERSISTENT_DATA_UPLOAD=%~2
+    if not exist !PERSISTENT_DATA_UPLOAD! (
+      echo Persistent data upload path does not exist: "!PERSISTENT_DATA_UPLOAD!"
+      goto Failed
+    )
+  )
+  
   :: Azure Packaging and Deployment
   if /i '%1'=='Cloud' set TARGETPROFILE=Cloud
   if /i '%1'=='ApnxAppSand' set TARGETPROFILE=ApnxAppSand
@@ -250,6 +259,9 @@ echo Databases:             %SQL_TO_INSTALL%
 echo Deploy:                %DEPLOY%
 echo DeploySql:             %SQL_DEPLOY%
 echo CleanSql:              %SQL_CLEAN%
+if not '%PERSISTENT_DATA_UPLOAD%'=='' (
+  echo Persistent Data Upload: %PERSISTENT_DATA_UPLOAD%
+)
 echo Run Unit Tests:        %RUN_UNIT_TESTS%
 echo Run Integration Tests: %RUN_INTEGRATION_TESTS%
 if /i '%RUN_UNIT_TESTS%'=='True' (
@@ -453,6 +465,15 @@ if /i '%SQL_DEPLOY%'=='True' (
         )
     )
   %TC%[blockClosed name='Initialize Default Entities']
+)
+
+if not '%PERSISTENT_DATA_UPLOAD%'=='' (
+  echo Uploading persistent data from "%PERSISTENT_DATA_UPLOAD%"
+  %RUN% call UploadPersistentData -s "%PERSISTENT_DATA_UPLOAD%"
+  if %ERRORLEVEL% GTR 0 (
+    echo Persistent data upload failed!
+    goto Failed
+  )
 )
 
 if '%INIT_STORAGE_ONLY%'=='True' goto End

@@ -155,6 +155,9 @@
     <EmbeddedResource Include="Resources\creative-formats.js" />
     <EmbeddedResource Include="Resources\creative-templates.js" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\LegacyMeasureMap.js" />
+  </ItemGroup>
   <Import Project="$(SolutionDir)..\build\common.proj" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

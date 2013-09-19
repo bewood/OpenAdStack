@@ -51,7 +51,7 @@ if not '%dconn%'=='' if '%dtype%'=='' (
 :::::::::::::::::::::::::::::::::::::::
 :: Upload files from source directory
 :::::::::::::::::::::::::::::::::::::::
-echo Uploading entries from %source%...
+echo Uploading entries...
 pushd %source%
 for /f "delims=" %%i in ('dir/b/s/a:-d') do if not '%~dpnx0'=='%%i' (
   echo.
@@ -79,7 +79,7 @@ for /f "delims=" %%i in ('dir/b/s/a:-d') do if not '%~dpnx0'=='%%i' (
     
     if !upload!==true (
       echo     uploading !store!/!key! from !file!
-      echo dview -c set -s "!store!" -k "!key!" -i "!file!"
+      dview -c set -s "!store!" -k "!key!" -i "!file!"
     )
   )
 )

@@ -31,7 +31,10 @@ using ReportingActivities;
 using ReportingUtilities;
 using Rhino.Mocks;
 using SimulatedDataStore;
+using TestUtilities;
 using Utilities.Serialization;
+using Utilities.Storage;
+using Utilities.Storage.Testing;
 
 namespace ReportingActivitiesIntegrationTests
 {
@@ -79,6 +82,12 @@ namespace ReportingActivitiesIntegrationTests
         [TestInitialize]
         public void InitializeTest()
         {
+            // Initialize simulated storage
+            SimulatedPersistentDictionaryFactory.Initialize();
+            var datacosts = PersistentDictionaryFactory.CreateDictionary<string>("datacosts");
+            var legacyMeasures = EmbeddedResourceHelper.GetEmbeddedResourceAsString(this.GetType(), "Resources.LegacyMeasureMap.js");
+            datacosts["LegacyMeasureMap.js"] = legacyMeasures;
+
             // Set up an in-memory simulated repository. There are too many interior saves
             // for Rhino to be effective.
             this.repository = new SimulatedEntityRepository();
