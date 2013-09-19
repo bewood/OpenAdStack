@@ -1,4 +1,4 @@
-::@echo off
+@echo off
 
 ::
 :: Setup VS Environment
@@ -42,5 +42,3 @@ endlocal
 set TERM=cygwin
 set LESS=FRSX
 git config color.ui always
-
-echo.
