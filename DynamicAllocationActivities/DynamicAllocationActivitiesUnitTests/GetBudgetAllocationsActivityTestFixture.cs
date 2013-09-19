@@ -593,7 +593,7 @@ namespace DynamicAllocationActivitiesUnitTests
         {
             var campaign = EntityJsonSerializer.DeserializeCampaignEntity(new EntityId(), string.Empty);
             campaign.StartDate = DateTime.UtcNow.AddDays(3);
-            var actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, DateTime.UtcNow);
+            var actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, DateTime.UtcNow, new TimeSpan[] { new TimeSpan(16, 0, 0) });
             Assert.AreEqual((DateTime)campaign.StartDate, actual);
         }
 
@@ -604,7 +604,7 @@ namespace DynamicAllocationActivitiesUnitTests
         public void FindNextReallocationScheduleFromMidnight()
         {
             // Schedule for start time-of-day +7, 15 and 23 hours
-            ConfigurationManager.AppSettings["DynamicAllocation.ReallocationSchedule"] = "07:00:00|15:00:00|23:00:00";
+            var reallocSchedule = new TimeSpan[] { new TimeSpan(7, 0, 0), new TimeSpan(15, 0, 0), new TimeSpan(23, 0, 0) };
             var today = DateTime.UtcNow.Date;
             var tomorrow = today.AddDays(1);
 
@@ -617,19 +617,19 @@ namespace DynamicAllocationActivitiesUnitTests
 
             // Next scheduled realloc should be at 15:00Z
             var expected = today.AddHours(15);
-            var actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now);
+            var actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now, reallocSchedule);
             Assert.AreEqual(expected, actual);
 
             // After that the next scheduled realloc should be at 23:00Z
             now = today + TimeSpan.FromHours(15.1); // 6 minutes after the 15:00Z reallocation has started
             expected = today.AddHours(23);
-            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now);
+            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now, reallocSchedule);
             Assert.AreEqual(expected, actual);
 
             // After the 23:00Z reallocation the next should be at 07:00Z "tomorrow"
             now = today + TimeSpan.FromHours(23.15); // 9 minutes after the 23:00Z reallocation has started
             expected = tomorrow.AddHours(7);
-            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now);
+            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now, reallocSchedule);
             Assert.AreEqual(expected, actual);
         }
 
@@ -642,7 +642,7 @@ namespace DynamicAllocationActivitiesUnitTests
         {
             // Schedule for start time-of-day +7, 15 and 23 hours
             // This results in a schedule of 19:00Z, 03:00Z, 11:00Z
-            ConfigurationManager.AppSettings["DynamicAllocation.ReallocationSchedule"] = "07:00:00|15:00:00|23:00:00";
+            var reallocSchedule = new TimeSpan[] { new TimeSpan(7, 0, 0), new TimeSpan(15, 0, 0), new TimeSpan(23, 0, 0) };
             var today = DateTime.UtcNow.Date;
             var tomorrow = today.AddDays(1);
 
@@ -657,20 +657,20 @@ namespace DynamicAllocationActivitiesUnitTests
             // Next scheduled realloc should be at 19:00Z
             // campaign.StartDate.TimeOfDay + 07:00 = 19:00Z
             var expected = today.AddHours(19);
-            var actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now);
+            var actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now, reallocSchedule);
             Assert.AreEqual(expected, actual);
 
             // After that the next scheduled realloc should be at 19:00Z
             // campaign.StartDate.TimeOfDay + 15:00 = 03:00Z
             now = today + TimeSpan.FromHours(19.1); // 6 minutes after the 15:00Z reallocation has started
             expected = tomorrow.AddHours(3);
-            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now);
+            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now, reallocSchedule);
             Assert.AreEqual(expected, actual);
 
             // After another 03:00Z reallocation it goes back to 19:00Z. 11:00Z never gets scheduled.
             now = tomorrow + TimeSpan.FromHours(3.15); // 9 minutes after the 03:00Z reallocation has started
             expected = tomorrow.AddHours(19);
-            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now);
+            actual = GetBudgetAllocationsActivity.FindNextReallocation(campaign, now, reallocSchedule);
             Assert.AreEqual(expected, actual);
         }
 
