@@ -159,9 +159,12 @@ namespace AppNexusActivitiesE2ETests
 
             LogManager.Initialize(new[] { this.testLogger = new TestLogger() });
             SimulatedPersistentDictionaryFactory.Initialize();
+            AppNexusDataCostsHelper.UploadDataCosts();
+
+            Scheduler.Registries = null;
             CachedMeasureSource.CacheUpdateStartTimes = null;
             CachedMeasureSource.LocalMeasureCache = null;
-            Scheduler.Registries = null;
+
             AppNexusClientHelper.InitializeDeliveryNetworkClientFactory();
 
             this.testMeasureIds = new List<long>();

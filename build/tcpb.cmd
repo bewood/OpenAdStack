@@ -50,7 +50,7 @@ if /i '%CLEAR%'=='true' (
   )    
 )
 
-:: Submit a personal build to TeamCity via ::ote-run branch
+:: Submit a personal build to TeamCity via remote-run branch
 if /i '%BUILD%'=='true' (
 
   :: Load any saved configuration
@@ -86,24 +86,24 @@ if /i '%BUILD%'=='true' (
 goto End
 
 :Help
-echo Script to submit TeamCity personal builds using Branch ::ote Run Triggers
+echo Script to submit TeamCity personal builds using Branch remote Run Triggers
 echo %~n0 {info^|build CONFIGURATION [-s SOURCE_BRANCH] [-b DESTINATION_BRANCH]}
 echo info  Display saved settings (if any)
 echo clear Clear any saved settings
 echo build Build the specified configuration
-echo    -b ::ote destination branch (default is same as local active branch)
+echo    -b remote destination branch (default is same as local active branch)
 echo.
-echo This script is simply a wrapper for issuing a 'git push' to a ::ote branch
-echo monitored by a TeamCity Branch ::ote Run Trigger. For example, assuming the
+echo This script is simply a wrapper for issuing a 'git push' to a remote branch
+echo monitored by a TeamCity Branch remote Run Trigger. For example, assuming the
 echo active local branch is 'my_feature', the following invocation:
 echo   %~n0 build bvt
 echo would result in a git push similar to this:
-echo   git push origin +HEAD:::ote-run/bvt/joedeveloper/my_feature
+echo   git push origin +HEAD:remote-run/bvt/joedeveloper/my_feature
 echo.
 echo The teamcity user name will be prompted for if not already set and then saved
 echo to a per-user configuration file. Use '%~n0 info' to display saved settings.
-echo This script requires corresponding Branch ::ote Run Triggers to be configured
-echo in TeamCity monitoring refs/heads/::ote-run/CONFIGURATION/TEAMCITY_USERNAME/*
+echo This script requires corresponding Branch remote Run Triggers to be configured
+echo in TeamCity monitoring refs/heads/remote-run/CONFIGURATION/TEAMCITY_USERNAME/*
 echo.
 
 :End
