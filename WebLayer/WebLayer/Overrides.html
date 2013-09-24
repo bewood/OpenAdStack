@@ -42,7 +42,7 @@
             initGraph(panes.VisualPane);
             
             //If no node overrides have been entered
-            if (campaignData.NodeValuations.length == 0) {
+            if (campaignData.NodeValuations.length === 0) {
                 showMandatoryMeasureWindow();
             }
 
@@ -62,11 +62,11 @@
             var messageObject = document.getElementById("NodeInfo");
             var valuationList = campaignData.Valuations;
             var overrideIndex = nodeOverrideIndex(valuationList[selectedNode].MeasureSet);
-            var nodeValuation = overrideIndex == -1 ? valuationList[selectedNode] : campaignData.NodeValuations[overrideIndex];
+            var nodeValuation = overrideIndex === -1 ? valuationList[selectedNode] : campaignData.NodeValuations[overrideIndex];
             messageObject.innerHTML = generateMeasuresListHTML(nodeValuation.MeasureSet);
 
             overrideFrom.setItemValue('MaxValuation', parseFloat(nodeValuation.MaxValuation).toFixed(2));
-            overrideFrom.setItemValue('IdealValuation', nodeValuation.IdealValuation != undefined ? parseFloat(nodeValuation.IdealValuation).toFixed(2) : (parseFloat(nodeValuation.MaxValuation) * .8).toFixed(2));
+            overrideFrom.setItemValue('IdealValuation', nodeValuation.IdealValuation !== undefined ? parseFloat(nodeValuation.IdealValuation).toFixed(2) : (parseFloat(nodeValuation.MaxValuation) * .8).toFixed(2));
         }
 
         var recommendNodeList = [];
@@ -79,7 +79,9 @@
                 recommendNodeList = getRequiredOverrideNodes(tupleSize, numOfRequiredNodes);
                 tupleSize++;
             }
-            prepareWindow();
+            if (recommendNodeList.length !== 0){
+              prepareWindow();
+            }
         }
 
         var editWindow;
@@ -98,13 +100,13 @@
 
         function generateMeasuresListHTML(measureList) {
             var messageText = '<table cellspacing=0 style="font:tahoma;font-size:12px">';
-            var nodeValuationJson = {'MeasureSet' : [], 'IdealValuation' : 0, 'MaxValuation' : 0}
+            var nodeValuationJson = {'MeasureSet' : [], 'IdealValuation' : 0, 'MaxValuation' : 0};
             for (var i = 0; i < measureList.length; i++) {
                 messageText += '<tr><td style="border-bottom:1px solid;">' + getMeasureDisplayName(measureList[i]) + "<\/td><\/tr>";
                 nodeValuationJson.MeasureSet.push(measureList[i]);
             }
             messageText += '<span id="hiddenNodeValuationJson" style="display:none">' + JSON.stringify(nodeValuationJson) + '</span>';
-            messageText += '<\/table>'
+            messageText += '<\/table>';
             return messageText;
         }
 
@@ -118,13 +120,13 @@
 
         function SaveNodeValuation(ideal, max) {
             $RCUI.isDirty = true;
-            if (ideal != 0 && max != 0) {
+            if (ideal !== 0 && max !== 0) {
                 var newNodeOverride = JSON.parse(document.getElementById('hiddenNodeValuationJson').innerHTML);
                 newNodeOverride.IdealValuation = ideal;
                 newNodeOverride.MaxValuation = max;
                 if (newNodeOverride.MeasureSet.length > 1) { //only do this if this is not a single measure node
                     var existingOverrideIndex = nodeOverrideIndex(newNodeOverride.MeasureSet);
-                    if (existingOverrideIndex == -1) {
+                    if (existingOverrideIndex === -1) {
                         campaignData.NodeValuations.push(newNodeOverride);
                     }
                     else { //replace existing node override
@@ -145,7 +147,7 @@
 
         function nodeOverrideIndex(testNode){
             for (var i = 0; i < campaignData.NodeValuations.length; i++ ) {
-                if (campaignData.NodeValuations[i].MeasureSet.sort().join(',') == testNode.sort().join(',')) {
+                if (campaignData.NodeValuations[i].MeasureSet.sort().join(',') === testNode.sort().join(',')) {
                     return i;
                 }
             }
@@ -170,9 +172,9 @@
 
         function removeOverride() {
             $RCUI.isDirty = true;
-            var currentNode = JSON.parse(document.getElementById('hiddenNodeValuationJson').innerHTML)
+            var currentNode = JSON.parse(document.getElementById('hiddenNodeValuationJson').innerHTML);
             var nodeIndex = nodeOverrideIndex(currentNode.MeasureSet);
-            if (nodeIndex != -1) {
+            if (nodeIndex !== -1) {
                 campaignData.NodeValuations.splice(nodeIndex, 1);
             }
         }
@@ -183,8 +185,8 @@
 
         function getRequiredOverrideNodes(tupleSize, numOfRequiredNodes) {
             // find nodes with the tupleSize number of free floating measures
-            var tierNodeList = jsonPath(campaignData, '$.Valuations[?(@.MeasureSet.length == ' + tupleSize + ')]');
-            var tierNodePlusOneList = jsonPath(campaignData, '$.Valuations[?(@.MeasureSet.length == ' + (tupleSize + 1) + ')]');
+            var tierNodeList = jsonPath(campaignData, '$.Valuations[?(@.MeasureSet.length === ' + tupleSize + ')]');
+            var tierNodePlusOneList = jsonPath(campaignData, '$.Valuations[?(@.MeasureSet.length === ' + (tupleSize + 1) + ')]');
             if (!tierNodeList || !tierNodePlusOneList) {
                 return [];
             }
@@ -214,7 +216,7 @@
 
         function isPreviouslyCovered(node, coveredList) {
             for (var coveredNode in coveredList){
-                if (node.MeasureSet.sort().join(',') == coveredList[coveredNode]) {
+                if (node.MeasureSet.sort().join(',') === coveredList[coveredNode]) {
                     return true;
                 }
             }
@@ -226,7 +228,7 @@
                 if (isChildNodeByNode(recommendNodeList[i], node)) {
                     return 'rgb(0,128,255)';
                 }
-                if (node.MeasureSet.join(',') == recommendNodeList[i].MeasureSet.join(',')) {
+                if (node.MeasureSet.join(',') === recommendNodeList[i].MeasureSet.join(',')) {
                     return 'rgb(255,255,255)';
                 }
             }
@@ -248,9 +250,9 @@
 
         function getValuationCalcTypeColor(node) {
             var testNodeId = node.MeasureSet.sort().join(',');
-            var color = 'rgb(0, 0, 0)'
+            var color = 'rgb(0, 0, 0)';
             for (var explicitNode = 0; explicitNode < campaignData.NodeValuations.length; explicitNode++) {
-                if (testNodeId == campaignData.NodeValuations[explicitNode].MeasureSet.sort().join(',')) { //Exact node match
+                if (testNodeId === campaignData.NodeValuations[explicitNode].MeasureSet.sort().join(',')) { //Exact node match
                     color = 'rgb(255,255,0)';
                     break;
                 }
@@ -289,7 +291,7 @@
                 { type:'block', list:[
                 { type: "button", name: "Update", width: 55, value: 'Update' },
                 { type: "newcolumn", offset: 10 },
-                { type: "button", name: "Reset", width: 55, value: 'Reset' },
+                { type: "button", name: "Reset", width: 55, value: 'Reset' }
                 ]},
             { type: "button", name: "Save", width: 200, value: 'Save and Recalculate Valuations' },
             ];
