@@ -68,6 +68,7 @@ namespace AppNexusActivitiesE2ETests
 
             // Initialize simulated storage
             SimulatedPersistentDictionaryFactory.Initialize();
+            AppNexusDataCostsHelper.UploadDataCosts();
 
             // Clear the persisted cache start times
             CachedMeasureSource.CacheUpdateStartTimes = null;
@@ -186,6 +187,7 @@ namespace AppNexusActivitiesE2ETests
         public void DownloadSegmentsMeasureSource()
         {
             ConfigurationManager.AppSettings["AppNexus.SegmentDataCostsRequired"] = "true";
+            AppNexusDataCostsHelper.UploadDataCosts();
 
             var source = new SegmentMeasureSource(null, null);
             var segments = MeasureSourceTestHelpers.LoadMeasures(source, 300);
