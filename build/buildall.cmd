@@ -53,10 +53,10 @@ if /i not '%1'=='' (
   
   :: Upload persistent data
   if /i '%1'=='UploadPersistentData' (
-    set PERSISTENT_DATA_UPLOAD=%~2
-    if not exist !PERSISTENT_DATA_UPLOAD! (
-      echo Persistent data upload path does not exist: "!PERSISTENT_DATA_UPLOAD!"
-      goto Failed
+    set UPLOAD_PERSISTENT_DATA=True
+    if exist "%~2" (
+      set PERSISTENT_DATA_UPLOAD_SOURCE=%~2
+      shift /1
     )
   )
   
@@ -180,6 +180,12 @@ for /f "tokens=1 delims=" %%i in (%PRIVATECONFIG%\settings.txt) do set settings.
 :: Specific purpose config paths
 set AZURECONFIG=%PRIVATECONFIG%Azure
 set AZUREPROFILES=%AZURECONFIG%\Profiles
+:: Default initial data source, if unspecified.
+if /i '%UPLOAD_PERSISTENT_DATA%'=='True' (
+  if not exist "%PERSISTENT_DATA_UPLOAD_SOURCE%" (
+    set PERSISTENT_DATA_UPLOAD_SOURCE=%PRIVATECONFIG%\InitialData
+  )
+)
 
 ::::::::::::::::::::::::::::::
 :: Default build settings
@@ -259,8 +265,8 @@ echo Databases:             %SQL_TO_INSTALL%
 echo Deploy:                %DEPLOY%
 echo DeploySql:             %SQL_DEPLOY%
 echo CleanSql:              %SQL_CLEAN%
-if not '%PERSISTENT_DATA_UPLOAD%'=='' (
-  echo Persistent Data Upload: %PERSISTENT_DATA_UPLOAD%
+if /i '%UPLOAD_PERSISTENT_DATA%'=='True' (
+  echo Persistent Data Upload: %PERSISTENT_DATA_UPLOAD_SOURCE%
 )
 echo Run Unit Tests:        %RUN_UNIT_TESTS%
 echo Run Integration Tests: %RUN_INTEGRATION_TESTS%
@@ -467,9 +473,8 @@ if /i '%SQL_DEPLOY%'=='True' (
   %TC%[blockClosed name='Initialize Default Entities']
 )
 
-if not '%PERSISTENT_DATA_UPLOAD%'=='' (
-  echo Uploading persistent data from "%PERSISTENT_DATA_UPLOAD%"
-  %RUN% call UploadPersistentData -s "%PERSISTENT_DATA_UPLOAD%"
+if /i '%UPLOAD_PERSISTENT_DATA%'=='True' (
+  %RUN% call UploadPersistentData -s "%PERSISTENT_DATA_UPLOAD_SOURCE%"
   if %ERRORLEVEL% GTR 0 (
     echo Persistent data upload failed!
     goto Failed
