@@ -51,11 +51,9 @@ if not '%dconn%'=='' if '%dtype%'=='' (
 :::::::::::::::::::::::::::::::::::::::
 :: Upload files from source directory
 :::::::::::::::::::::::::::::::::::::::
-echo Uploading entries...
+echo Uploading persistent data from "%source%":
 pushd %source%
 for /f "delims=" %%i in ('dir/b/s/a:-d') do if not '%~dpnx0'=='%%i' (
-  echo.
-  
   set file=%%i
   set entry=!file:%CD%\=!
   for /f "tokens=1,2 delims=\" %%j in ("!entry:%CD%\=!") do (
@@ -68,17 +66,17 @@ for /f "delims=" %%i in ('dir/b/s/a:-d') do if not '%~dpnx0'=='%%i' (
       set upload=true
     ) else (
       REM Only upload if the entry does not already exist
-      echo     checking if entry exists for !store!/!key!...
+      echo     Checking if entry exists for !store!/!key!...
       dview -c view -s "!store!" -k "!key!">NUL
       if !ERRORLEVEL! GTR 0 (
         set upload=true
       ) else (
-        echo     skipping existing entry !store!/!key!
+        echo     Skipping existing entry !store!/!key!
       )
     )
     
     if !upload!==true (
-      echo     uploading !store!/!key! from !file!
+      echo     Uploading !store!/!key!
       dview -c set -s "!store!" -k "!key!" -i "!file!"
     )
   )
