@@ -109,9 +109,6 @@ namespace WebLayer
                 Server.GetLastError().GetType().Equals(typeof(System.Security.Cryptography.CryptographicException)) ||
                 Server.GetLastError().GetType().Equals(typeof(System.InvalidOperationException)))
             {
-                // clear cookies
-                Response.Cookies.Clear(); 
-                
                 // redirect to logoff page
                 var redirect = Config.GetValue("WL.LogOffUrl");
                 Response.Redirect(redirect, true);
