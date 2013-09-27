@@ -1,12 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Azure", "Azure\Azure.ccproj", "{51E2862E-3F8B-4499-9C99-08740D181D1B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole", "WebRole\WebRole.csproj", "{830B81FE-1062-469D-8905-AB1B3A45F42F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerRole", "WorkerRole\WorkerRole.csproj", "{572C9991-D619-4EC7-88A4-8C51DE2090A1}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F1BC8409-069C-4C12-89EE-F8C520F39901}"
 	ProjectSection(SolutionItems) = preProject
 		Azure.vsmdi = Azure.vsmdi
@@ -42,6 +36,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EnvironmentSettings", "Envi
 		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Local.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Local.proj
 		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Production.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Production.proj
 	EndProjectSection
+EndProject
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Azure", "Azure\Azure.ccproj", "{51E2862E-3F8B-4499-9C99-08740D181D1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole", "WebRole\WebRole.csproj", "{830B81FE-1062-469D-8905-AB1B3A45F42F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerRole", "WorkerRole\WorkerRole.csproj", "{572C9991-D619-4EC7-88A4-8C51DE2090A1}"
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "AzureWebOnly", "AzureWebOnly\AzureWebOnly.ccproj", "{3C109CED-CED9-42FF-9465-D495A65530FA}"
 EndProject

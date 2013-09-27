@@ -22,7 +22,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using Microsoft.WindowsAzure;
 
 namespace TestUtilities
 {
@@ -89,19 +88,6 @@ namespace TestUtilities
             // TODO: For now rely build-based init (might be adequate indefinitely).
             //// var arguments = string.Format(CultureInfo.InvariantCulture, "/sqlinstance:{0} /silent /forcecreate", sqlInstance);
             //// StartCommandLineToolAndWaitForExit(storeInitializerPath, arguments);
-        }
-
-        /// <summary>
-        /// Set Azure cloud storage to use the app config file as the configuration source.
-        /// Useful for testing from non-Azure projects.
-        /// </summary>
-        public static void SetAppConfigAsConfigurationSource()
-        {
-            CloudStorageAccount.SetConfigurationSettingPublisher((configName, configSetter) =>
-            {
-                var connectionString = ConfigurationManager.AppSettings[configName];
-                configSetter(connectionString);
-            });            
         }
 
         /// <summary>Start a command-line tool with supplied arguments and wait for exit.</summary>

@@ -30,7 +30,7 @@ using Utilities.Storage;
 namespace SqlUtilities.Storage
 {
     /// <summary>
-    /// CloudBlob wrapping IPersistentDictionaryEntry implementation
+    /// ICloudBlob wrapping IPersistentDictionaryEntry implementation
     /// </summary>
     internal class SqlDictionaryEntry : IPersistentDictionaryEntry
     {

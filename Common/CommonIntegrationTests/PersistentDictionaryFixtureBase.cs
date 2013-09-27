@@ -25,8 +25,8 @@ using System.Runtime.Serialization;
 using System.Text;
 using AzureUtilities.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using TestUtilities;
 using Utilities.Storage;
 

@@ -3,7 +3,8 @@
 ::
 :: Setup VS Environment
 ::
-call "%VS100COMNTOOLS%\..\..\VC\vcvarsall.bat" x86
+echo Setting up environment for Visual Studio 2012
+call "%VS110COMNTOOLS%\..\..\VC\vcvarsall.bat" x86
 
 ::
 :: Find Git and add to path

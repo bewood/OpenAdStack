@@ -24,7 +24,7 @@ using ConcreteDataStore;
 using DataAccessLayer;
 using Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
 using Rhino.Mocks;
 
 namespace ConcreteDataStoreUnitTests
@@ -1576,7 +1576,7 @@ namespace ConcreteDataStoreUnitTests
                     Arg<RequestContext>.Is.Anything,
                     Arg<IEntity>.Matches(e => e.ExternalEntityId == entity.ExternalEntityId),
                     Arg<bool>.Is.Equal(false)))
-                    .Throw(new StorageClientException());
+                    .Throw(new StorageException(null, string.Empty, null));
             }
 
             this.indexStore.Stub(f => f.SaveEntity(null)).IgnoreArguments();

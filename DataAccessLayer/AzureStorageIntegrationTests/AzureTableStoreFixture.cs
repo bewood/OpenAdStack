@@ -946,8 +946,9 @@ namespace AzureStorageIntegrationTests
 
             // Round-trip the partner entity
             var context = this.requestContext;
-            this.repository.TrySaveEntity(context, entity);
+            Assert.IsTrue(this.repository.TrySaveEntity(context, entity));
             var savedEntity = this.repository.TryGetEntity(context, entity.ExternalEntityId);
+            Assert.IsNotNull(savedEntity);
             var actualBigString = savedEntity.TryGetPropertyByName<string>("BigString", null);
             Assert.AreEqual(bigString, actualBigString);
             Assert.AreEqual(PropertyFilter.System, savedEntity.GetEntityPropertyByName("BigString").Filter);
