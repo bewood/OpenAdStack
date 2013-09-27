@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------
 
 using System.Linq;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
 using Utilities.Storage;
 
 namespace AzureUtilities.Storage

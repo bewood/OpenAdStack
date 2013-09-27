@@ -25,8 +25,11 @@ using System.Text;
 using System.Xml.Linq;
 using DataAccessLayer;
 using Diagnostics;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
+using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.WindowsAzure.Storage.Table.DataServices;
+using DAL = DataAccessLayer;
 
 namespace ConcreteDataStore
 {
@@ -51,11 +54,7 @@ namespace ConcreteDataStore
         {
             var account = CloudStorageAccount.Parse(azureEntityTableConnectionString);
             this.TableClient = account.CreateCloudTableClient();
-
-            // Specify a retry backoff of 10 seconds max instead of using default values.
-            this.TableClient.RetryPolicy = RetryPolicies.RetryExponential(
-                3, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 10), new TimeSpan(0, 0, 3));
-
+            this.TableClient.RetryPolicy = new ExponentialRetry(new TimeSpan(0, 0, 3), 3);
             this.CurrentEntitySchema = new ConcreteEntitySchema();
         }
 
@@ -246,12 +245,14 @@ namespace ConcreteDataStore
         {
             try
             {
-                this.TableClient.CreateTable(tableName);
+                var table = this.TableClient.GetTableReference(tableName);
+                table.CreateIfNotExists();
                 return true;
             }
-            catch (StorageClientException ex)
+            catch (StorageException ex)
             {
-                LogManager.Log(LogLevels.Error, string.Format(CultureInfo.InvariantCulture, "Status Code {0}: {1}", ex.StatusCode, ex.Message));
+                var info = ex.RequestInformation;
+                LogManager.Log(LogLevels.Error, "Status Code {0} ({1}): {2}", info.HttpStatusCode, info.HttpStatusMessage, ex);
             }
 
             return false;
@@ -276,7 +277,7 @@ namespace ConcreteDataStore
             foreach (var entityProperty in serializationEntity.WrappedEntity.Properties)
             {
                 // Encode the property names for Azure before serializing to odata
-                var encodedProperty = new EntityProperty(entityProperty);
+                var encodedProperty = new DAL.EntityProperty(entityProperty);
                 encodedProperty.Name = AzureNameEncoder.EncodeAzureName(encodedProperty.Name);
 
                 // Serialize to odata xml
@@ -339,7 +340,7 @@ namespace ConcreteDataStore
         private static bool IsIEntityProperty(string odataName)
         {
             var matches =
-                typeof(IEntity).GetProperties().Where(p => p.PropertyType == typeof(EntityProperty) && p.Name == odataName).ToList();
+                typeof(IEntity).GetProperties().Where(p => p.PropertyType == typeof(DAL.EntityProperty) && p.Name == odataName).ToList();
 
             // If this happens something is bad wrong.
             if (matches.Count() > 1)
@@ -401,7 +402,7 @@ namespace ConcreteDataStore
             AzureSerializationEntity serializationEntity, ODataElement odataPropertyElement)
         {
             serializationEntity.WrappedEntity.InterfaceProperties.Add(
-                new EntityProperty
+                new DAL.EntityProperty
                 {
                     Name = odataPropertyElement.ODataName,
                     Value = new PropertyValue(ODataSerializer.GetPropertyType(odataPropertyElement), odataPropertyElement.ODataValue)
@@ -421,7 +422,7 @@ namespace ConcreteDataStore
             var isNameEncoded = this.CurrentEntitySchema.CheckSchemaFeature(
                     schemaVersion, EntitySchemaFeatureId.NameEncoding);
 
-            var entityProperty = new EntityProperty
+            var entityProperty = new DAL.EntityProperty
             {
                 Name = isNameEncoded ? AzureNameEncoder.UnencodeAzureName(odataName.PropertyName) : odataName.PropertyName,
                 Value = new PropertyValue(ODataSerializer.GetPropertyType(odataPropertyElement), odataPropertyElement.ODataValue),
@@ -480,7 +481,7 @@ namespace ConcreteDataStore
                 // Get the data context.
                 // Tell it to ignore anything in the entity that it doesn't know how to map to our raw entity object.
                 // Add our own deserialization handler so we can map the entity to our raw entity object.
-                var tableServiceContext = this.TableClient.GetDataServiceContext();
+                var tableServiceContext = this.TableClient.GetTableServiceContext();
                 tableServiceContext.IgnoreMissingProperties = true;
                 if (write)
                 {
@@ -500,17 +501,18 @@ namespace ConcreteDataStore
             }
             catch (DataServiceRequestException ex)
             {
-                LogManager.Log(LogLevels.Error, "AzureEntityStore Table Service Error: {0}".FormatInvariant(ex.ToString()));
+                LogManager.Log(LogLevels.Error, "AzureEntityStore Table Service Error: {0}", ex);
                 return null;
             }
             catch (DataServiceQueryException ex)
             {
-                LogManager.Log(LogLevels.Error, "Status Code {0}: {1}".FormatInvariant(ex.Response.StatusCode, ex.ToString()));
+                LogManager.Log(LogLevels.Error, "Status Code {0}: {1}", ex.Response.StatusCode, ex);
                 return null;
             }
-            catch (StorageClientException ex)
+            catch (StorageException ex)
             {
-                LogManager.Log(LogLevels.Error, "Status Code {0}: {1}".FormatInvariant(ex.StatusCode, ex.ToString()));
+                var info = ex.RequestInformation.ExtendedErrorInformation;
+                LogManager.Log(LogLevels.Error, "Status Code {0} ({1}): {2}", info.ErrorCode, info.ErrorMessage, ex);
                 return null;
             }
         }

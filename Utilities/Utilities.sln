@@ -1,18 +1,20 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateUser", "CreateUser\CreateUser.csproj", "{7690CB5A-3BA5-4318-8BA3-1CF57DDE8B96}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppUtilities", "ConsoleAppUtils\ConsoleAppUtilities.csproj", "{A5AE26B4-72CD-43A4-BC2C-99B4EF4A1BA9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppUtilitiesUnitTests", "ConsoleAppUtilitiesUnitTests\ConsoleAppUtilitiesUnitTests.csproj", "{F81F03A5-913D-40CB-8C6A-ADA7B758CEBA}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F4CC977D-5B43-4D03-BA74-101B02397FA9}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 		Utilities.vsmdi = Utilities.vsmdi
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simulator", "Simulator", "{2E5D30EC-0AB7-4FE3-96F3-F372EAA06C2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateUser", "CreateUser\CreateUser.csproj", "{7690CB5A-3BA5-4318-8BA3-1CF57DDE8B96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppUtilities", "ConsoleAppUtils\ConsoleAppUtilities.csproj", "{A5AE26B4-72CD-43A4-BC2C-99B4EF4A1BA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppUtilitiesUnitTests", "ConsoleAppUtilitiesUnitTests\ConsoleAppUtilitiesUnitTests.csproj", "{F81F03A5-913D-40CB-8C6A-ADA7B758CEBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateCompany", "CreateCompany\CreateCompany.csproj", "{D030666C-38AD-45A6-AB58-260C38DB0513}"
 EndProject
@@ -33,8 +35,6 @@ EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "AzureSimulatorRole", "AzureSimulatorRole\AzureSimulatorRole.ccproj", "{F3CD5CB7-CEA6-42AE-82A2-2538C57D144C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulatorRole", "SimulatorRole\SimulatorRole.csproj", "{F28E1D10-22A8-4D34-A34B-350B55CC1F4B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simulator", "Simulator", "{2E5D30EC-0AB7-4FE3-96F3-F372EAA06C2B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunReport", "RunReport\RunReport.csproj", "{F004CE06-65A7-46D2-A47D-DD0A23BD45F1}"
 EndProject
@@ -308,10 +308,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{ADDD1716-4FBF-4056-B10C-AEFA7BBC938A} = {2E5D30EC-0AB7-4FE3-96F3-F372EAA06C2B}
 		{1D3AD926-4407-4D15-8484-9FA45B912D93} = {2E5D30EC-0AB7-4FE3-96F3-F372EAA06C2B}
 		{F3CD5CB7-CEA6-42AE-82A2-2538C57D144C} = {2E5D30EC-0AB7-4FE3-96F3-F372EAA06C2B}
 		{F28E1D10-22A8-4D34-A34B-350B55CC1F4B} = {2E5D30EC-0AB7-4FE3-96F3-F372EAA06C2B}
-		{ADDD1716-4FBF-4056-B10C-AEFA7BBC938A} = {2E5D30EC-0AB7-4FE3-96F3-F372EAA06C2B}
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True

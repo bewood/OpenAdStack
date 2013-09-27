@@ -27,6 +27,7 @@ using ConfigManager;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using Microsoft.WindowsAzure.Storage;
 
 namespace Diagnostics
 {
@@ -197,13 +198,10 @@ namespace Diagnostics
             // Schedule a transfer period.
             diagnosticConfiguration.Directories.ScheduledTransferPeriod = ScheduledTransferPeriod;
 
-            // Get the storage account
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(ConnectionString);
-
             // Only works in AppFabric
             if (RoleEnvironment.IsAvailable)
             {
-                DiagnosticMonitor.Start(cloudStorageAccount, diagnosticConfiguration);
+                DiagnosticMonitor.StartWithConnectionString(ConnectionString, diagnosticConfiguration);
             }
         }
 
