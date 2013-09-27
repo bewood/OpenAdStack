@@ -16,6 +16,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+using System.IO;
 using System.Net;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -44,6 +45,17 @@ namespace AzureUtilities.Storage
                 }
 
                 throw;
+            }
+        }
+
+        /// <summary>Reads a blob as text</summary>
+        /// <param name="blob">Blob to read</param>
+        /// <returns>Blob contents as text</returns>
+        public static string DownloadText(this ICloudBlob blob)
+        {
+            using (var reader = new StreamReader(blob.OpenRead()))
+            {
+                return reader.ReadToEnd();
             }
         }
     }

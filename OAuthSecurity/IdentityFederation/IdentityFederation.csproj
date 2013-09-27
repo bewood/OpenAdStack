@@ -48,7 +48,6 @@
       <HintPath>..\..\External\Public\bin\Debug\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="ResourceAccess, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\DataAccessCommon\Public\bin\Debug\ResourceAccess.dll</HintPath>

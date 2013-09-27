@@ -43,7 +43,7 @@ namespace System.ServiceModel
 			this.context = context;
 		}
 
-		public event EventHandler OperationCompleted;
+        public event EventHandler OperationCompleted { add { } remove { } }
 
 		T IOperationContext.GetCallbackChannel<T>()
 		{

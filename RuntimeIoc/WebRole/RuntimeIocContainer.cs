@@ -23,7 +23,6 @@ using ConfigManager;
 using DataAccessLayer;
 using Diagnostics;
 using Microsoft.Practices.Unity;
-using Microsoft.WindowsAzure.ServiceRuntime;
 using Queuing;
 using Queuing.Azure;
 using SqlUtilities.Storage;
