@@ -252,7 +252,7 @@
             // new users dont have any access values yet, so nothing to prepend
             var userJSON = createUserJSON(userEditForm, accessListPropertyValue);
             //hack to ensure for new user the version is an int, the server should be ignoring this value except in deserialization
-            userJson.LocalVersion = 0;
+            userJSON.LocalVersion = 0;
             var userOutputJSON = new $RCAjax($RCAPI.URI.UserCreate, JSON.stringify(userJSON), 'POST', null, null, false, null, routePostErrors);
             // Send invite mail to non-app users (app users are created in response
             // to registration requests and don't need to be invited).
