@@ -103,8 +103,6 @@ namespace ApiLayer
         /// <param name="e">parameter sent to the event by the callee</param>
         protected void Application_Start(object sender, EventArgs e)
         {
-            System.Diagnostics.Debugger.Break();
-
             // Resolve the persistent dictionary factory and logger
             PersistentDictionaryFactory.Initialize(RuntimeIocContainer.Instance.ResolveAll<IPersistentDictionaryFactory>());
             LogManager.Initialize(RuntimeIocContainer.Instance.ResolveAll<ILogger>());
