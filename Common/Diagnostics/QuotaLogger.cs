@@ -24,10 +24,8 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using ConfigManager;
-using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
-using Microsoft.WindowsAzure.Storage;
 
 namespace Diagnostics
 {

@@ -26,13 +26,16 @@ using OAuthSecurity;
 
 namespace IdentityFederation
 {
-    /// <summary>
-    /// Class to extend IssuerNameRegistry
-    /// </summary>
+    /// <summary>Class to extend IssuerNameRegistry</summary>
     public class CustomIssuerNameRegistry : IssuerNameRegistry
     {
+        /// <summary>Initializes a new instance of the CustomIssuerNameRegistry class</summary>
+        public CustomIssuerNameRegistry() : base()
+        {
+        }
+
         /// <summary>
-        /// Method to et the issuer name
+        /// Method to get the issuer name
         /// </summary>
         /// <param name="securityToken">security token associated with the issuer</param>
         /// <returns>issuer name</returns>
