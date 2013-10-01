@@ -222,7 +222,7 @@ must be replaced with a reference to this file:
     <!-- Delete any existing reports from previous runs -->
     <Delete Files="$(ReportPath)" ContinueOnError="true" />
     <!-- Run FxCop -->
-    <Exec ContinueOnError="false" Command='$(FxCopCommand)' />
+    <Exec ContinueOnError="true" Command='$(FxCopCommand)' />
     <!-- Import FxCop report to TeamCity -->
     <Message Condition="'$(TeamCity)' == 'True' And $([System.IO.File]::Exists(`$(ReportPath)`))"
              Text="##teamcity[importData type='FxCop' path='$(ReportPath)']" />
@@ -230,9 +230,11 @@ must be replaced with a reference to this file:
     <Message Condition="'$(TeamCity)' == 'True'" Text="##teamcity[progressFinish '$(TeamCityBlockMessage)']" />
     <Message Condition="'$(TeamCity)' == 'True'" Text="##teamcity[blockClosed name='$(TeamCityBlockMessage)']" />
     <!-- Error if an rules were violated -->
+    <!--
     <Error Condition="'$(FxCopAsWarnings)' != 'True' And $([System.IO.File]::Exists(`$(ReportPath)`))"
              Text="One or more FxCop rules violated."
              File="$(ReportPath)" />
+             -->
   </Target>
   
   <!--

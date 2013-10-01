@@ -24,11 +24,13 @@ using System.Linq;
 using System.Web;
 using ConfigManager;
 using Diagnostics;
+/*
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Web;
 using Microsoft.IdentityModel.Web.Configuration;
 using Microsoft.Practices.Unity;
 using OAuthSecurity;
+ */
 using RuntimeIoc.WebRole;
 
 namespace WebLayer
@@ -45,14 +47,17 @@ namespace WebLayer
         /// <param name="e">parameter sent to the event by the callee</param>
         protected void Application_Start(object sender, EventArgs e)
         {
-            LogManager.Initialize(RuntimeIocContainer.Instance.ResolveAll<ILogger>());
+            LogManager.Initialize(RuntimeIocContainer.Instance.ResolveAll(typeof(ILogger)).Cast<ILogger>());
             LogManager.Log(LogLevels.Information, "WebLayer Application_Start");
             if (!Config.GetBoolValue("AppNexus.IsApp"))
             {
-                FederatedAuthentication.ServiceConfigurationCreated += this.OnServiceConfigurationCreated;
+                ////FederatedAuthentication.ServiceConfigurationCreated += this.OnServiceConfigurationCreated;
+                // TODO: Move to config
+                ////OAuthWebSecurity.RegisterMicrosoftClient(clientId: "000000004C101A19", clientSecret: "6BD7cw9PxhjzKsEujBRdjj9I1xfkSSwE");
             }
         }
 
+        /*
         /// <summary>
         /// Event that manages sliding session
         /// </summary>
@@ -95,6 +100,7 @@ namespace WebLayer
                 }
             }
         }
+        */
 
         /// <summary>
         /// Event that occurs during application error
@@ -115,6 +121,7 @@ namespace WebLayer
             }
         }
 
+        /*
         /// <summary>
         /// Event that occurs when the service configuration is created
         /// Refer to http://msdn.microsoft.com/en-us/library/windowsazure/gg185962.aspx
@@ -133,5 +140,6 @@ namespace WebLayer
             SimpleWebTokenHandler sessionHandler = new SimpleWebTokenHandler(sessionTransforms.AsReadOnly());
             e.ServiceConfiguration.SecurityTokenHandlers.AddOrReplace(sessionHandler);
         }
+        */
     }
 }

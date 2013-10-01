@@ -21,7 +21,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using System.Threading;
 using ConfigManager;
-using Microsoft.IdentityModel.Web;
+////using Microsoft.IdentityModel.Web;
 
 namespace WebLayer
 {
@@ -37,6 +37,7 @@ namespace WebLayer
         /// <param name="e">event arguments</param>
         protected void Page_Load(object sender, EventArgs e)
         {
+            /*
             // Erase session cookies
             WSFederationAuthenticationModule authModule = FederatedAuthentication.WSFederationAuthenticationModule;
             authModule.SignOut(true);
@@ -44,7 +45,7 @@ namespace WebLayer
 
             // Pause for 3 seconds so the user can see the message on the page. (Message is that the user will be logged off)
             Thread.Sleep(3000);
-
+            */
             Response.Redirect(Config.GetValue("WL.WLIDLogOffUrl"), true);
         }
     }
