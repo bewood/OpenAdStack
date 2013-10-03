@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceConfiguration serviceName="Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*" schemaVersion="2013-03.2.0">
+<ServiceConfiguration serviceName="Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="3" osVersion="*" schemaVersion="2013-03.2.0">
   <Role name="WebRole">
     <Instances count="1" />
     <ConfigurationSettings>
@@ -14,16 +14,7 @@
       <Setting name="Logging.BlobContainer" value="weblogs" />
       <Setting name="Logging.ScheduledTransferPeriodMinutes" value="1" />
       <Setting name="Logging.ConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="ACS.SymmetricSignatureKey" value="3kxJBpK68iwTDyVtFMtodPN/Bd1jd2AcghCFEaa0kf0=" />
-      <Setting name="ACS.AcsHostUrl" value="accesscontrol.windows.net" />
-      <Setting name="ACS.RelyingPartySecurityKey" value="3kxJBpK68iwTDyVtFMtodPN/Bd1jd2AcghCFEaa0kf0=" />
-      <Setting name="ACS.ServiceNamespace" value="traffiqemu" />
-      <Setting name="ACS.FederationMetadataLocation" value="https://traffiqemu.accesscontrol.windows.net/FederationMetadata/2007-06/FederationMetadata.xml" />
-      <Setting name="ACS.AudienceUri" value="https://localhost/" />
-      <Setting name="ACS.RelyingPartyRealm" value="https://localhost/" />
-      <Setting name="ACS.TokenDurationMinutes" value="$(TokenDurationMinutes)" />
-      <Setting name="ACS.Issuer" value="https://traffiqemu.accesscontrol.windows.net/" />
-      <Setting name="WL.LogOffUrl" value="https://localhost/LogOff.aspx" />
+      <Setting name="ACS.SecurityTokenDuration" value="03:00:00" />
       <Setting name="WL.WLIDLogOffUrl" value="https://login.live.com/logout.srf" />
       <Setting name="ApiLayer.QueueResponsePollTime" value="70" />
       <Setting name="ApiLayer.MaxQueueResponseWaitTime" value="7000" />
@@ -43,6 +34,8 @@
       <Setting name="AppNexus.IsApp" value="false" />
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" value="15000" />
+      <Setting name="ACS.SecurityTokenAutoRenew" value="00:05:00" />
+      <Setting name="ACS.SecurityEnabled" value="true" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="Website SSL" thumbprint="9F430E1E4BFD24CD6872CD4D894300C18017C008" thumbprintAlgorithm="sha1" />

@@ -30,7 +30,6 @@ using System.Web.Script.Serialization;
 using Activities;
 using ConfigManager;
 using Diagnostics;
-using Microsoft.IdentityModel.Claims;
 using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
 using Queuing;
@@ -67,6 +66,7 @@ namespace ApiLayer
                 this.VerifyPerCallInstanceContextMode();
             }
 
+            var identity = HttpContext.Current.User.Identity as System.Security.Claims.ClaimsIdentity;
             this.NameIdentifierClaimValue = ClaimRetriever.GetClaimValue(NameIdentifierClaim);
             this.Context = new CallContext();
         }

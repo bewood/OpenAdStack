@@ -30,16 +30,7 @@
       <Setting name="Logging.BlobContainer" />
       <Setting name="Logging.ScheduledTransferPeriodMinutes" />
       <Setting name="Logging.ConnectionString" />
-      <Setting name="ACS.SymmetricSignatureKey" />
-      <Setting name="ACS.AcsHostUrl" />
-      <Setting name="ACS.RelyingPartySecurityKey" />
-      <Setting name="ACS.ServiceNamespace" />
-      <Setting name="ACS.FederationMetadataLocation" />
-      <Setting name="ACS.AudienceUri" />
-      <Setting name="ACS.RelyingPartyRealm" />
-      <Setting name="ACS.TokenDurationMinutes" />
-      <Setting name="ACS.Issuer" />
-      <Setting name="WL.LogOffUrl" />
+      <Setting name="ACS.SecurityTokenDuration" />
       <Setting name="WL.WLIDLogOffUrl" />
       <Setting name="ApiLayer.QueueResponsePollTime" />
       <Setting name="ApiLayer.MaxQueueResponseWaitTime" />
@@ -53,6 +44,8 @@
       <Setting name="Microsoft.Doppler.UnprocessedDataStore.ConnectionString" />
       <Setting name="AppNexus.IsApp" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" />
+      <Setting name="ACS.SecurityTokenAutoRenew" />
+      <Setting name="ACS.SecurityEnabled" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="Website SSL" storeLocation="LocalMachine" storeName="My" />
@@ -62,7 +55,8 @@
       <LocalStorage name="DiagnosticsStore" cleanOnRoleRecycle="false" sizeInMB="512" />
     </LocalResources>
     <Startup>
-      <Task commandLine="iisconfig.cmd" executionContext="elevated" taskType="simple"></Task>
+      <Task commandLine="iisconfig.cmd" executionContext="elevated" taskType="simple">
+      </Task>
       <!--
       <Task commandLine="doppleragent\Bootstrap.bat" executionContext="elevated" taskType="simple">
         <Environment>

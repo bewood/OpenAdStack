@@ -79,7 +79,10 @@
     <Folder Include="Profiles" />
   </ItemGroup>
   <ItemGroup>
-    <PublishProfile Include="$(AzureProfiles)$(Name)\*.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsApnxAppProd.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsProduction.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\traffiqdevProduction.azurePubxml" />
+    <PublishProfile Include="C:\Users\bwoodall.RC\Git\RareCrowds\OpenAdStack\Azure\Azure\..\..\..\..\LucyConfig\Azure\Profiles\Azure\rcoasdev.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
@@ -94,17 +97,14 @@
       <DetokeniseFiles Include="@(TargetServiceDefinition);@(TargetServiceConfiguration)" />
     </ItemGroup>
     <ItemGroup>
+      <EnvironmentTokenValues Include="DeployedWebsiteAddress">
+        <Replacement>$(DeployedWebsiteAddress)</Replacement>
+      </EnvironmentTokenValues>
+      <EnvironmentTokenValues Include="RegistrationEmailFromAddress">
+        <Replacement>$(RegistrationEmailFromAddress)</Replacement>
+      </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AlertRecipients">
         <Replacement>$(AlertRecipients)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="SessionTokenRequirementLifetime">
-        <Replacement>$(SessionTokenRequirementLifetime)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="TokenDurationMinutes">
-        <Replacement>$(TokenDurationMinutes)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="HostedServiceName">
-        <Replacement>$(HostedServiceName)</Replacement>
       </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AzureConnectionString">
         <Replacement>$(AzureConnectionString)</Replacement>
@@ -114,9 +114,6 @@
       </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AzureSqlConnectionString">
         <Replacement>$(AzureSqlConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="TrustedIssuerThumbprint">
-        <Replacement>$(TrustedIssuerThumbprint)</Replacement>
       </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="Configuration">
         <Replacement>$(Configuration)</Replacement>

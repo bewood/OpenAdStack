@@ -88,15 +88,6 @@
       <EnvironmentTokenValues Include="AlertRecipients">
         <Replacement>$(AlertRecipients)</Replacement>
       </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="SessionTokenRequirementLifetime">
-        <Replacement>$(SessionTokenRequirementLifetime)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="TokenDurationMinutes">
-        <Replacement>$(TokenDurationMinutes)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="HostedServiceName">
-        <Replacement>$(HostedServiceName)</Replacement>
-      </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AzureConnectionString">
         <Replacement>$(AzureConnectionString)</Replacement>
       </EnvironmentTokenValues>

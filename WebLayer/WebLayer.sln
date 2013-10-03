@@ -5,6 +5,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLayer", "WebLayer\WebLay
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLayerJSUnitTests", "WebLayerJSUnitTests\WebLayerJSUnitTests.csproj", "{A3377034-C5B3-43D0-8F20-07F77C7C0C39}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration Transformations", "Configuration Transformations", "{B887D578-7C3A-46CD-923C-52B4AC012AC8}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppProd.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppProd.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppSand.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppSand.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Cloud.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Cloud.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Integration.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Integration.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Local.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Local.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Production.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Production.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Cloud.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Cloud.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Local.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Local.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

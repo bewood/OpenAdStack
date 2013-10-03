@@ -15,8 +15,8 @@
 //   limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
+
 using System.Reflection;
-using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -26,9 +26,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("IdentityFederation")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Emerging Media Group")]
+[assembly: AssemblyCompany("Rare Crowds, Inc")]
 [assembly: AssemblyProduct("IdentityFederation")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCopyright("Copyright © Rare Crowds, Inc 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -38,7 +38,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("216a2b6c-17a9-4c68-824d-143c0cf8b38f")]
+[assembly: Guid("9816a068-fc5c-4e79-9e9b-d3f426e8e764")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -52,7 +52,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguageAttribute("")]
-
-[assembly: InternalsVisibleTo("SecurityUnitTests")]
-[assembly: InternalsVisibleTo("SecurityIntegrationTests")]
