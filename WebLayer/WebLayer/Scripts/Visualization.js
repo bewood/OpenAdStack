@@ -68,7 +68,7 @@ function ShowLineage(valuations, sortFunction, colorFunction, selectedIndex) {
                     nodeType = 'child';
                 }
                 else {
-                    if (currentNode.MeasureSet.sort().join(',') == selectedNode.MeasureSet.sort().join(',')) {
+                    if (currentNode.MeasureSet.sort().join(',') === selectedNode.MeasureSet.sort().join(',')) {
                         nodeType = 'self';
                     }
                 }
@@ -158,7 +158,7 @@ function visualizer(dataCanvas, highlightCanvas, clickCanvas, clickHandler, heig
             targ = e.target;
         else if (e.srcElement)
             targ = e.srcElement;
-        if (targ.nodeType == 3) // defeat Safari bug
+        if (targ.nodeType === 3) // defeat Safari bug
             targ = targ.parentNode;
 
         // jQuery normalizes the pageX and pageY

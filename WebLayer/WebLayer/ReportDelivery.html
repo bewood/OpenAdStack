@@ -29,7 +29,7 @@
     function thisPageRender() {
         workarea.progressOn();
 
-        if (cClient.Get('Id') != '2db94cfc39fe40ec893807fc807a77a9' && cClient.Get('Id') != '1aa0788c10f24ab38c1e6a168ea51793') {
+        if (cClient.Get('Id') !== '2db94cfc39fe40ec893807fc807a77a9' && cClient.Get('Id') !== '1aa0788c10f24ab38c1e6a168ea51793') {
             var allocIndex = cClient.Get('DAAllocationIndex');
             for (var i = 0; i < allocIndex.length; i++ ) {
                 deliveryDataList.push($RCAPI.URI.CampaignGetBlob.format($RCUI.advertiser, $RCUI.campaign, allocIndex[i].AllocationOutputsId));
@@ -57,7 +57,7 @@
     }
 
     function pauseOrContinueReplay() {
-        if (timerOn == true) {
+        if (timerOn === true) {
             window.clearTimeout(timer);
             timerOn = false;
             panes.ButtonsPane.setText("Playback Control (Paused)");                
@@ -65,7 +65,7 @@
         else {
             if (counter < deliveryDataList.length) {
                 counter++;
-                timer = window.setInterval(function() { showDeliveryEntry(totalGraph) }, 1000);
+                timer = window.setInterval(function() { showDeliveryEntry(totalGraph); }, 1000);
             }
             timerOn = true;
             panes.ButtonsPane.setText("Playback Control (Running)");                
@@ -85,7 +85,7 @@
             rewind10();
             return;
         }
-        if (timerOn == true) {
+        if (timerOn === true) {
             if (counter >= 1) {
                 counter--;
             }
@@ -93,7 +93,7 @@
                 counter -= 2;
             }
         }
-        if (counter != 0) {
+        if (counter !== 0) {
             counter--;
             window.clearInterval(timer);
             timerOn = false;
@@ -103,7 +103,7 @@
     }
     
     function rewind10() {
-        if (timerOn == true) {
+        if (timerOn === true) {
             if (counter >= 11) {
                 counter -= 11;
             }
@@ -183,7 +183,7 @@
         workarea.progressOn();
         deliveryDataAjax = new $RCAjax(deliveryDataList[counter], null, 'GET', null, null, false, null, null);
         NodeArray = deliveryDataAjax.responseData;
-        if (NodeArray.Blob != undefined) { NodeArray = NodeArray.Blob; }
+        if (NodeArray.Blob !== undefined) { NodeArray = NodeArray.Blob; }
         $RCUI.debugReport.record('Allocation Phase: ' + NodeArray.Phase +
             ' Allocation: ' + counter +
             ' Period Start: ' + NodeArray.PeriodStart +
@@ -194,7 +194,7 @@
             ' Remaining Budget: ' + Math.round(NodeArray.RemainingBudget) +
             ' Exported Nodes: ' + jsonPath(NodeArray, '$.PerNodeResults[?(@.ExportBudget > 0)]').length);
         visualizerObject.ShowValuationGraph(totalGraph.Valuations.NodeValuationSet, sortByTier, getHighlightColor);
-        if (timerOn != false) {
+        if (timerOn !== false) {
             counter++;   
         }
         if (counter >= deliveryDataList.length) {
@@ -221,11 +221,11 @@
         var perNodeResult = '';
         var testMeasureString = measureSet.sort().join(', ');
         var perNode = deliveryDataAjax.responseData.PerNodeResults;
-        if (perNode == undefined) {
+        if (perNode === undefined) {
             perNode = deliveryDataAjax.responseData.Blob.PerNodeResults;
         }
         var node = perNode[testMeasureString];
-        if (node != undefined) {
+        if (node !== undefined) {
             perNodeResult = '<br /><b>Impressions to date: </b>' + node.LifetimeImpressions;
             perNodeResult += '<br /><b>Aprrox. Spend to date: </b>' + CurrentSpend(node);
             perNodeResult += '<br /><b>Export count: </b>' + node.ExportCount;
@@ -243,13 +243,13 @@
 
     function generateMeasuresListHTML(measureList) { //TODO Dedupe with Overrides.html
         var messageText = '<table cellspacing=0 style="font:tahoma;font-size:12px">';
-        var nodeValuationJson = { 'MeasureSet': [], 'IdealValuation': 0, 'MaxValuation': 0 }
+        var nodeValuationJson = { 'MeasureSet': [], 'IdealValuation': 0, 'MaxValuation': 0 };
         for (var i = 0; i < measureList.length; i++) {
             messageText += '<tr><td style="border-bottom:1px solid;">' + getMeasureDisplayName(measureList[i]) + "<\/td><\/tr>";
             nodeValuationJson.MeasureSet.push(measureList[i]);
         }
         messageText += '<span id="hiddenNodeValuationJson" style="display:none">' + JSON.stringify(nodeValuationJson) + '</span>';
-        messageText += '<\/table>'
+        messageText += '<\/table>';
         return messageText;
     }
 
@@ -269,7 +269,8 @@
     function getHighlightColor(node) {
         var color = 'rgb(128,64,32)';
         var historyNode = node.MeasureSet.sort().join(', ');
-        if (NodeArray.PerNodeResults[historyNode] == undefined) {
+        if (NodeArray.PerNodeResults[historyNode] === undefined 
+            || NodeArray.PerNodeResults[historyNode].MaxBid < 0 ) {
             return 'rgb(128,0,128)';
         }
         if (NodeArray.PerNodeResults[historyNode].ExportBudget > 0) {
@@ -384,7 +385,7 @@
    
  <td style="horiz-align: center" class="style1">&nbsp; <form id="selectPage">&nbsp;&nbsp;
                                      <input id="pageNumber" name="pageNumber" type="text" size="4" maxlength="4" width="30px" onkeypress='validate(event)'  />
-                                     <input type="button" onclick="selectPage()" value="Select Page"/>
+                                     <input type="button" onclick="selectPage();" value="Select Page"/>
                                  </form></td>
             </tr>
             <tr></tr>

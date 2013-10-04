@@ -36,16 +36,17 @@
     function thisPageRender() {
         workarea.progressOn();
         calculatedValuationList = getCalculatedValuationList($RCUI.advertiser, $RCUI.campaign);
-        var FormJson = [
-                    { type: 'button', name: 'campaignGoLive', width: 125, value: 'Approve & Go Live' }
-                ];
+        var FormJson = [{ type: 'button', 
+                          name: 'campaignGoLive', 
+                          width: 125, 
+                          value: 'Approve & Go Live' }];
         var goLiveForm = new dhtmlXForm('formDiv');
-        goLiveForm.loadStruct(FormJson, 'json')
+        goLiveForm.loadStruct(FormJson, 'json');
         goLiveForm.setSkin('dhx_web');
         goLiveForm.attachEvent('onButtonClick', goLive);
 
         initGraph(workarea);
-        showGraph(workarea);
+        showGraph();
         workarea.progressOff();
     }
 
@@ -56,7 +57,7 @@
                 //validate campaign before going live
                 var errorMsg = 'Oops your campaign is not quite ready to go live.\n';
                 var isValid = true;
-                if (jsonPath(calculatedValuationList.Valuations, '$.NodeValuationSet[?(@.MeasureSet.length >= 4)]') == false) {
+                if (jsonPath(calculatedValuationList.Valuations, '$.NodeValuationSet[?(@.MeasureSet.length >= 4)]') === false) {
                     isValid = false;
                     errorMsg += "- A valid Rare Crowd campaign needs more ungrouped measures or more groups\n";
                 }
@@ -73,7 +74,7 @@
                     workarea.progressOff();
                     return false;
                 }
-                if (getQueryString()['campaign'] != undefined) {
+                if (getQueryString()['campaign'] !== undefined) {
                     cClient.Set("Status", "Approved");
                 }
                 else {
@@ -103,12 +104,12 @@
                 min = valuationList[valuation].MaxValuation;
             }
         }
-        return { MinECPM: min.toFixed(2), MaxECPM: max.toFixed(2) }
+        return { MinECPM: min.toFixed(2), MaxECPM: max.toFixed(2) };
     }
 
     function getMeasureListHTML(list, heading) {
-        if (list.length == 0 || list.length == undefined) { return ''; }
-        var measureDisplay = '<div class="measureSection"><div style="font:{0}">{1}</div><ul>'.format(headerFont, heading)
+        if (list.length === 0 || list.length === undefined) { return ''; }
+        var measureDisplay = '<div class="measureSection"><div style="font:{0}">{1}</div><ul>'.format(headerFont, heading);
         for (var i = 0; i < list.length; i++) {
             measureDisplay += '<li>' + getMeasureDisplayName(list[i].measureId).replace(/:/g,': ') + '</li>';
         }
@@ -116,7 +117,7 @@
         return measureDisplay;
     }
 
-    function showGraph(graphPane, thisNode) {
+    function showGraph() {
         var measureList = getMeasuresFromCampaign(cClient);
         var MeasureDisplay = '<div style="font:' + normalFont + '">';
         
@@ -137,9 +138,6 @@
         MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == false && @.group == "")]'), 'Optionally One or More of these');
 
         document.getElementById('measures').innerHTML = MeasureDisplay + '</div>';
-
-        var nodesRendered = 0;
-        var tierCount = getTierCount(measureList);
 
         var standardCrowds = jsonPath(calculatedValuationList.Valuations, '$.NodeValuationSet[?(@.MeasureSet.length < 4)]') ? jsonPath(calculatedValuationList.Valuations, '$.NodeValuationSet[?(@.MeasureSet.length < 4)]') : [];
         var standardCount = standardCrowds.length;
@@ -167,13 +165,6 @@
 
         var totalWeightedBudget = standardCount * standardBudgetWeight + rareCount * rareBudgetWeight + exceptionalBudgetWeight * exceptionalCount + hvaCount * hvaBudgetWeight;
 
-        var rareBudgetPer = rareBudgetWeight * rareCount / totalWeightedBudget;
-        var exceptionalBudgetPer = exceptionalBudgetWeight * exceptionalCount / totalWeightedBudget;
-        var hvaBudgetPer = hvaBudgetWeight * hvaCount / totalWeightedBudget;
-
-        var barHeight = 105;
-        var padding = 20;
-
         var displayStrings;
         displayStrings = getDisplayStrings(hvaBudgetWeight, hvaCount, getMinMaxEcpm(hvaCrowds), 5, 100, totalWeightedBudget);
         showLayerText("HVALabel", "Highest Value Inventory (8+ measures)", displayStrings.Budget, displayStrings.Count, displayStrings.CPM);
@@ -193,18 +184,18 @@
         var dateStartDate = Date.parseISO(cClient.Get("StartDate"));
         var dateEndDate = Date.parseISO(cClient.Get("EndDate"));
         summaryText +='<br />Flight Dates: ' + dateStartDate.toDateString() + ' to ' + dateEndDate.toDateString() + '</div>';
-        document.getElementById('SummaryLabel').innerHTML = summaryText
+        document.getElementById('SummaryLabel').innerHTML = summaryText;
     }
 
     function getDisplayStrings(budgetWeight, count, eCPM, minFactor, maxFactor, total) {
         var budgetPer = budgetWeight * count / total;
-        if (budgetPer == 0) {
+        if (budgetPer === 0) {
             return { Budget: '', Count: '', CPM: '' };
         }
         return { Budget: Math.round(budgetPer * minFactor).toString() + '% - ' + Math.max(Math.min(Math.round(budgetPer * maxFactor), budgetWeight),1).toString() + '% of Budget',
             Count: count.format('0,000') + ' Combinations',
             CPM: 'CPM range: $' + eCPM.MinECPM + ' - $' + eCPM.MaxECPM
-        }
+        };
     }
 
     function showLayerText(elementName, label, label2, label3, label4) {

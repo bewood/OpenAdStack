@@ -250,7 +250,7 @@ function getBaseWindowRef() {
         try {
             var parentLocation = '' + baseWindowCandidate.parent.location;
             baseWindowCandidate = baseWindowCandidate.parent;
-            if (baseWindowCandidate == window.top) {
+            if (baseWindowCandidate === window.top) {
                 keepGoing = false;
             }
         }
@@ -276,13 +276,13 @@ function breadCrumbs() {
 
 breadCrumbs.prototype.showBreadCrumbs = function () {
     if (window.self == rcBaseWindow) {//only if outer chrome
-        if (!window.ApnxApp && ($RCUI.querystring["agency"]) && ($RCUI.querystring["agency"] != "undefined")) {
+        if (!window.ApnxApp && ($RCUI.querystring["agency"]) && ($RCUI.querystring["agency"] !== "undefined")) {
             Toolbar.addButton("crumb:" + $RCUI.querystring["agency"], 10, this.crumbs[$RCUI.querystring["agency"]]["name"]);
         }
-        if (($RCUI.querystring["advertiser"]) && ($RCUI.querystring["advertiser"] != "undefined")) {
+        if (($RCUI.querystring["advertiser"]) && ($RCUI.querystring["advertiser"] !== "undefined")) {
             Toolbar.addButton("crumb:" + $RCUI.querystring["advertiser"], 50, this.crumbs[$RCUI.querystring["advertiser"]]["name"]);
         }
-        if (($RCUI.querystring["campaign"]) && ($RCUI.querystring["campaign"] != "undefined")) {
+        if (($RCUI.querystring["campaign"]) && ($RCUI.querystring["campaign"] !== "undefined")) {
             Toolbar.addButton("crumb:" + $RCUI.querystring["campaign"], 100, this.crumbs[$RCUI.querystring["campaign"]]["name"]);
         }
     }
@@ -309,12 +309,12 @@ function $RCAjax(resource, messageBody, verb, query, filter, isAsync, successHan
         that.responseData = serverData;
         $RCUI.debugReport.record(getDebugJsonDiv(responseJson));
         $RCUI.debugReport.record(endTime - startTime);
-        if (responseJson.status == 202 && that.retryCount < 3 && that.verb == 'GET') { //do a retry on "accepted"GETs
+        if (responseJson.status === 202 && that.retryCount < 3 && that.verb === 'GET') { //do a retry on "accepted"GETs
             that.retryCount++;
             executeCall();
         }
         else { //let outer handler take it from here
-            if (successHandler != null) {
+            if (successHandler !== null) {
                 successHandler();
             }
         }
@@ -325,13 +325,13 @@ function $RCAjax(resource, messageBody, verb, query, filter, isAsync, successHan
         that.responseData = responseJson;
         $RCUI.debugReport().innerHTML = getDebugJsonDiv(responseJson);
         $RCUI.debugReport().innerHTML += (endTime - startTime);
-        if (responseJson.status == 400 && that.retryCount < 3 && that.verb == 'GET') { //do a retry on "Bad Requests" GETs and auth error
+        if (responseJson.status === 400 && that.retryCount < 3 && that.verb === 'GET') { //do a retry on "Bad Requests" GETs and auth error
             that.retryCount++;
             executeCall();
         }
-        else if (window.ApnxApp && responseJson.status == 401) {
+        else if (window.ApnxApp && responseJson.status === 401) {
             var authError = responseJson.getResponseHeader("WWW-Authenticate");
-            if (window.ApnxApp && authError == "INVALID USER") {
+            if (window.ApnxApp && authError === "INVALID USER") {
                 setTimeout(function () { rcBaseWindow.location = '\/registration.html'; }, 1500);
             }
             else {
@@ -339,7 +339,7 @@ function $RCAjax(resource, messageBody, verb, query, filter, isAsync, successHan
             }
         }
         else { //let outer handler take it from here
-            if (errorHandler != null) {
+            if (errorHandler !== null) {
                 errorHandler(responseJson, errorType, errorText, that.resource);
             }
         }
@@ -428,7 +428,7 @@ function getCookie(name) {
 
 function lazyDictionary(resource, pageSize, initalFilter) {
     function get(key) {
-        if (internalDictionary[key] == undefined) {
+        if (internalDictionary[key] === undefined) {
             executeCall($RCAPI.URI.DataMeasuresDictionaryWithIds.format($RCUI.advertiser, $RCUI.campaign, key), false);
         }
         return internalDictionary[key];
@@ -476,7 +476,7 @@ function lazyDictionary(resource, pageSize, initalFilter) {
 
     function timerCall() {
         attemptCount++;
-        executeCall($RCAPI.URI.DataMeasuresDictionaryWithPaging.format($RCUI.advertiser, $RCUI.campaign, (attemptCount -1) * pageSize, pageSize), true)
+        executeCall($RCAPI.URI.DataMeasuresDictionaryWithPaging.format($RCUI.advertiser, $RCUI.campaign, (attemptCount -1) * pageSize, pageSize), true);
     }
 
     function load() {
@@ -500,7 +500,7 @@ function lazyDictionary(resource, pageSize, initalFilter) {
     this.initialize = load;
     this.loadByFilter = loadByFilterSync;
 
-    if (initalFilter != '') {
+    if (initalFilter !== '') {
         executeCall($RCAPI.URI.DataMeasuresDictionaryWithIds.format($RCUI.advertiser, $RCUI.campaign, initalFilter), false);
     }
     else {
@@ -510,7 +510,7 @@ function lazyDictionary(resource, pageSize, initalFilter) {
 
 // Reads a file and calls the handler when finished
 function readFileInput(inputElement, maxFileSize, onLoadEnd) {
-    if (inputElement.files.length == 0) {
+    if (inputElement.files.length === 0) {
         alert("Please select a file.");
         return;
     }
@@ -594,10 +594,10 @@ function decode64(input) {
 
         output = output + String.fromCharCode(chr1);
 
-        if (enc3 != 64) {
+        if (enc3 !== 64) {
             output = output + String.fromCharCode(chr2);
         }
-        if (enc4 != 64) {
+        if (enc4 !== 64) {
             output = output + String.fromCharCode(chr3);
         }
 
@@ -652,6 +652,4 @@ function JsonSort(a, b, propertyOrder, desc) {
     }
 }
 
-
 insertScriptTag('.\/scripts\/ApnxHandshake.js');
-
