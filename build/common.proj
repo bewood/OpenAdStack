@@ -143,7 +143,7 @@ must be replaced with a reference to this file:
   ==============================================================
   -->
   <UsingTask TaskName="TransformXml"
-             AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\Microsoft.Web.Publishing.Tasks.dll"/>
+             AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll"/>
   <Target Name="EnvironmentConfigTransform">
     <!-- Settings for regular .NET projects -->
     <PropertyGroup>
@@ -252,7 +252,7 @@ must be replaced with a reference to this file:
       <TestResultsDir>$(SolutionDir)..\TestResults</TestResultsDir>
       <TestResultsFile>$(TestResultsDir)\$(SolutionName).$(ProjectName).trx</TestResultsFile>
       <TeamCityBlockMessage>Running UnitTests in $(TargetPath)...</TeamCityBlockMessage>
-      <MSTestExe>$(VS100COMNTOOLS)..\IDE\mstest.exe</MSTestExe>
+      <MSTestExe>$(VS110COMNTOOLS)..\IDE\mstest.exe</MSTestExe>
       <MSTestCommand>"$(MSTestExe)" /testcontainer:"$(TargetPath)" /runconfig:"$(TestRunConfig)" /resultsfile:"$(TestResultsFile)"</MSTestCommand>
       <MSTestCommand Condition="'$(ExcludeTestCategory)'!=''">$(MSTestCommand) /category:"!$(ExcludeTestCategory)"</MSTestCommand>
     </PropertyGroup>

@@ -76,13 +76,13 @@
     <Folder Include="..\..\..\..\LucyConfig\Azure\" />
     <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\" />
     <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\" />
-    <Folder Include="Profiles" />
+    <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\Profiles" />
   </ItemGroup>
   <ItemGroup>
     <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsApnxAppProd.azurePubxml" />
     <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsProduction.azurePubxml" />
     <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\traffiqdevProduction.azurePubxml" />
-    <PublishProfile Include="C:\Users\bwoodall.RC\Git\RareCrowds\OpenAdStack\Azure\Azure\..\..\..\..\LucyConfig\Azure\Profiles\Azure\rcoasdev.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rcoasdev.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
