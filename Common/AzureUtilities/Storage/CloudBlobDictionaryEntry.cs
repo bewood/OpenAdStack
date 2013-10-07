@@ -18,14 +18,15 @@
 
 using System;
 using System.IO;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Utilities.Storage;
 
 namespace AzureUtilities.Storage
 {
     /// <summary>
-    /// CloudBlob wrapping IPersistentDictionaryEntry implementation
+    /// ICloudBlob wrapping IPersistentDictionaryEntry implementation
     /// </summary>
     internal class CloudBlobDictionaryEntry : IPersistentDictionaryEntry
     {
@@ -39,7 +40,7 @@ namespace AzureUtilities.Storage
         private const string CompressedMetadataValue = "COMPRESSED";
 
         /// <summary>Blob for the entry contents</summary>
-        private readonly CloudBlob blob;
+        private readonly ICloudBlob blob;
 
         /// <summary>Options for blob requests</summary>
         private readonly BlobRequestOptions options;
@@ -48,15 +49,13 @@ namespace AzureUtilities.Storage
         /// Initializes a new instance of the CloudBlobDictionaryEntry class.
         /// </summary>
         /// <param name="blob">The blob to wrap</param>
-        public CloudBlobDictionaryEntry(CloudBlob blob)
+        public CloudBlobDictionaryEntry(ICloudBlob blob)
         {
             this.blob = blob;
             this.options = new BlobRequestOptions
             {
-                 Timeout = DefaultBlobRequestTimeout,
-                 RetryPolicy = RetryPolicies.RetryExponential(
-                    RetryPolicies.DefaultClientRetryCount,
-                    RetryPolicies.DefaultClientBackoff)
+                 ServerTimeout = DefaultBlobRequestTimeout,
+                 RetryPolicy = new ExponentialRetry(),
             };
         }
 
@@ -97,9 +96,14 @@ namespace AzureUtilities.Storage
         /// <returns>The content</returns>
         public byte[] ReadAllBytes()
         {
+            if (!this.blob.Exists())
+            {
+                return new byte[0];
+            }
+
             using (var stream = new MemoryStream())
             {
-                this.blob.DownloadToStream(stream, this.options);
+                this.blob.DownloadToStream(stream, null, this.options);
                 stream.Seek(0, SeekOrigin.Begin);
                 var bytes = stream.ToArray();
                 return this.Compressed ? bytes.Inflate() : bytes;
@@ -113,8 +117,9 @@ namespace AzureUtilities.Storage
         {
             try
             {
+                var stream = new MemoryStream(compress ? content.Deflate() : content);
                 this.blob.Properties.ContentMD5 = null;
-                this.blob.UploadByteArray(compress ? content.Deflate() : content, this.options);
+                this.blob.UploadFromStream(stream, null, this.options);
                 this.Compressed = compress;
             }
             catch (Exception e)

@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rare Crowds Inc")]
 [assembly: AssemblyProduct("ApiLayer")]
-[assembly: AssemblyCopyright("Copyright © Rare Crowds Inc 2012")]
+[assembly: AssemblyCopyright("Copyright © Rare Crowds Inc 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

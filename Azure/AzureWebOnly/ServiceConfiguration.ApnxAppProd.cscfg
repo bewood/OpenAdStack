@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceConfiguration serviceName="Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*" schemaVersion="2012-05.1.7">
+<ServiceConfiguration serviceName="Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="3" osVersion="*" schemaVersion="2013-03.2.0">
   <Role name="WebRole">
     <Instances count="1" />
     <ConfigurationSettings>
@@ -14,31 +14,10 @@
       <Setting name="Logging.BlobContainer" value="weblogs" />
       <Setting name="Logging.ScheduledTransferPeriodMinutes" value="1" />
       <Setting name="Logging.ConnectionString" value="$(AzureConnectionString)" />
-      <Setting name="ACS.SymmetricSignatureKey" value="" />
-      <Setting name="ACS.AcsHostUrl" value="" />
-      <Setting name="ACS.RelyingPartySecurityKey" value="" />
-      <Setting name="ACS.ServiceNamespace" value="" />
-      <Setting name="ACS.FederationMetadataLocation" value="" />
-      <Setting name="ACS.AudienceUri" value="" />
-      <Setting name="ACS.RelyingPartyRealm" value="" />
-      <Setting name="ACS.TokenDurationMinutes" value="" />
-      <Setting name="ACS.Issuer" value="" />
-      <Setting name="WL.LogOffUrl" value="https://$(HostedServiceName).cloudapp.net/LogOff.aspx" />
+      <Setting name="ACS.SecurityTokenDuration" value="03:00:00" />
       <Setting name="WL.WLIDLogOffUrl" value="https://login.live.com/logout.srf" />
       <Setting name="ApiLayer.QueueResponsePollTime" value="70" />
       <Setting name="ApiLayer.MaxQueueResponseWaitTime" value="7000" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.ActivationToken" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.Refresh" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.WaitForConnectivity" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.Upgrade" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.EnableDomainJoin" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.DomainFQDN" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.DomainControllerFQDN" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.DomainAccountName" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.DomainPassword" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.DomainOU" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.Administrators" value="" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.Connect.DomainSiteName" value="" />
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="lucyRdc" />
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEDvmwNOOEQqLSYE7wIhSkDYwDQYJKoZIhvcNAQEBBQAEggEASamZe3bdd4ZWaZ5+TixnPNrEQtyj12D22NIoF8osp4fJy/vFBlYFiy1L3ugHdPcCeFwbutmE6byBEPum4s1N63hyAd4GFpK+sfC6B4TZRDExinG23Z+WzPoGV9il/rGgX9SniatS1yediyIM7E4IMIpd7XOiX4rvKZ5yyb1du8yXxmTQ8TfBn7VYdzjjgRrOFCXXwfE/UqyaYeuxPRKikDXnpY/u56uHzvOz2LrjyXd79xyGe8s0xQic3nIc6hAcOLmkaMN0SZ+cnJQKmLw66HnoPkBtFdK8813Xqyg+k5ceP98Nq1uK8n+eGTwAz5jfP/jITHCr3mVCCEsoWbhLezA7BgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECLRcYhcJ35DZgBhkT/4RiV86GIjVKhOvM4f2opOP7MW4kcw=" />
@@ -55,6 +34,8 @@
       <Setting name="AppNexus.IsApp" value="true" />
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" value="15000" />
+      <Setting name="ACS.SecurityTokenAutoRenew" value="00:05:00" />
+      <Setting name="ACS.SecurityEnabled" value="false" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="Website SSL" thumbprint="A3E329FD6D7C96C7F7F2DB246E16CE06AC663679" thumbprintAlgorithm="sha1" />

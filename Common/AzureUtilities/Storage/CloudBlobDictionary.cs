@@ -20,9 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Utilities.Storage;
 
 namespace AzureUtilities.Storage
@@ -61,7 +62,7 @@ namespace AzureUtilities.Storage
             var storageAccount = CloudStorageAccount.Parse(connectionString);
             var blobClient = storageAccount.CreateCloudBlobClient();
             this.Container = blobClient.GetContainerReference(containerAddress);
-            this.Container.CreateIfNotExist();
+            this.Container.CreateIfNotExists();
         }
 
         /// <summary>Gets the name of the blob container used to store entries</summary>
@@ -79,7 +80,7 @@ namespace AzureUtilities.Storage
         /// <summary>Gets the names of the value entries</summary>
         public override ICollection<string> Keys
         {
-            get { return new List<string>(this.Container.ListBlobs().OfType<CloudBlob>().Select(b => b.Name)); }
+            get { return new List<string>(this.Container.ListBlobs().OfType<ICloudBlob>().Select(b => b.Name)); }
         }
 
         /// <summary>Determines whether the dictionary contains an entry with the sepecified key</summary>
@@ -88,7 +89,7 @@ namespace AzureUtilities.Storage
         /// <returns>True if an entry with the key is found; otherwise, false.</returns>
         public override bool ContainsKey(string key)
         {
-            var blob = this.Container.GetBlobReference(key);
+            var blob = this.Container.GetBlockBlobReference(key);
             return blob.Exists();
         }
 
@@ -98,7 +99,7 @@ namespace AzureUtilities.Storage
         {
             return this.Container
                 .ListBlobs()
-                .OfType<CloudBlob>()
+                .OfType<ICloudBlob>()
                 .Select(b => new CloudBlobDictionaryEntry(b))
                 .Select(e =>
                     new KeyValuePair<string, TValue>(
@@ -123,10 +124,17 @@ namespace AzureUtilities.Storage
         /// </exception>
         protected override IPersistentDictionaryEntry GetEntry(string key, bool mustExist, bool checkETag, bool updateETag)
         {
-            var blob = this.Container.GetBlobReference(key);
+            var blob = this.Container.GetBlockBlobReference(key);
             try
             {
-                blob.FetchAttributes();
+                if (blob.Exists())
+                {
+                    blob.FetchAttributes();
+                }
+                else if (mustExist)
+                {
+                    throw new KeyNotFoundException(key);
+                }
                 
                 if (string.IsNullOrEmpty(blob.Properties.ETag))
                 {
@@ -145,19 +153,20 @@ namespace AzureUtilities.Storage
                     this.ETags[key] = blob.Properties.ETag;
                 }
             }
-            catch (StorageClientException sce)
+            catch (StorageException se)
             {
-                if (sce.ErrorCode != StorageErrorCode.ResourceNotFound)
+                var statusCode = se.RequestInformation.HttpStatusCode;
+                if (statusCode == (int)HttpStatusCode.NotFound)
                 {
                     throw new System.IO.IOException(
                         "Unable to get element '{0}' of '{1}'"
                         .FormatInvariant(key, this.StoreName),
-                        sce);
+                        se);
                 }
-
+            
                 if (mustExist)
                 {
-                    throw new KeyNotFoundException(key, sce);
+                    throw new KeyNotFoundException(key, se);
                 }
             }
 
@@ -172,7 +181,7 @@ namespace AzureUtilities.Storage
         /// </returns>
         protected override bool RemoveEntry(string key)
         {
-            var blob = this.Container.GetBlobReference(key);
+            var blob = this.Container.GetBlockBlobReference(key);
             return blob.DeleteIfExists();
         }
 

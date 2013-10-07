@@ -21,8 +21,9 @@ using System.Globalization;
 using System.IO;
 using DataAccessLayer;
 using Diagnostics;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 
 namespace ConcreteDataStore
 {
@@ -60,10 +61,7 @@ namespace ConcreteDataStore
         {
             var storageAccount = CloudStorageAccount.Parse(connectionString);
             var blobClient = storageAccount.CreateCloudBlobClient();
-
-            // Specify a retry backoff of 10 seconds max instead of using default values.
-            blobClient.RetryPolicy = RetryPolicies.RetryExponential(
-                3, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 10), new TimeSpan(0, 0, 3));
+            blobClient.RetryPolicy = new ExponentialRetry(new TimeSpan(0, 0, 3), 3);
             this.BlobClient = blobClient;
         }
 
@@ -91,7 +89,7 @@ namespace ConcreteDataStore
             {
                 // Get the blob data
                 var container = this.BlobClient.GetContainerReference(blobKey.ContainerName);
-                var blob = container.GetBlobReference(blobKey.BlobId);
+                var blob = container.GetBlobReferenceFromServer(blobKey.BlobId);
                 ReadAllBytes(blob, ref blobEntity);
             }
             catch (Exception e)
@@ -120,8 +118,8 @@ namespace ConcreteDataStore
             try
             {
                 var container = this.BlobClient.GetContainerReference(blobKey.ContainerName);
-                container.CreateIfNotExist();
-                var blob = container.GetBlobReference(blobKey.BlobId);
+                container.CreateIfNotExists();
+                var blob = container.GetBlockBlobReference(blobKey.BlobId);
                 WriteAllBytes(blob, blobEntity, company);
             }
             catch (Exception e)
@@ -151,14 +149,14 @@ namespace ConcreteDataStore
         /// <param name="blob">The blob object.</param>
         /// <param name="blobEntity">The blob entity.</param>
         /// <param name="company">The company (for storage auditing).</param>
-        private static void WriteAllBytes(CloudBlob blob, BlobPropertyEntity blobEntity, string company)
+        private static void WriteAllBytes(ICloudBlob blob, BlobPropertyEntity blobEntity, string company)
         {
             var content = (byte[])blobEntity.BlobBytes.Value;
             var propertyType = (string)blobEntity.BlobPropertyType;
             var externalEntityId = blobEntity.ExternalEntityId.Value.ToString();
 
             // Always compress
-            blob.UploadByteArray(content.Deflate());
+            blob.UploadFromStream(new MemoryStream(content.Deflate()));
             blob.Metadata[CompressedMetadataValue] = true.ToString(CultureInfo.InvariantCulture);
             blob.Metadata[CompanyMetadataValue] = !string.IsNullOrWhiteSpace(company) ? company : "UNKNOWN";
             blob.Metadata[PropertyTypeMetadataValue] = !string.IsNullOrWhiteSpace(propertyType) ? propertyType : "UNKNOWN";
@@ -169,7 +167,7 @@ namespace ConcreteDataStore
         /// <summary>Reads the content from the entry</summary>
         /// <param name="blob">The blob object.</param>
         /// <param name="blobEntity">The blob entity to populate.</param>
-        private static void ReadAllBytes(CloudBlob blob, ref BlobPropertyEntity blobEntity)
+        private static void ReadAllBytes(ICloudBlob blob, ref BlobPropertyEntity blobEntity)
         {
             using (var stream = new MemoryStream())
             {

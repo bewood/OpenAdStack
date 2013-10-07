@@ -22,8 +22,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using ConfigManager;
 using Diagnostics;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Utilities.Storage;
 using WorkItems;
 

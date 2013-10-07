@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultMailTemplates", "Def
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSsl", "OpenSsl\OpenSsl.csproj", "{05247FCF-5602-47A0-B146-A165AB50A117}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityFederation", "IdentityFederation\IdentityFederation.csproj", "{D045D046-D915-4B55-B20F-0B6B11A426EB}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -75,6 +77,10 @@ Global
 		{05247FCF-5602-47A0-B146-A165AB50A117}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05247FCF-5602-47A0-B146-A165AB50A117}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05247FCF-5602-47A0-B146-A165AB50A117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D045D046-D915-4B55-B20F-0B6B11A426EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D045D046-D915-4B55-B20F-0B6B11A426EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D045D046-D915-4B55-B20F-0B6B11A426EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D045D046-D915-4B55-B20F-0B6B11A426EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

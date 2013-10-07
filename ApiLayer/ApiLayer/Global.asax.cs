@@ -26,10 +26,7 @@ using System.Web;
 using System.Web.Routing;
 using ConfigManager;
 using Diagnostics;
-using Microsoft.IdentityModel.Web;
-using Microsoft.IdentityModel.Web.Configuration;
 using Microsoft.Practices.Unity;
-using OAuthSecurity;
 using RuntimeIoc.WebRole;
 using Utilities.IdentityFederation;
 using Utilities.Storage;
@@ -108,7 +105,6 @@ namespace ApiLayer
             LogManager.Initialize(RuntimeIocContainer.Instance.ResolveAll<ILogger>());
 
             RegisterRoutes();
-            FederatedAuthentication.ServiceConfigurationCreated += this.OnServiceConfigurationCreated;
 
             LogManager.Log(LogLevels.Information, "ApiLayer Application_Start");
         }
@@ -187,22 +183,12 @@ namespace ApiLayer
             }
         }
 
-        /// <summary>
-        /// Method that is called when the service configuration is created
-        /// </summary>
-        /// <param name="sender">sender of this event</param>
+        /// <summary>Event that occurs during application error</summary>
+        /// <param name="sender">sender of the event</param>
         /// <param name="e">event arguments</param>
-        private void OnServiceConfigurationCreated(object sender, ServiceConfigurationCreatedEventArgs e)
+        protected void Application_Error(object sender, EventArgs e)
         {
-            List<CookieTransform> sessionTransforms = new List<CookieTransform>(new CookieTransform[]
-            {
-                new DeflateCookieTransform(),
-                new RsaEncryptionCookieTransform(e.ServiceConfiguration.ServiceCertificate),
-                new RsaSignatureCookieTransform(e.ServiceConfiguration.ServiceCertificate)
-            });
-
-            SimpleWebTokenHandler sessionHandler = new SimpleWebTokenHandler(sessionTransforms.AsReadOnly());
-            e.ServiceConfiguration.SecurityTokenHandlers.AddOrReplace(sessionHandler);
+            LogManager.Log(LogLevels.Error, "Error: {0}".FormatInvariant(Server.GetLastError()));
         }
     }
 }

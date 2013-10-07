@@ -13,7 +13,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>1.7</ProductVersion>
+    <ProductVersion>2.1</ProductVersion>
     <ProjectGuid>{51e2862e-3f8b-4499-9c99-08740d181d1b}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -79,11 +79,14 @@
     <Folder Include="Profiles" />
   </ItemGroup>
   <ItemGroup>
-    <PublishProfile Include="$(AzureProfiles)$(Name)\*.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsApnxAppProd.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsProduction.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\traffiqdevProduction.azurePubxml" />
+    <PublishProfile Include="C:\Users\bwoodall.RC\Git\RareCrowds\OpenAdStack\Azure\Azure\..\..\..\..\LucyConfig\Azure\Profiles\Azure\rcoasdev.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
-    <CloudExtensionsDir Condition=" '$(CloudExtensionsDir)' == '' ">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Windows Azure Tools\1.7\</CloudExtensionsDir>
+    <CloudExtensionsDir Condition=" '$(CloudExtensionsDir)' == '' ">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Windows Azure Tools\2.1\</CloudExtensionsDir>
   </PropertyGroup>
   <Import Project="$(CloudExtensionsDir)Microsoft.WindowsAzure.targets" />
   <!--
@@ -94,17 +97,14 @@
       <DetokeniseFiles Include="@(TargetServiceDefinition);@(TargetServiceConfiguration)" />
     </ItemGroup>
     <ItemGroup>
+      <EnvironmentTokenValues Include="DeployedWebsiteAddress">
+        <Replacement>$(DeployedWebsiteAddress)</Replacement>
+      </EnvironmentTokenValues>
+      <EnvironmentTokenValues Include="RegistrationEmailFromAddress">
+        <Replacement>$(RegistrationEmailFromAddress)</Replacement>
+      </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AlertRecipients">
         <Replacement>$(AlertRecipients)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="SessionTokenRequirementLifetime">
-        <Replacement>$(SessionTokenRequirementLifetime)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="TokenDurationMinutes">
-        <Replacement>$(TokenDurationMinutes)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="HostedServiceName">
-        <Replacement>$(HostedServiceName)</Replacement>
       </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AzureConnectionString">
         <Replacement>$(AzureConnectionString)</Replacement>
@@ -114,9 +114,6 @@
       </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AzureSqlConnectionString">
         <Replacement>$(AzureSqlConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="TrustedIssuerThumbprint">
-        <Replacement>$(TrustedIssuerThumbprint)</Replacement>
       </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="Configuration">
         <Replacement>$(Configuration)</Replacement>

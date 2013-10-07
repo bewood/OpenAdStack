@@ -21,8 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using ConfigManager;
 using Diagnostics;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.ServiceRuntime;
+using Microsoft.WindowsAzure.Storage;
 using Utilities.Runtime;
 using WorkItems;
 

@@ -30,7 +30,6 @@ Billing\Billing.sln
 RuntimeIoc\RuntimeIoc.sln
 
 # UX
-OAuthSecurity\OAuthSecurity.sln
 ApiLayer\ApiLayer.sln
 WebLayer\WebLayer.sln
 

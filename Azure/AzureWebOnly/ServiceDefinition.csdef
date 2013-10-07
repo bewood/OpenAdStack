@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceDefinition name="Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2012-05.1.7">
+<ServiceDefinition name="Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-03.2.0">
   <WebRole name="WebRole" vmsize="Small">
     <Sites>
-      <Site name="WebLayer" physicalDirectory="..\..\Public\bin\$(Configuration)\_PublishedWebsites\WebLayer">
-        <VirtualApplication name="api" physicalDirectory="..\..\Public\bin\$(Configuration)\_PublishedWebsites\ApiLayer" />
+      <Site name="WebLayer" physicalDirectory="..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites\WebLayer">
+        <VirtualApplication name="api" physicalDirectory="..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites\ApiLayer" />
         <Bindings>
           <Binding name="HttpIn" endpointName="HttpIn" />
           <Binding name="HttpsIn" endpointName="HttpsIn" />
@@ -15,7 +15,6 @@
       <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="Website SSL" />
     </Endpoints>
     <Imports>
-      <Import moduleName="Connect" />
       <Import moduleName="RemoteAccess" />
       <Import moduleName="Diagnostics" />
       <Import moduleName="RemoteForwarder" />
@@ -31,16 +30,7 @@
       <Setting name="Logging.BlobContainer" />
       <Setting name="Logging.ScheduledTransferPeriodMinutes" />
       <Setting name="Logging.ConnectionString" />
-      <Setting name="ACS.SymmetricSignatureKey" />
-      <Setting name="ACS.AcsHostUrl" />
-      <Setting name="ACS.RelyingPartySecurityKey" />
-      <Setting name="ACS.ServiceNamespace" />
-      <Setting name="ACS.FederationMetadataLocation" />
-      <Setting name="ACS.AudienceUri" />
-      <Setting name="ACS.RelyingPartyRealm" />
-      <Setting name="ACS.TokenDurationMinutes" />
-      <Setting name="ACS.Issuer" />
-      <Setting name="WL.LogOffUrl" />
+      <Setting name="ACS.SecurityTokenDuration" />
       <Setting name="WL.WLIDLogOffUrl" />
       <Setting name="ApiLayer.QueueResponsePollTime" />
       <Setting name="ApiLayer.MaxQueueResponseWaitTime" />
@@ -54,6 +44,8 @@
       <Setting name="Microsoft.Doppler.UnprocessedDataStore.ConnectionString" />
       <Setting name="AppNexus.IsApp" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" />
+      <Setting name="ACS.SecurityTokenAutoRenew" />
+      <Setting name="ACS.SecurityEnabled" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="Website SSL" storeLocation="LocalMachine" storeName="My" />

@@ -19,8 +19,6 @@
 using System.Configuration;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
 using TestUtilities;
 
 namespace AzureQueueIntegrationTests

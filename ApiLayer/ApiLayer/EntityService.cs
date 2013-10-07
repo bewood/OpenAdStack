@@ -32,6 +32,7 @@ using System.Web.Script.Serialization;
 using Activities;
 using ConfigManager;
 using DataAccessLayer;
+using Diagnostics;
 ////using Doppler.TraceListeners;
 using Microsoft.Practices.Unity;
 using Queuing;
@@ -231,7 +232,7 @@ namespace ApiLayer
         {
             // verify caller has permission to write to the parent
             // CAVEAT: need to allow user to post verify message before the user is created, so don't check on resourceNamespace == "user"
-            if (resourceNamespace.ToLower(CultureInfo.InvariantCulture) != "user" && !this.CheckAuthorization("https://localhost/api/entity/{0}/{1}".FormatInvariant(resourceNamespace, id), "POST"))
+            if (resourceNamespace.ToLowerInvariant() != "user" && !this.CheckAuthorization("https://localhost/api/entity/{0}/{1}".FormatInvariant(resourceNamespace, id), "POST"))
             {
                 WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
                 return;
@@ -669,8 +670,9 @@ namespace ApiLayer
                 // Get the user
                 user = Repository.GetUser(new RequestContext(), userId);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
+                LogManager.Log(LogLevels.Trace, "CheckAuthorization('{0}', {1}) Invalid UserId: '{2}'\n{3}", url, verb, userId, e);
                 return false;
             }
 

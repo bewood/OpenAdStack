@@ -19,8 +19,8 @@
 using System;
 using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Queuing;
 using Queuing.Azure;
 using Utilities.Storage;
@@ -95,7 +95,7 @@ namespace AzureQueueIntegrationTests
             {
                 this.testQueue.Delete();
             }
-            catch (StorageClientException)
+            catch (StorageException)
             {
                 // Thrown if the queue didn't exist
             }

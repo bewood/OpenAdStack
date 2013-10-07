@@ -24,7 +24,8 @@ using System.Runtime.Serialization;
 using AzureUtilities.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using TestUtilities;
 using Utilities.Storage;
 
@@ -70,29 +71,33 @@ namespace CommonIntegrationTests
         {
             this.containerAddress = Guid.NewGuid().ToString("N");
             this.container = blobClient.GetContainerReference(this.containerAddress);
-            this.container.CreateIfNotExist();
-            this.container.Delete();
+            if (this.container.Exists())
+            {
+                this.container.Delete();
+            }
         }
 
         /// <summary>Deletes the container used by the test</summary>
         [TestCleanup]
         public void TestCleanup()
         {
-            this.container.CreateIfNotExist();
-            this.container.Delete();
+            if (this.container.Exists())
+            {
+                this.container.Delete();
+            }
         }
 
         /// <summary>Asserts the underlying store for the dictionary was created</summary>
         protected override void AssertPersistentStoreCreated()
         {
-            Assert.IsFalse(this.container.CreateIfNotExist(), "Container was not created");
+            Assert.IsFalse(this.container.CreateIfNotExists(), "Container was not created");
         }
 
         /// <summary>Asserts the value with the specified <paramref name="key"/> was persisted</summary>
         /// <param name="key">Key for the value</param>
         protected override void AssertValuePersisted(string key)
         {
-            var blob = this.container.GetBlobReference(key);
+            var blob = this.container.GetBlobReferenceFromServer(key);
             Assert.IsNotNull(blob);
             Assert.IsTrue(blob.DeleteIfExists(), "Blob did not exist");
         }

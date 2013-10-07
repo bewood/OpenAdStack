@@ -19,16 +19,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Web;
 using ConfigManager;
 using Diagnostics;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.IdentityModel.Web;
-using Microsoft.IdentityModel.Web.Configuration;
-using Microsoft.Practices.Unity;
-using OAuthSecurity;
 using RuntimeIoc.WebRole;
 
 namespace WebLayer
@@ -38,100 +34,95 @@ namespace WebLayer
     /// </summary>
     public class Global : HttpApplication
     {
-        /// <summary>
-        /// Event is called when the application starts
-        /// </summary>
+        /// <summary>Backing field for SecurityEnabled</summary>
+        private static bool? securityEnabled;
+        
+        /// <summary>Backing field for SecurityTokenDuration</summary>
+        private static TimeSpan? securityTokenDuration;
+
+        /// <summary>Backing field for SecurityTokenAutoRenewal</summary>
+        private static TimeSpan? securityTokenAutoRenewal;
+
+        /// <summary>Gets a value indicating whether security is enabled</summary>
+        private static bool SecurityEnabled
+        {
+            get
+            {
+                return (securityEnabled = securityEnabled ??
+                    !Config.GetBoolValue("ACS.SecurityEnabled")).Value;
+            }
+        }
+
+        /// <summary>Gets how long security tokens should be renewed for</summary>
+        private static TimeSpan SecurityTokenDuration
+        {
+            get
+            {
+                return (securityTokenDuration = securityTokenDuration ??
+                    Config.GetTimeSpanValue("ACS.SecurityTokenDuration")).Value;
+            }
+        }
+
+        /// <summary>Gets how long before a token is to be automatically renewed</summary>
+        /// <remarks>For sliding session expiration</remarks>
+        private static TimeSpan SecurityTokenAutoRenewal
+        {
+            get
+            {
+                return (securityTokenAutoRenewal = securityTokenAutoRenewal ??
+                    Config.GetTimeSpanValue("ACS.SecurityTokenAutoRenewal")).Value;
+            }
+        }
+
+        /// <summary>Event is called when the application starts</summary>
         /// <param name="sender">caller of the event</param>
         /// <param name="e">parameter sent to the event by the callee</param>
         protected void Application_Start(object sender, EventArgs e)
         {
-            LogManager.Initialize(RuntimeIocContainer.Instance.ResolveAll<ILogger>());
+            LogManager.Initialize(RuntimeIocContainer.Instance.ResolveAll(typeof(ILogger)).Cast<ILogger>());
             LogManager.Log(LogLevels.Information, "WebLayer Application_Start");
-            if (!Config.GetBoolValue("AppNexus.IsApp"))
-            {
-                FederatedAuthentication.ServiceConfigurationCreated += this.OnServiceConfigurationCreated;
-            }
         }
 
-        /// <summary>
-        /// Event that manages sliding session
-        /// </summary>
+        /// <summary>Event that manages sliding session</summary>
         /// <param name="sender">sender of this event</param>
         /// <param name="e">event arguments</param>
         protected void SessionAuthenticationModule_SessionSecurityTokenReceived(object sender, SessionSecurityTokenReceivedEventArgs e)
         {
-            if (Config.GetBoolValue("AppNexus.IsApp"))
+            if (!SecurityEnabled)
             {
                 return;
             }
 
-            DateTime now = DateTime.UtcNow;
-            var sessionToken = e.SessionToken;
-            SymmetricSecurityKey symmetricSecurityKey = null;
-
-            if (sessionToken.SecurityKeys != null)
+            var symmetricKey = e.SessionToken.SecurityKeys.OfType<SymmetricSecurityKey>().FirstOrDefault();
+            if (DateTime.UtcNow < e.SessionToken.ValidFrom + SecurityTokenAutoRenewal || symmetricKey == null)
             {
-                symmetricSecurityKey = sessionToken.SecurityKeys.OfType<SymmetricSecurityKey>().FirstOrDefault();
-                if (symmetricSecurityKey != null)
-                {
-                    // If now is during second half of session
-                    if ((now < sessionToken.ValidTo) && (now > sessionToken.ValidFrom.AddMinutes((sessionToken.ValidTo.Minute - sessionToken.ValidFrom.Minute) / 2)))
-                    {
-                        int tokenDurationMinutes;
-                        if (int.TryParse(Config.GetValue("ACS.TokenDurationMinutes"), System.Globalization.NumberStyles.Integer, CultureInfo.InvariantCulture, out tokenDurationMinutes))
-                        {
-                            // create a token of duration from config
-                            e.SessionToken = new SessionSecurityToken(
-                                        sessionToken.ClaimsPrincipal,
-                                        sessionToken.ContextId,
-                                        sessionToken.Context,
-                                        sessionToken.EndpointId,
-                                        new TimeSpan(0, tokenDurationMinutes, 0),
-                                        symmetricSecurityKey);
-
-                            e.ReissueCookie = true;
-                        }
-                    }
-                }
+                return;
             }
-        }
 
-        /// <summary>
-        /// Event that occurs during application error
-        /// </summary>
+            e.SessionToken = new SessionSecurityToken(
+                        e.SessionToken.ClaimsPrincipal,
+                        e.SessionToken.ContextId,
+                        e.SessionToken.Context,
+                        e.SessionToken.EndpointId,
+                        SecurityTokenDuration,
+                        symmetricKey);
+            e.ReissueCookie = true;
+        }
+        
+        /// <summary>Event that occurs during application error</summary>
         /// <param name="sender">sender of the event</param>
         /// <param name="e">event arguments</param>
         protected void Application_Error(object sender, EventArgs e)
         {
-            LogManager.Log(LogLevels.Error, "Error: {0}".FormatInvariant(Server.GetLastError()));
+            var lastError = Server.GetLastError();
+            LogManager.Log(LogLevels.Error, "Error: {0}".FormatInvariant(lastError));
 
-            if (Server.GetLastError().GetType().Equals(typeof(System.Security.SecurityException)) ||
-                Server.GetLastError().GetType().Equals(typeof(System.Security.Cryptography.CryptographicException)) ||
-                Server.GetLastError().GetType().Equals(typeof(System.InvalidOperationException)))
+            if (lastError is System.Security.SecurityException ||
+                lastError is System.Security.Cryptography.CryptographicException ||
+                lastError is System.InvalidOperationException)
             {
-                // redirect to logoff page
-                var redirect = Config.GetValue("WL.LogOffUrl");
-                Response.Redirect(redirect, true);
+                Response.Redirect("LogOff.aspx", true);
             }
-        }
-
-        /// <summary>
-        /// Event that occurs when the service configuration is created
-        /// Refer to http://msdn.microsoft.com/en-us/library/windowsazure/gg185962.aspx
-        /// </summary>
-        /// <param name="sender">sender of this event</param>
-        /// <param name="e">event arguments</param>
-        private void OnServiceConfigurationCreated(object sender, ServiceConfigurationCreatedEventArgs e)
-        {
-            List<CookieTransform> sessionTransforms = new List<CookieTransform>(new CookieTransform[]
-            {
-                new DeflateCookieTransform(),
-                new RsaEncryptionCookieTransform(e.ServiceConfiguration.ServiceCertificate),
-                new RsaSignatureCookieTransform(e.ServiceConfiguration.ServiceCertificate)
-            });
-
-            SimpleWebTokenHandler sessionHandler = new SimpleWebTokenHandler(sessionTransforms.AsReadOnly());
-            e.ServiceConfiguration.SecurityTokenHandlers.AddOrReplace(sessionHandler);
         }
     }
 }

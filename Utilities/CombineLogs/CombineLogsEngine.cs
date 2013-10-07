@@ -21,8 +21,11 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using AzureUtilities.Storage;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Utilities.CombineLogs;
 
 namespace Utilities.CombineLogs
@@ -43,20 +46,17 @@ namespace Utilities.CombineLogs
             var storageAccount = CloudStorageAccount.Parse(arguments.ConnectionString);
             var blobClient = storageAccount.CreateCloudBlobClient();
 
-            // Specify a retry backoff of 10 seconds max instead of using default values. 
-            blobClient.RetryPolicy = RetryPolicies.RetryExponential(
-                3, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 10), new TimeSpan(0, 0, 3));
+            blobClient.RetryPolicy = new ExponentialRetry(new TimeSpan(0, 0, 3), 3);
 
             var startDate = arguments.StartDate.ToString("yyyyMMddHH", CultureInfo.InvariantCulture);
             var endDate = arguments.EndDate.ToString("yyyyMMddHH", CultureInfo.InvariantCulture);
 
             // Get an Enumerable of the relevant blobs as text
             // TODO: do this using streams instead
-            var options = new BlobRequestOptions { UseFlatBlobListing = true };
             var logTexts = arguments.LogContainersList
                 .Select(containerName => blobClient.GetContainerReference(containerName))
-                .SelectMany(container => container.ListBlobs(options))
-                .OfType<CloudBlob>()
+                .SelectMany(container => container.ListBlobs(null, true))
+                .OfType<ICloudBlob>()
                 .Where(blob => 
                     string.CompareOrdinal(blob.Name.Split('/').Last().Split('.').First(), startDate) >= 0 && 
                     string.CompareOrdinal(blob.Name.Split('/').Last().Split('.').First(), endDate) <= 0)

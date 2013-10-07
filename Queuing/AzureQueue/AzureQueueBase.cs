@@ -21,8 +21,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading;
 using Diagnostics;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace Queuing.Azure
 {
@@ -46,7 +46,7 @@ namespace Queuing.Azure
         {
             var queueClient = storageAccount.CreateCloudQueueClient();
             this.queue = queueClient.GetQueueReference(queueAddress);
-            this.queue.CreateIfNotExist();
+            this.queue.CreateIfNotExists();
         }
 
         /// <summary>Perform an action using the Azure cloud queue</summary>
@@ -65,9 +65,9 @@ namespace Queuing.Azure
                         action(this.queue);
                         break;
                     }
-                    catch (StorageClientException sce)
+                    catch (StorageException se)
                     {
-                        if (sce.StatusCode == HttpStatusCode.NotFound)
+                        if (se.RequestInformation.HttpStatusCode == (int)HttpStatusCode.NotFound)
                         {
                             // Automatically attempt to recreate missing queues
                             LogManager.Log(
@@ -75,8 +75,8 @@ namespace Queuing.Azure
                                 true,
                                 "The queue '{0}' does not exist. Will recreate missing queue and retry.\n{1}",
                                 this.queue.Name,
-                                sce);
-                            this.queue.CreateIfNotExist();
+                                se);
+                            this.queue.CreateIfNotExists();
                         }
                     }
                 }

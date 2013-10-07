@@ -25,8 +25,8 @@ using System.Threading;
 using Diagnostics;
 using Diagnostics.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Queuing.Azure;
 using Utilities.Storage;
 using Utilities.Storage.Testing;
@@ -99,7 +99,7 @@ namespace AzureQueueIntegrationTests
 
             Assert.AreEqual(0, this.testLogger.ErrorEntries.Count());
             Assert.IsNotNull(queue);
-            Assert.IsFalse(this.TestQueue.CreateIfNotExist());
+            Assert.IsFalse(this.TestQueue.CreateIfNotExists());
         }
 
         /// <summary>Test for Dequeue</summary>
@@ -248,7 +248,7 @@ namespace AzureQueueIntegrationTests
                 {
                     message = this.TestQueue.GetMessage();
                 }
-                catch (StorageClientException)
+                catch (StorageException)
                 {
                     // Thrown if the queue doesn't exist yet
                     break;

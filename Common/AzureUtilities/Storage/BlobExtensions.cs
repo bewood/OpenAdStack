@@ -16,7 +16,10 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using Microsoft.WindowsAzure.StorageClient;
+using System.IO;
+using System.Net;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace AzureUtilities.Storage
 {
@@ -26,21 +29,33 @@ namespace AzureUtilities.Storage
         /// <summary>Checks whether or not a blob exists</summary>
         /// <param name="blob">Blob to check the existence of</param>
         /// <returns>True if the blob exists; otherwise, false.</returns>
-        public static bool Exists(this CloudBlob blob)
+        public static bool Exists(this ICloudBlob blob)
         {
             try
             {
                 blob.FetchAttributes();
                 return true;
             }
-            catch (StorageClientException sce)
+            catch (StorageException se)
             {
-                if (sce.ErrorCode == StorageErrorCode.ResourceNotFound)
+                var statusCode = se.RequestInformation.HttpStatusCode;
+                if (statusCode == (int)HttpStatusCode.NotFound)
                 {
                     return false;
                 }
 
                 throw;
+            }
+        }
+
+        /// <summary>Reads a blob as text</summary>
+        /// <param name="blob">Blob to read</param>
+        /// <returns>Blob contents as text</returns>
+        public static string DownloadText(this ICloudBlob blob)
+        {
+            using (var reader = new StreamReader(blob.OpenRead()))
+            {
+                return reader.ReadToEnd();
             }
         }
     }

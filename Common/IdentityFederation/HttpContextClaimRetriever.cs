@@ -17,8 +17,9 @@
 //-----------------------------------------------------------------------
 
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Web;
-using Microsoft.IdentityModel.Claims;
 
 namespace Utilities.IdentityFederation
 {
@@ -37,12 +38,9 @@ namespace Utilities.IdentityFederation
                 return null;
             }
 
-            var claimsPrincipal = ClaimsPrincipal.CreateFromHttpContext(HttpContext.Current);
-            var claimsIdentity = claimsPrincipal.Identity as IClaimsIdentity;
-            return claimsIdentity.Claims
-                .Where(c => c.ClaimType == claimType)
-                .Select(c => c.Value)
-                .SingleOrDefault();
+            var identity = HttpContext.Current.User.Identity as ClaimsIdentity;
+            var claim = identity.Claims.Where(c => c.Type == claimType).FirstOrDefault();
+            return claim != null ? claim.Value : null;
         }
     }
 }
