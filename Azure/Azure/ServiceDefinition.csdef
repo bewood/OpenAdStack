@@ -2,14 +2,16 @@
 <ServiceDefinition name="Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-03.2.0">
   <WebRole name="WebRole" vmsize="Small">
     <Sites>
-      <Site name="WebLayer" physicalDirectory="..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites\WebLayer">
-        <VirtualApplication name="api" physicalDirectory="..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites\ApiLayer" />
+      <Site name="WebLayer" physicalDirectory="$(PublishedWebsites)\WebLayer">
+        <VirtualApplication name="api" physicalDirectory="$(PublishedWebsites)\ApiLayer" />
         <Bindings>
+          <Binding name="HttpIn" endpointName="HttpIn" />
           <Binding name="HttpsIn" endpointName="HttpsIn" />
         </Bindings>
       </Site>
     </Sites>
     <Endpoints>
+      <InputEndpoint name="HttpIn" protocol="http" port="80" />
       <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="Website SSL" />
     </Endpoints>
     <Imports>

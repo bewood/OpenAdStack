@@ -85,6 +85,18 @@
       <DetokeniseFiles Include="@(TargetServiceDefinition);@(TargetServiceConfiguration)" />
     </ItemGroup>
     <ItemGroup>
+      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'!='true'">
+        <Replacement>..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
+      </EnvironmentTokenValues>
+      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'=='true'">
+        <Replacement>..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
+      </EnvironmentTokenValues>
+      <EnvironmentTokenValues Include="DeployedWebsiteAddress">
+        <Replacement>$(DeployedWebsiteAddress)</Replacement>
+      </EnvironmentTokenValues>
+      <EnvironmentTokenValues Include="RegistrationEmailFromAddress">
+        <Replacement>$(RegistrationEmailFromAddress)</Replacement>
+      </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="AlertRecipients">
         <Replacement>$(AlertRecipients)</Replacement>
       </EnvironmentTokenValues>

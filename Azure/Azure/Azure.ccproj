@@ -68,6 +68,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsApnxAppProd.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsProduction.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\traffiqdevProduction.azurePubxml" />
+    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rcoasdev.azurePubxml" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="..\" />
     <Folder Include="..\..\" />
     <Folder Include="..\..\..\" />
@@ -76,13 +82,6 @@
     <Folder Include="..\..\..\..\LucyConfig\Azure\" />
     <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\" />
     <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\" />
-    <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\Profiles" />
-  </ItemGroup>
-  <ItemGroup>
-    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsApnxAppProd.azurePubxml" />
-    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rarecrowdsProduction.azurePubxml" />
-    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\traffiqdevProduction.azurePubxml" />
-    <PublishProfile Include="..\..\..\..\LucyConfig\Azure\Profiles\Azure\rcoasdev.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
@@ -93,10 +92,18 @@
   Detokenise the target service definition and configuration.
   -->
   <Target Name="DetokeniseServiceModel" AfterTargets="GenerateServiceModel">
+    <Message Text="IsDesktopBuild: $(IsDesktopBuild)" Importance="high"/>
+    <Message Text="BuildingInsideVisualStudio: $(BuildingInsideVisualStudio)" Importance="high"/>
     <ItemGroup>
       <DetokeniseFiles Include="@(TargetServiceDefinition);@(TargetServiceConfiguration)" />
     </ItemGroup>
     <ItemGroup>
+      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'!='true'">
+        <Replacement>..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
+      </EnvironmentTokenValues>
+      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'=='true'">
+        <Replacement>..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
+      </EnvironmentTokenValues>
       <EnvironmentTokenValues Include="DeployedWebsiteAddress">
         <Replacement>$(DeployedWebsiteAddress)</Replacement>
       </EnvironmentTokenValues>
