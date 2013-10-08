@@ -66,7 +66,6 @@ namespace ApiLayer
                 this.VerifyPerCallInstanceContextMode();
             }
 
-            var identity = HttpContext.Current.User.Identity as System.Security.Claims.ClaimsIdentity;
             this.NameIdentifierClaimValue = ClaimRetriever.GetClaimValue(NameIdentifierClaim);
             this.Context = new CallContext();
         }
