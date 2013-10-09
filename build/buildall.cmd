@@ -236,7 +236,7 @@ if '%DEFAULT_COMPANY_NAME%'=='' set DEFAULT_COMPANY_NAME=DefaultCompany
 
 set START_AZURE_STORE_COMMAND="C:\Program Files\Microsoft SDKs\Windows Azure\Emulator\csrun.exe" /devstore:start
 set STOP_AZURE_STORE_COMMAND="C:\Program Files\Microsoft SDKs\Windows Azure\Emulator\csrun.exe" /devstore:shutdown
-set CLEAN_AZURE_STORE_COMMAND="C:\Program Files\Microsoft SDKs\Windows Azure\Emulator\devstore\dsinit.exe" /sqlinstance:%SQL_SERVER%,65000 /silent /forcecreate
+set CLEAN_AZURE_STORE_COMMAND="C:\Program Files\Microsoft SDKs\Windows Azure\Emulator\devstore\dsinit.exe" /silent /forcecreate
 
 set OUTDIR=%~dp0..\Public\bin\%CONFIGURATION%
 

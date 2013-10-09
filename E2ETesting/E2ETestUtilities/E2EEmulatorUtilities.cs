@@ -64,17 +64,24 @@ namespace E2ETestUtilities
             var emulatorStartupTimeout = DateTime.UtcNow.AddSeconds(EmulatorStartupTimeoutSeconds);
             while (true)
             {
-                var getCompaniesResponse = testClient.SendRequest(Microsoft.Http.HttpMethod.GET, string.Empty);
-                if (getCompaniesResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
+                try
                 {
-                    break;
-                }
+                    var getCompaniesResponse = testClient.SendRequest(Microsoft.Http.HttpMethod.GET, string.Empty);
+                    if (getCompaniesResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
+                    {
+                        break;
+                    }
 
-                Assert.IsTrue(
-                    DateTime.UtcNow < emulatorStartupTimeout,
-                    "Emulator failed to be responsive after {0} seconds",
-                    EmulatorStartupTimeoutSeconds);
-                Thread.Sleep(500);
+                    Assert.IsTrue(
+                        DateTime.UtcNow < emulatorStartupTimeout,
+                        "Emulator failed to be responsive after {0} seconds",
+                        EmulatorStartupTimeoutSeconds);
+                    Thread.Sleep(500);
+                }
+                catch (Exception e)
+                {
+                    Assert.Fail("Error waiting for emulator to start: {0}", e);
+                }
             }
         }
 
