@@ -315,7 +315,10 @@ namespace AppNexusClient
         ""domain_list_action"":""{14}"",
         ""domain_list_targets"":[{15}],
         ""country_action"":""include"",
-        ""country_targets"":[{{""country"":""US"",""name"":""United States""}}]
+        ""country_targets"":[{{""country"":""US"",""name"":""United States""}}],
+        ""trust"":""appnexus"",
+        ""allow_unaudited"":false,
+        ""intended_audience_targets"":[""general"",""children"",""young_adult""]
     }}
 }}";
 
