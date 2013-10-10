@@ -126,13 +126,13 @@
         //pinned groups
         var GroupNames = getGroupNames(jsonPath(measureList, '$.[?(@.pinned == true && @.group != "")]'));
         for (var group in GroupNames) {
-            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == true && @.group == "' + GroupNames[group] + '")]'), 'Always One Of These');
+            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == true && @.group == "' + GroupNames[group] + '")]'), 'Always One Of These (' + GroupNames[group] + ')');
         }
 
         //unpinned groups
         GroupNames = getGroupNames(jsonPath(measureList, '$.[?(@.pinned == false && @.group != "")]'));
         for (var group in GroupNames) {
-            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == false && @.group == "' + GroupNames[group] + '")]'), 'Optionally One Of These');
+            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == false && @.group == "' + GroupNames[group] + '")]'), 'Optionally One Of These (' + GroupNames[group] + ')');
         }
 
         MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == false && @.group == "")]'), 'Optionally One or More of these');
