@@ -15,7 +15,8 @@ must be replaced with a reference to this file:
   -->
   <PropertyGroup>
     <BuildTools>$(SolutionDir)..\build\</BuildTools>
-    <TargetProfile Condition=" '$(TargetProfile)' == '' ">Local</TargetProfile>
+    <!--TargetProfile Condition=" '$(TargetProfile)' == '' ">Local</TargetProfile-->
+    <TargetProfile Condition=" '$(TargetProfile)' == '' ">Integration</TargetProfile>
     <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(SolutionDir)..\..\..\LucyConfig\</PrivateConfig>
     <EnvironmentSettings>EnvironmentSettings.$(TargetProfile).proj</EnvironmentSettings>
   </PropertyGroup>

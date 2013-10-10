@@ -92,8 +92,6 @@
   Detokenise the target service definition and configuration.
   -->
   <Target Name="DetokeniseServiceModel" AfterTargets="GenerateServiceModel">
-    <Message Text="IsDesktopBuild: $(IsDesktopBuild)" Importance="high"/>
-    <Message Text="BuildingInsideVisualStudio: $(BuildingInsideVisualStudio)" Importance="high"/>
     <ItemGroup>
       <DetokeniseFiles Include="@(TargetServiceDefinition);@(TargetServiceConfiguration)" />
     </ItemGroup>

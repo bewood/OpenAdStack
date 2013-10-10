@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queuing", "Queuing\Queuing.csproj", "{FCA7851C-A760-49AD-BD26-7135EF47B803}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureQueue", "AzureQueue\AzureQueue.csproj", "{E23BBDBB-4E18-49F1-B6AB-0D1445BC6014}"

@@ -18,6 +18,7 @@
 
 using System.IO;
 using System.Net;
+using System.Text;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -57,6 +58,15 @@ namespace AzureUtilities.Storage
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        /// <summary>Writes a blob as text</summary>
+        /// <param name="blob">Blob to write</param>
+        /// <param name="text">Blob contents as text</param>
+        public static void UploadText(this ICloudBlob blob, string text)
+        {
+            var bytes = Encoding.UTF8.GetBytes(text);
+            blob.UploadFromStream(new MemoryStream(bytes));
         }
     }
 }

@@ -44,7 +44,8 @@
       <Setting name="AppNexus.IsApp" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" />
       <Setting name="ACS.SecurityTokenAutoRenew" />
-      <Setting name="ACS.SecurityEnabled" />
+      <Setting name="ACS.AuthErrorRedirect" />
+      <Setting name="ApplicationSecurityMode" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="Website SSL" storeLocation="LocalMachine" storeName="My" />

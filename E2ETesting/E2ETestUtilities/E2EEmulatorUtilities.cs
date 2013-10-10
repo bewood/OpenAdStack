@@ -19,6 +19,7 @@
 using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading;
 using Microsoft.Http;
@@ -54,6 +55,7 @@ namespace E2ETestUtilities
         }
 
         /// <summary>Starts the compute emulator</summary>
+        [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Exception is converted to test failure")]
         public static void StartEmulators()
         {
             AzureEmulatorHelper.StartStorageEmulator(EmulatorRunnerPath);

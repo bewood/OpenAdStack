@@ -21,9 +21,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AzureUtilities.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using TestUtilities;
 using Utilities.CombineLogs;
 
@@ -62,8 +64,7 @@ namespace CombineLogsIntegrationTests
             blobClient = storageAccount.CreateCloudBlobClient();
 
             // Specify a retry backoff of 10 seconds max instead of using default values. 
-            blobClient.RetryPolicy = RetryPolicies.RetryExponential(
-                3, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 10), new TimeSpan(0, 0, 3));
+            blobClient.RetryPolicy = new ExponentialRetry(new TimeSpan(0, 0, 3), 3);
         }
 
         /// <summary>Initialize Azure storage emulator and create log blobs used by tests.</summary>
@@ -74,7 +75,7 @@ namespace CombineLogsIntegrationTests
             {
                 // create log containers for testing
                 var container = blobClient.GetContainerReference("testlogs" + k);
-                container.CreateIfNotExist();
+                container.CreateIfNotExists();
 
                 // add some log blobs to storage for the purposes of combining them 
                 for (var i = 0; i < 12; i++)

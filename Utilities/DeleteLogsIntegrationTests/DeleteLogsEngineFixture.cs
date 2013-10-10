@@ -19,9 +19,11 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using AzureUtilities.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using TestUtilities;
 using Utilities.DeleteLogs;
 
@@ -53,10 +55,7 @@ namespace DeleteLogsIntegrationTests
             // connect to storage to set up test
             var storageAccount = CloudStorageAccount.Parse("UseDevelopmentStorage=true");
             blobClient = storageAccount.CreateCloudBlobClient();
-
-            // Specify a retry backoff of 10 seconds max instead of using default values. 
-            blobClient.RetryPolicy = RetryPolicies.RetryExponential(
-                3, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 10), new TimeSpan(0, 0, 3));
+            blobClient.RetryPolicy = new ExponentialRetry();
         }
 
         /// <summary>Initialize Azure storage emulator and create log blobs used by tests.</summary>
@@ -65,7 +64,7 @@ namespace DeleteLogsIntegrationTests
         {
             // create a log container for testing
             var container = blobClient.GetContainerReference("testlogs");
-            container.CreateIfNotExist();
+            container.CreateIfNotExists();
 
             // add some log blobs to storage for the purposes of deleting them 
             for (var i = 0; i < 12; i++)
@@ -92,21 +91,18 @@ namespace DeleteLogsIntegrationTests
             arguments.HoursAgoThresholdForDeleting = 48;
             arguments.LogContainers = "testlogs";
 
-            var options = new BlobRequestOptions();
-            options.UseFlatBlobListing = true;
             var container = blobClient.GetContainerReference("testlogs");
-
-            var blobs = container.ListBlobs(options).ToList();
+            var blobs = container.ListBlobs(useFlatBlobListing: true).ToList();
             Assert.AreEqual(12, blobs.Count);
 
             var deleteDate = DateTime.Now.AddHours(-1 * arguments.HoursAgoThresholdForDeleting)
                 .ToString("yyyyMMddHH", CultureInfo.InvariantCulture);
             DeleteLogsEngine.DeleteLogs(arguments);
 
-            blobs = container.ListBlobs(options).ToList();
+            blobs = container.ListBlobs(useFlatBlobListing: true).ToList();
             Assert.AreEqual(6, blobs.Count);
 
-            foreach (var item in container.ListBlobs(options))
+            foreach (var item in container.ListBlobs(useFlatBlobListing: true))
             {
                 var blob = (CloudBlockBlob)item;
                 var blobDate = blob.Name.Split('/').Last().Split('.').First();

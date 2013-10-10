@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduledWorkItems", "ScheduledWorkItems\ScheduledWorkItems.csproj", "{EFCFFDB0-1767-43EF-9303-77329660DE95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduledActivities", "ScheduledActivities\ScheduledActivities.csproj", "{FB7444B8-74D6-40CF-9840-703C1AB741D6}"

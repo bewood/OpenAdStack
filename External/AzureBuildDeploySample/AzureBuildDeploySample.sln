@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportPublishSettings", "ImportPublishSettings\ImportPublishSettings.csproj", "{D3B28392-A2E1-4BB4-87D6-C6BD100B267D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzurePublishHelpers", "AzurePublishHelpers\AzurePublishHelpers.csproj", "{36A08F4E-EA5F-4E62-B2C5-6F0F230DD2BA}"

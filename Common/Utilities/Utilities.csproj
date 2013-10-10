@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Utilities</RootNamespace>
     <AssemblyName>Utilities</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -38,6 +38,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Public\bin\Debug\Microsoft.Http.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Public\bin\Debug\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=4.0.6.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -47,7 +51,12 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Selectors" />
+    <Reference Include="System.identitymodel.services" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
@@ -111,6 +120,8 @@
     <Compile Include="Storage\PersistentDictionaryExtensions.cs" />
     <Compile Include="Storage\Testing\SimulatedPersistentDictionaryFactory.cs" />
     <Compile Include="Serialization\GenericXmlSerializableBase.cs" />
+    <Compile Include="Web\ApplicationSecurityMode.cs" />
+    <Compile Include="Web\SecureHttpApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConfigManager\ConfigManager.csproj">

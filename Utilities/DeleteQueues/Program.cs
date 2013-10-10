@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using ConsoleAppUtilities;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace Utilities.DeleteQueues
 {

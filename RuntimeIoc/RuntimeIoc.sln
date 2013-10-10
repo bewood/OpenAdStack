@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole", "WebRole\WebRole.csproj", "{2F65ADBF-4B88-43FD-9388-39E17A26AFB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRoleIntegrationTests", "WebRoleIntegrationTests\WebRoleIntegrationTests.csproj", "{BF38A249-4A0E-4DB8-BE07-A03C3D984E79}"

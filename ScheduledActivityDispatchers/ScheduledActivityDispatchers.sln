@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduledActivityDispatchersUnitTests", "ScheduledActivityDispatcherFixture\ScheduledActivityDispatchersUnitTests.csproj", "{139EC958-7BBE-4865-824C-EE6701C22B19}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD62B3E6-5F1A-4661-8B37-251807ADD52C}"

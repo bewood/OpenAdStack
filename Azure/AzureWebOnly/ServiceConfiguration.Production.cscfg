@@ -35,7 +35,8 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" value="15000" />
       <Setting name="ACS.SecurityTokenAutoRenew" value="00:05:00" />
-      <Setting name="ACS.SecurityEnabled" value="true" />
+      <Setting name="ACS.AuthErrorRedirect" value="https://$(DeployedWebsiteAddress)/LogOff.aspx" />
+      <Setting name="ApplicationSecurityMode" value="AcsTokens" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="Website SSL" thumbprint="A3E329FD6D7C96C7F7F2DB246E16CE06AC663679" thumbprintAlgorithm="sha1" />

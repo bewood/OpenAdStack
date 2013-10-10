@@ -20,8 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 
 namespace Utilities.DeleteLogs
 {
@@ -42,8 +43,7 @@ namespace Utilities.DeleteLogs
             var blobClient = storageAccount.CreateCloudBlobClient();
 
             // Specify a retry backoff of 10 seconds max instead of using default values. 
-            blobClient.RetryPolicy = RetryPolicies.RetryExponential(
-                3, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 10), new TimeSpan(0, 0, 3));
+            blobClient.RetryPolicy = new ExponentialRetry();
 
             // get the containers specified
             var containers = new List<CloudBlobContainer>();
@@ -55,11 +55,9 @@ namespace Utilities.DeleteLogs
             // delete old logs
             var deleteDate = DateTime.Now.AddHours(-1 * arguments.HoursAgoThresholdForDeleting)
                 .ToString("yyyyMMddHH", CultureInfo.InvariantCulture);
-            var options = new BlobRequestOptions();
-            options.UseFlatBlobListing = true;
             foreach (var container in containers)
             {
-                foreach (var item in container.ListBlobs(options))
+                foreach (var item in container.ListBlobs(useFlatBlobListing: true))
                 {
                     if (item.GetType() == typeof(CloudBlockBlob))
                     {

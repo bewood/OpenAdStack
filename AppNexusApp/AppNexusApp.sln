@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppNexusAuth", "AppNexusAuth\AppNexusAuth.csproj", "{75C2D0C5-3EBE-43F6-AD2B-F6E55E01FE35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppNexusAppUnitTests", "AppNexusAppUnitTests\AppNexusAppUnitTests.csproj", "{29127D42-8E90-4CE4-9FC3-426AE122485A}"
