@@ -34,7 +34,7 @@ namespace E2ETestUtilities
         /// <summary>
         /// How many seconds to wait for the emulator to be responsive
         /// </summary>
-        private const int EmulatorStartupTimeoutSeconds = 45;
+        private const int EmulatorStartupTimeoutSeconds = 120;
 
         /// <summary>Gets the emulator runner path</summary>
         private static string EmulatorRunnerPath
@@ -59,7 +59,15 @@ namespace E2ETestUtilities
         public static void StartEmulators()
         {
             AzureEmulatorHelper.StartStorageEmulator(EmulatorRunnerPath);
-            AzureEmulatorHelper.StartComputeEmulator(EmulatorRunnerPath, PackageFolderPath, PackageConfigurationPath);
+
+            try
+            {
+                AzureEmulatorHelper.StartComputeEmulator(EmulatorRunnerPath, PackageFolderPath, PackageConfigurationPath);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail("Error starting compute emulator: {0}", e);
+            }
 
             // Wait until the web role responds with something other than 404
             var testClient = new RestTestClient("https://localhost/");
@@ -78,7 +86,7 @@ namespace E2ETestUtilities
                         DateTime.UtcNow < emulatorStartupTimeout,
                         "Emulator failed to be responsive after {0} seconds",
                         EmulatorStartupTimeoutSeconds);
-                    Thread.Sleep(500);
+                    Thread.Sleep(2000);
                 }
                 catch (Exception e)
                 {
