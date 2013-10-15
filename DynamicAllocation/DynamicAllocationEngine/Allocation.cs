@@ -117,8 +117,9 @@ namespace DynamicAllocation
             var measureSetsToCoverBag = measureSetsToCover.ContainsKey(index) ? 
                 new ConcurrentBag<MeasureSet>(measureSetsToCover[index]) : 
                 new ConcurrentBag<MeasureSet>();
-            Parallel.ForEach(
-                tier,
+
+            // TODO: re-parallelize this someday?
+            tier.ForEach(
                 measureSet =>
                 {
                     var measureSetsLeftToCover = measureSetsToCoverBag.Where(ms => !ms.IsSubsetOf(measureSet));
