@@ -126,13 +126,13 @@
         //pinned groups
         var GroupNames = getGroupNames(jsonPath(measureList, '$.[?(@.pinned == true && @.group != "")]'));
         for (var group in GroupNames) {
-            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == true && @.group == "' + GroupNames[group] + '")]'), 'Always One Of These');
+            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == true && @.group == "' + GroupNames[group] + '")]'), 'Always One Of These (' + GroupNames[group] + ')');
         }
 
         //unpinned groups
         GroupNames = getGroupNames(jsonPath(measureList, '$.[?(@.pinned == false && @.group != "")]'));
         for (var group in GroupNames) {
-            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == false && @.group == "' + GroupNames[group] + '")]'), 'Optionally One Of These');
+            MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == false && @.group == "' + GroupNames[group] + '")]'), 'Optionally One Of These (' + GroupNames[group] + ')');
         }
 
         MeasureDisplay += getMeasureListHTML(jsonPath(measureList, '$.[?(@.pinned == false && @.group == "")]'), 'Optionally One or More of these');
@@ -162,6 +162,14 @@
         var hvaCrowds = jsonPath(calculatedValuationList.Valuations, '$.NodeValuationSet[?(@.MeasureSet.length >= 8)]') ? jsonPath(calculatedValuationList.Valuations, '$.NodeValuationSet[?(@.MeasureSet.length >= 8)]') : [];
         var hvaCount = hvaCrowds.length;
         var hvaBudgetWeight = .1;
+        
+        if (hvaCount === 0 && exceptionalCount === 0){
+            standardBudgetWeight = 95;
+        }
+
+        if (hvaCount === 0 && exceptionalCount === 0 && rareCount === 0){
+            standardBudgetWeight = 100;
+        }
 
         var totalWeightedBudget = standardCount * standardBudgetWeight + rareCount * rareBudgetWeight + exceptionalBudgetWeight * exceptionalCount + hvaCount * hvaBudgetWeight;
 
