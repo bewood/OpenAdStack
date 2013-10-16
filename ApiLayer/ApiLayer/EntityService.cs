@@ -27,19 +27,14 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Text;
-using System.Threading;
 using System.Web.Script.Serialization;
 using Activities;
-using ConfigManager;
 using DataAccessLayer;
-using Diagnostics;
 ////using Doppler.TraceListeners;
+using EntityUtilities;
 using Microsoft.Practices.Unity;
-using Queuing;
 using ResourceAccess;
 using RuntimeIoc.WebRole;
-using Utilities.IdentityFederation;
-using WorkItems;
 
 namespace ApiLayer
 {
@@ -96,6 +91,9 @@ namespace ApiLayer
                     { "COMPANY/CAMPAIGN:POST:REMOVEASSOCIATION", "DisassociateEntities" },
                     { "COMPANY/CAMPAIGN:POST:ADDCREATIVE", "AssociateEntities" },
                     { "COMPANY/CAMPAIGN:POST:REMOVECREATIVE", "DisassociateEntities" },
+                    { "COMPANY/CAMPAIGN/REPORT:POST", "CreateCampaignReport" },
+                    { "COMPANY/CAMPAIGN/REPORT:NAMESPACE:GET", "GetReportsForCampaign" },
+                    { "COMPANY/CAMPAIGN/REPORT:RESOURCE:GET", "GetCampaignReportData" },
                 };
             }
         }
@@ -162,6 +160,57 @@ namespace ApiLayer
         {
             NameValueCollection nameValueCollection = WebContext.IncomingRequest.UriTemplateMatch.QueryParameters;
             return this.ProcessActivity(this.GetActivityRequestFromSubNamespaceGet(parentNamespace, parentId, subNamespace, string.Empty, nameValueCollection), true);
+        }
+
+        /// <summary>
+        /// general resource get handler for resources below subnamespace
+        /// </summary>
+        /// <param name="parentNamespace">Namespace of the parent resource</param>
+        /// <param name="parentId">entity id of the parent entity</param>
+        /// <param name="subNamespace">subNamespace of the resource</param>
+        /// <param name="subNamespaceId">subNamespace resource id.</param>
+        /// <param name="resourceNamespace">resource Namespace</param>
+        /// <param name="resourceId">resource id</param>
+        /// <returns>response stream for HTTP response</returns>
+        [WebGet(UriTemplate = "{parentNamespace}/{parentId}/{subNamespace}/{subNamespaceId}/{resourceNamespace}/{resourceId}", ResponseFormat = WebMessageFormat.Json)]
+        public Stream GetSubNamespaceResourceHandler(string parentNamespace, string parentId, string subNamespace, string subNamespaceId, string resourceNamespace, string resourceId)
+        {
+            // verify caller has permission to read the subNamespace
+            if (!this.CheckAuthorization("https://localhost/api/entity/{0}/{1}/{2}/{3}".FormatInvariant(parentNamespace, parentId, subNamespace, subNamespaceId), "GET"))
+            {
+                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
+                WebContext.OutgoingResponse.ContentType = "application/json";
+                this.SetContextErrorState(HttpStatusCode.Unauthorized, "Access denied");
+                return WriteResultToStream(new JavaScriptSerializer().Serialize(this.Context.ErrorDetails));
+            }
+
+            NameValueCollection nameValueCollection = WebContext.IncomingRequest.UriTemplateMatch.QueryParameters;
+            return this.ProcessActivity(this.GetActivityRequestFromSubResourceGet(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace, resourceId, nameValueCollection), true);
+        }
+
+        /// <summary>
+        /// general resource get handler for resource namespace below subnamespace
+        /// </summary>
+        /// <param name="parentNamespace">Namespace of the parent resource</param>
+        /// <param name="parentId">entity id of the parent entity</param>
+        /// <param name="subNamespace">subNamespace of the resource</param>
+        /// <param name="subNamespaceId">subNamespace resource id.</param>
+        /// <param name="resourceNamespace">resource Namespace</param>
+        /// <returns>response stream for HTTP response</returns>
+        [WebGet(UriTemplate = "{parentNamespace}/{parentId}/{subNamespace}/{subNamespaceId}/{resourceNamespace}", ResponseFormat = WebMessageFormat.Json)]
+        public Stream GetSubNamespaceNamespaceHandler(string parentNamespace, string parentId, string subNamespace, string subNamespaceId, string resourceNamespace)
+        {
+            // verify caller has permission to read the subNamespace
+            if (!this.CheckAuthorization("https://localhost/api/entity/{0}/{1}/{2}/{3}".FormatInvariant(parentNamespace, parentId, subNamespace, subNamespaceId), "GET"))
+            {
+                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
+                WebContext.OutgoingResponse.ContentType = "application/json";
+                this.SetContextErrorState(HttpStatusCode.Unauthorized, "Access denied");
+                return WriteResultToStream(new JavaScriptSerializer().Serialize(this.Context.ErrorDetails));
+            }
+
+            NameValueCollection nameValueCollection = WebContext.IncomingRequest.UriTemplateMatch.QueryParameters;
+            return this.ProcessActivity(this.GetActivityRequestFromSubResourceNamespaceGet(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace, nameValueCollection), true);
         }
 
         /// <summary>
@@ -232,7 +281,7 @@ namespace ApiLayer
         {
             // verify caller has permission to write to the parent
             // CAVEAT: need to allow user to post verify message before the user is created, so don't check on resourceNamespace == "user"
-            if (resourceNamespace.ToLowerInvariant() != "user" && !this.CheckAuthorization("https://localhost/api/entity/{0}/{1}".FormatInvariant(resourceNamespace, id), "POST"))
+            if (resourceNamespace.ToLower(CultureInfo.InvariantCulture) != "user" && !this.CheckAuthorization("https://localhost/api/entity/{0}/{1}".FormatInvariant(resourceNamespace, id), "POST"))
             {
                 WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
                 return;
@@ -271,6 +320,38 @@ namespace ApiLayer
             WebContext.OutgoingResponse.StatusCode = HttpStatusCode.SeeOther;
             WebContext.OutgoingResponse.Location = serverName + "/" + parentNamespace + "/" + parentResource + "/"
                                                                     + subNamespace + "/"
+                                                                    + activityRequest.Values["EntityId"];
+        }
+
+        /// <summary>Creates a new entity below the subnamespace</summary>
+        /// <param name="parentNamespace">Namespace (Type) of the parent entity</param>
+        /// <param name="parentResource">Company id</param>
+        /// <param name="subNamespace">Namespace (Type) of the entity to be created</param>
+        /// <param name="subNamespaceId">Sub-namespace id</param>
+        /// <param name="resourceNamespace">Resource namespace</param>
+        [WebInvoke(UriTemplate = "{parentNamespace}/{parentResource}/{subNamespace}/{subNamespaceId}/{resourceNamespace}", Method = "POST")]
+        public void PostSubNamespaceResourceHandler(string parentNamespace, string parentResource, string subNamespace, string subNamespaceId, string resourceNamespace)
+        {
+            // verify caller has permission to write to the subNamespace
+            if (!this.CheckAuthorization("https://localhost/api/entity/{0}/{1}/{2}/{3}".FormatInvariant(parentNamespace, parentResource, subNamespace, subNamespaceId), "POST"))
+            {
+                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
+                return;
+            }
+
+            var serverName = WebContext.IncomingRequest.UriTemplateMatch.BaseUri;
+
+            NameValueCollection nameValueCollection = WebContext.IncomingRequest.UriTemplateMatch.QueryParameters;
+
+            var activityRequest = this.GetActivityRequestFromSubNamespaceResourcePost(
+                parentNamespace, parentResource, subNamespace, subNamespaceId, resourceNamespace, "POST", nameValueCollection);
+
+            this.ProcessActivity(activityRequest, false);
+
+            WebContext.OutgoingResponse.StatusCode = HttpStatusCode.SeeOther;
+            WebContext.OutgoingResponse.Location = serverName + "/" + parentNamespace + "/" + parentResource + "/"
+                                                                    + subNamespace + "/" + subNamespaceId + "/"
+                                                                    + resourceNamespace + "/"
                                                                     + activityRequest.Values["EntityId"];
         }
 
@@ -465,6 +546,54 @@ namespace ApiLayer
         }
 
         /// <summary>
+        /// General Get handler for the class NO Flags
+        /// </summary>
+        /// <param name="parentNamespace">namespace for parent entity</param>
+        /// <param name="parentId">entity id for parent entity</param>
+        /// <param name="subNamespace">subNamespace name.</param>
+        /// <param name="subNamespaceId">subNamespace entity id.</param>
+        /// <param name="resourceNamespace">namespace of the entity.</param>
+        /// <param name="resourceId">id of the entity.</param>
+        /// <param name="nameValueCollection">Query string passed in by caller</param>
+        /// <returns>Stream ready for HTTP out</returns>
+        internal ActivityRequest GetActivityRequestFromSubResourceGet(string parentNamespace, string parentId, string subNamespace, string subNamespaceId, string resourceNamespace, string resourceId, NameValueCollection nameValueCollection)
+        {
+            string verbString = "RESOURCE:GET";
+            var canonicalResource = "{0}/{1}/{2}".FormatInvariant(parentNamespace, subNamespace, resourceNamespace);
+            string task = this.TryGetActivity(canonicalResource, verbString, string.Empty);
+            this.ValidateParentIdAndBuildRequest(parentId);
+            this.ValidateAndBuildRequest(subNamespaceId);
+
+            // this will overwrite the subNamespace id in the context but at least both get validated
+            this.ValidateAndBuildRequest(resourceId); 
+            return this.BuildActivityRequest(task, parentId, subNamespaceId, resourceId, nameValueCollection);
+        }
+
+        /// <summary>
+        /// General Get handler for the class NO Flags
+        /// </summary>
+        /// <param name="parentNamespace">namespace for parent entity</param>
+        /// <param name="parentId">entity id for parent entity</param>
+        /// <param name="subNamespace">subNamespace name.</param>
+        /// <param name="subNamespaceId">subNamespace entity id.</param>
+        /// <param name="resourceNamespace">namespace of the entity.</param>
+        /// <param name="nameValueCollection">Query string passed in by caller</param>
+        /// <returns>Stream ready for HTTP out</returns>
+        internal ActivityRequest GetActivityRequestFromSubResourceNamespaceGet(string parentNamespace, string parentId, string subNamespace, string subNamespaceId, string resourceNamespace, NameValueCollection nameValueCollection)
+        {
+            string verbString = "NAMESPACE:GET";
+            var canonicalResource = "{0}/{1}/{2}".FormatInvariant(parentNamespace, subNamespace, resourceNamespace);
+            string task = this.TryGetActivity(canonicalResource, verbString, string.Empty);
+            this.ValidateParentIdAndBuildRequest(parentId);
+            this.ValidateAndBuildRequest(subNamespaceId);
+            var activityRequest = this.BuildActivityRequest(task, parentId, subNamespaceId, string.Empty, nameValueCollection);
+
+            // Remove the new entity id added for create scenario
+            activityRequest.Values.Remove(EntityActivityValues.EntityId);
+            return activityRequest;
+        }
+
+        /// <summary>
         /// General Put/Post handler for the class
         /// </summary>
         /// <param name="parentNamespace">namespace of the entity</param>
@@ -487,6 +616,26 @@ namespace ApiLayer
             this.ValidateParentIdAndBuildRequest(parentId);
             this.ValidateAndBuildRequest(postBody); // invalid JSON body
             return this.BuildActivityRequest(task, parentId, id, nameValueCollection);
+        }
+
+        /// <summary>
+        /// General Put/Post handler for the class
+        /// </summary>
+        /// <param name="parentNamespace">namespace of the entity</param>
+        /// <param name="parentId">entity id of the parent entity/resource</param>
+        /// <param name="subNamespace">namespace of the entity being posted to</param>
+        /// <param name="subNamespaceId">Sub-namespace id</param>
+        /// <param name="resourceNamespace">Resource namespace</param>
+        /// <param name="verb">PUT or POST</param>
+        /// <param name="nameValueCollection">Query string passed in by caller</param>
+        /// <returns>Stream ready for HTTP out</returns>
+        internal ActivityRequest GetActivityRequestFromSubNamespaceResourcePost(string parentNamespace, string parentId, string subNamespace, string subNamespaceId, string resourceNamespace, string verb, NameValueCollection nameValueCollection)
+        {
+            var namespaceChain = "{0}/{1}/{2}".FormatInvariant(parentNamespace, subNamespace, resourceNamespace);
+            var task = this.TryGetActivity(namespaceChain, verb, string.Empty);
+            this.ValidateParentIdAndBuildRequest(parentId);
+            this.ValidateAndBuildRequest(subNamespaceId);
+            return this.BuildActivityRequest(task, parentId, subNamespaceId, string.Empty, nameValueCollection);
         }
 
         /// <summary>
@@ -656,6 +805,32 @@ namespace ApiLayer
         }
 
         /// <summary>
+        /// builds standard activity request. Payload, AuthUserId, EntityId, Task are always set
+        /// </summary>
+        /// <param name="activityName">name of the activity to request, must NOT be empty</param>
+        /// <param name="companyId">entityId of the company resource</param>
+        /// <param name="campaignId">entityId of the campaign resource</param>
+        /// <param name="id">entityId, this is blank when accessing a namespace</param>
+        /// <param name="nameValueCollection">Query string passed in by caller</param>
+        /// <returns>ActivityRequest or null</returns>
+        protected ActivityRequest BuildActivityRequest(string activityName, string companyId, string campaignId, string id, NameValueCollection nameValueCollection)
+        {
+            if (string.IsNullOrWhiteSpace(companyId) || string.IsNullOrWhiteSpace(campaignId))
+            {
+                return null;
+            }
+
+            var activityRequest = this.BuildActivityRequest(activityName, id, nameValueCollection);
+            if (activityRequest != null)
+            {
+                activityRequest.Values.Add(EntityActivityValues.CompanyEntityId, companyId);
+                activityRequest.Values.Add(EntityActivityValues.CampaignEntityId, campaignId);
+            }
+
+            return activityRequest;
+        }
+
+        /// <summary>
         /// Check if the caller has authorization to procedd
         /// </summary>
         /// <param name="url">URL for permission checking</param>
@@ -670,9 +845,8 @@ namespace ApiLayer
                 // Get the user
                 user = Repository.GetUser(new RequestContext(), userId);
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
-                LogManager.Log(LogLevels.Trace, "CheckAuthorization('{0}', {1}) Invalid UserId: '{2}'\n{3}", url, verb, userId, e);
                 return false;
             }
 

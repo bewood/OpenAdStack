@@ -239,10 +239,12 @@ namespace ApiLayerUnitTests
             string entityNamespace = "EntityActivities";
             string dynamicAllocationEntityNamespace = "DynamicAllocationActivities";
             string billingActivityNamespace = "BillingActivities";
+            string reportingActivityNamespace = "ReportingActivities";
             string mailEntityNamespace = "EntityActivities.UserMail";
             Assembly assemblyToCheck = Assembly.Load("EntityActivities");
             Assembly dynamicAllocationAssemblyToCheck = Assembly.Load("DynamicAllocationActivities");
             Assembly billingActivityAssemblyToCheck = Assembly.Load("BillingActivities");
+            Assembly reportingActivityAssemblyToCheck = Assembly.Load("ReportingActivities");
             Assert.IsTrue(EntityService.ActivityMap.Count > 0);
             foreach (var activity in EntityService.ActivityMap)
             {
@@ -259,12 +261,18 @@ namespace ApiLayerUnitTests
                              && t.GetCustomAttributes(typeof(NameAttribute), false).Cast<NameAttribute>().Single().Value == activity.Value
                          select t;
                 var bill = from t in billingActivityAssemblyToCheck.GetTypes()
-                         where t.IsClass
-                             && (t.Namespace == billingActivityNamespace)
-                             && t.GetCustomAttributes(typeof(NameAttribute), false).Length > 0
-                             && t.GetCustomAttributes(typeof(NameAttribute), false).Cast<NameAttribute>().Single().Value == activity.Value
-                         select t;
-                Assert.IsTrue(q.Count() == 1 || da.Count() == 1 || bill.Count() == 1);
+                           where t.IsClass
+                               && (t.Namespace == billingActivityNamespace)
+                               && t.GetCustomAttributes(typeof(NameAttribute), false).Length > 0
+                               && t.GetCustomAttributes(typeof(NameAttribute), false).Cast<NameAttribute>().Single().Value == activity.Value
+                           select t;
+                var report = from t in reportingActivityAssemblyToCheck.GetTypes()
+                             where t.IsClass
+                                 && (t.Namespace == reportingActivityNamespace)
+                                 && t.GetCustomAttributes(typeof(NameAttribute), false).Length > 0
+                                 && t.GetCustomAttributes(typeof(NameAttribute), false).Cast<NameAttribute>().Single().Value == activity.Value
+                             select t;
+                Assert.IsTrue(q.Count() == 1 || da.Count() == 1 || bill.Count() == 1 || report.Count() == 1);
             }
         }
 
@@ -464,6 +472,101 @@ namespace ApiLayerUnitTests
         }
 
         /// <summary>
+        /// Tests GET on a on a fully qualified subresource
+        /// </summary>
+        [TestMethod]
+        public void GetSubNamespaceResourceHandlerTest()
+        {
+            this.accessHandler = MockRepository.GenerateMock<IResourceAccessHandler>();
+            this.accessHandler.Stub(f => f.CheckAccess(Arg<CanonicalResource>.Is.Anything, Arg<EntityId>.Is.Anything)).Return(true);
+            AccessResourceHandler = this.accessHandler;
+
+            var parentNamespace = "Company"; // use well known activity name
+            var parentId = new EntityId();
+            var subNamespace = "Campaign"; // use well known activity name
+            var subNamespaceId = new EntityId();
+            var resourceNamespace = "Report";
+            var resourceId = new EntityId();
+
+            var getActivityResponse = GetSubNamespaceResourceHandler(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace, resourceId);
+            var reader = new StreamReader(getActivityResponse);
+            string activityResponse = reader.ReadToEnd();
+            Assert.IsTrue(
+                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+        }
+
+        /// <summary>
+        /// Tests GET on a on a fully qualified subresource user access denied
+        /// </summary>
+        [TestMethod]
+        public void GetSubNamespaceResourceHandlerFailUserAccessTest()
+        {
+            this.accessHandler = MockRepository.GenerateMock<IResourceAccessHandler>();
+            this.accessHandler.Stub(f => f.CheckAccess(Arg<CanonicalResource>.Is.Anything, Arg<EntityId>.Is.Anything)).Return(false);
+            AccessResourceHandler = this.accessHandler;
+
+            var parentNamespace = "Company"; // use well known activity name
+            var parentId = new EntityId();
+            var subNamespace = "Campaign"; // use well known activity name
+            var subNamespaceId = new EntityId();
+            var resourceNamespace = "Report";
+            var resourceId = new EntityId();
+
+            var getActivityResponse = GetSubNamespaceResourceHandler(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace, resourceId);
+            var reader = new StreamReader(getActivityResponse);
+            string activityResponse = reader.ReadToEnd();
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.StatusCode == HttpStatusCode.Unauthorized);
+            Assert.IsTrue(
+                 activityResponse.Contains(@"Access denied"));
+        }
+
+        /// <summary>
+        /// Tests GET on a on a fully qualified subresource
+        /// </summary>
+        [TestMethod]
+        public void GetSubNamespaceNamespaceHandlerTest()
+        {
+            this.accessHandler = MockRepository.GenerateMock<IResourceAccessHandler>();
+            this.accessHandler.Stub(f => f.CheckAccess(Arg<CanonicalResource>.Is.Anything, Arg<EntityId>.Is.Anything)).Return(true);
+            AccessResourceHandler = this.accessHandler;
+
+            var parentNamespace = "Company"; // use well known activity name
+            var parentId = new EntityId();
+            var subNamespace = "Campaign"; // use well known activity name
+            var subNamespaceId = new EntityId();
+            var resourceNamespace = "Report";
+
+            var getActivityResponse = GetSubNamespaceNamespaceHandler(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace);
+            var reader = new StreamReader(getActivityResponse);
+            string activityResponse = reader.ReadToEnd();
+            Assert.IsTrue(
+                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+        }
+
+        /// <summary>
+        /// Tests GET on a on a fully qualified subresource user access denied
+        /// </summary>
+        [TestMethod]
+        public void GetSubNamespaceNamespaceHandlerFailUserAccessTest()
+        {
+            this.accessHandler = MockRepository.GenerateMock<IResourceAccessHandler>();
+            this.accessHandler.Stub(f => f.CheckAccess(Arg<CanonicalResource>.Is.Anything, Arg<EntityId>.Is.Anything)).Return(false);
+            AccessResourceHandler = this.accessHandler;
+
+            var parentNamespace = "Company"; // use well known activity name
+            var parentId = new EntityId();
+            var subNamespace = "Campaign"; // use well known activity name
+            var subNamespaceId = new EntityId();
+            var resourceNamespace = "Report";
+
+            var getActivityResponse = GetSubNamespaceNamespaceHandler(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace);
+            var reader = new StreamReader(getActivityResponse);
+            string activityResponse = reader.ReadToEnd();
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.StatusCode == HttpStatusCode.Unauthorized);
+            Assert.IsTrue(activityResponse.Contains(@"Access denied"));
+        }
+
+        /// <summary>
         /// Tests GET on a on a resource with filter list
         /// </summary>
         [TestMethod]
@@ -573,6 +676,48 @@ namespace ApiLayerUnitTests
             var parentNamespace = "Company"; // use well known activity name
             var subNamespace = "Campaign"; // use well known activity name
             PostSubNamespaceHandler(parentNamespace, new EntityId(), subNamespace, postBody);
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.StatusCode == HttpStatusCode.Unauthorized);
+        }
+
+        /// <summary>
+        /// Tests the POST handler on subnamespace resource
+        /// </summary>
+        [TestMethod]
+        public void PostSubNamespaceResourceHandlerTest()
+        {
+            this.accessHandler = MockRepository.GenerateMock<IResourceAccessHandler>();
+            this.accessHandler.Stub(f => f.CheckAccess(Arg<CanonicalResource>.Is.Anything, Arg<EntityId>.Is.Anything)).Return(true);
+            AccessResourceHandler = this.accessHandler;
+
+            NameValueCollection queryValues = new NameValueCollection { { "foo", "bar" } };
+            this.uriTemplateMatch.QueryParameters.Add(queryValues);
+            var parentNamespace = "Company"; // use well known activity name
+            var parentId = new EntityId();
+            var subNamespace = "Campaign"; // use well known activity name
+            var subNamespaceId = new EntityId();
+            var resourceNamespace = "Report";
+            PostSubNamespaceResourceHandler(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace);
+            var responseFragment = "http://localhost/api/entity/{0}/{1}/{2}/{3}/{4}".FormatInvariant(
+                parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace);
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains(responseFragment));
+        }
+
+        /// <summary>
+        /// Tests the POST handler on subnamespace resource User access denied
+        /// </summary>
+        [TestMethod]
+        public void PostSubNamespaceResourceHandlerFailUserAccessTest()
+        {
+            this.accessHandler = MockRepository.GenerateMock<IResourceAccessHandler>();
+            this.accessHandler.Stub(f => f.CheckAccess(Arg<CanonicalResource>.Is.Anything, Arg<EntityId>.Is.Anything)).Return(false);
+            AccessResourceHandler = this.accessHandler;
+
+            NameValueCollection queryValues = new NameValueCollection { { "foo", "bar" } };
+            this.uriTemplateMatch.QueryParameters.Add(queryValues);
+            var parentNamespace = "Company"; // use well known activity name
+            var subNamespace = "Campaign"; // use well known activity name
+            var resourceNamespace = "Report";
+            PostSubNamespaceResourceHandler(parentNamespace, new EntityId(), subNamespace, new EntityId(), resourceNamespace);
             Assert.IsTrue(this.webContextMock.OutgoingResponse.StatusCode == HttpStatusCode.Unauthorized);
         }
 

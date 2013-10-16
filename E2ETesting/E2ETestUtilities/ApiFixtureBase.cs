@@ -38,7 +38,7 @@ namespace E2ETestUtilities
         protected const int FollowRedirectWait = 3000;
 
         /// <summary>The name identifier claim</summary>
-        private const string NameIdentifierClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+        protected const string NameIdentifierClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
         /// <summary>Gets the test REST client</summary>
         protected RestTestClient RestClient { get; private set; }

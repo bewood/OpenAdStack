@@ -208,7 +208,7 @@ namespace RuntimeIoc.WorkerRole.IntegrationTests
             var activityProviders = container.Resolve<IActivityProvider[]>();
             Assert.AreEqual(6, activityProviders.Length);
 
-            // 5 containers of activities derived from EntityActivity
+            // 6 containers of activities derived from EntityActivity
             // (serves as a base for other domain specific activities)
             Assert.AreEqual(
                 6,

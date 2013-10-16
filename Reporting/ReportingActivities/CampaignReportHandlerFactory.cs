@@ -75,12 +75,12 @@ namespace ReportingActivities
 
             if (!request.Values.ContainsKey(EntityActivityValues.CompanyEntityId))
             {
-                throw new AppsGenericException("Missing IEntityRepository in CampaignReportHandlerFactory.");
+                throw new AppsGenericException("Missing CompanyEntityId in CampaignReportHandlerFactory.");
             }
 
             if (!request.Values.ContainsKey(EntityActivityValues.CampaignEntityId))
             {
-                throw new AppsGenericException("Missing IEntityRepository in CampaignReportHandlerFactory.");
+                throw new AppsGenericException("Missing CampaignEntityId in CampaignReportHandlerFactory.");
             }
 
             var repository = (IEntityRepository)context[typeof(IEntityRepository)];

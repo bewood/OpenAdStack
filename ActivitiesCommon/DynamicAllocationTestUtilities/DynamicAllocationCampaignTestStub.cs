@@ -25,6 +25,8 @@ using DynamicAllocation;
 using DynamicAllocationUtilities;
 using EntityTestUtilities;
 using EntityUtilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ResourceAccess;
 using TestUtilities;
 using Utilities.Serialization;
 
@@ -74,6 +76,23 @@ namespace DynamicAllocationTestUtilities
         /// <param name="campaignOwnerId">The campaign owner user id</param>
         public void SetupCampaign(IEntityRepository repository, EntityId companyEntityId, EntityId campaignEntityId, string campaignOwnerId)
         {
+            this.SetupCampaign(repository, null, companyEntityId, campaignEntityId, campaignOwnerId);
+        }
+
+        /// <summary>
+        /// Setup a test campaign with delivery and measure data.
+        /// Get stubs are set up on Rhino unless repository is a SimulatedEntityRepository.
+        /// This will work for narrow unit-tests that can set up save stubs for data they control.
+        /// The simulated repository is more appropriate for integration tests that have interiors saves
+        /// inaccessible to the test.
+        /// </summary>
+        /// <param name="repository">The entity Repository.</param>
+        /// <param name="userAccessRepository">User access repository (optional)</param>
+        /// <param name="companyEntityId">The company entity id.</param>
+        /// <param name="campaignEntityId">The campaign entity id.</param>
+        /// <param name="campaignOwnerId">The campaign owner user id</param>
+        public void SetupCampaign(IEntityRepository repository, IUserAccessRepository userAccessRepository, EntityId companyEntityId, EntityId campaignEntityId, string campaignOwnerId)
+        {
             // Determine what kind of stubs we should set up
             var isProxy = CheckIfProxyStub(repository);
 
@@ -85,6 +104,12 @@ namespace DynamicAllocationTestUtilities
 
             // Build an owner user
             var ownerEntity = EntityTestHelpers.CreateTestUserEntity(new EntityId(), campaignOwnerId, "nobody@rc.dev");
+            var defaultOwnerAccessList = new[]
+                {
+                    //// TODO: Add additional default permissions as needed
+                    "COMPANY:{0}:*:#:*:*".FormatInvariant(companyEntityId),
+                };
+            ownerEntity.AccessList = string.Join("|", defaultOwnerAccessList);
 
             // Build a campaign
             var campaignJson =
@@ -93,8 +118,15 @@ namespace DynamicAllocationTestUtilities
             var campaignEntity = EntityJsonSerializer.DeserializeCampaignEntity(campaignEntityId, campaignJson);
             campaignEntity.LastModifiedDate = DateTime.UtcNow;
             campaignEntity.LocalVersion = 0;
-
             campaignEntity.SetOwnerId(campaignOwnerId);
+
+            // Associate campaign to company
+            companyEntity.TryAssociateEntities(
+                "campaign",
+                string.Empty,
+                new HashSet<IEntity> { campaignEntity },
+                AssociationType.Child,
+                false);
 
             // Build raw delivery data blob entities. The second overlaps the first with duplicate campaign/hours.
             // One 'duplicate' hour has updated data in the later report (csv2)
@@ -110,7 +142,9 @@ namespace DynamicAllocationTestUtilities
             var deliveryDataIndexJson =
                 AppsJsonSerializer.SerializeObject(
                     new List<string> { rawDeliveryDataEntityId1.ToString(), rawDeliveryDataEntityId2.ToString() });
-            campaignEntity.SetPropertyValueByName(AppNexusEntityProperties.AppNexusRawDeliveryDataIndex, deliveryDataIndexJson);
+            campaignEntity.SetPropertyValueByName(
+                AppNexusEntityProperties.AppNexusRawDeliveryDataIndex,
+                deliveryDataIndexJson);
 
             // Set measure inputs
             campaignEntity.SetPropertyValueByName(DynamicAllocationEntityProperties.MeasureList, this.measureListJson);
@@ -128,10 +162,13 @@ namespace DynamicAllocationTestUtilities
 
             // Set delivery network
             campaignEntity.SetPropertyValueByName(
-                DeliveryNetworkEntityProperties.DeliveryNetwork, DeliveryNetworkDesignation.AppNexus.ToString());
+                DeliveryNetworkEntityProperties.DeliveryNetwork,
+                DeliveryNetworkDesignation.AppNexus.ToString());
 
             // Set Status approved
-            campaignEntity.SetPropertyValueByName(DynamicAllocationEntityProperties.Status, DynamicAllocationEntityProperties.StatusApproved);
+            campaignEntity.SetPropertyValueByName(
+                DynamicAllocationEntityProperties.Status,
+                DynamicAllocationEntityProperties.StatusApproved);
 
             // Setup default allocation paremeters.
             AllocationParametersTestHelpers.Initialize(campaignEntity);
@@ -150,16 +187,26 @@ namespace DynamicAllocationTestUtilities
                 repository.SaveEntity(requestContext, nodeMapEntity);
                 repository.SaveEntity(requestContext, campaignEntity);
                 repository.SaveUser(requestContext, ownerEntity);
-                return;
+            }
+            else
+            {
+                // Setup Rhino stubs
+                RepositoryStubUtilities.SetupGetEntityStub(repository, rawDeliveryDataEntityId1, rawDeliveryDataEntity1, false);
+                RepositoryStubUtilities.SetupGetEntityStub(repository, rawDeliveryDataEntityId2, rawDeliveryDataEntity2, false);
+                RepositoryStubUtilities.SetupGetEntityStub(repository, nodeMapId, nodeMapEntity, false);
+                RepositoryStubUtilities.SetupGetEntityStub(repository, companyEntityId, companyEntity, false);
+                RepositoryStubUtilities.SetupGetEntityStub(repository, campaignEntityId, campaignEntity, false);
+                RepositoryStubUtilities.SetupGetUserStub(repository, campaignOwnerId, ownerEntity, false);
             }
 
-            // Setup Rhino stubs
-            RepositoryStubUtilities.SetupGetEntityStub(repository, rawDeliveryDataEntityId1, rawDeliveryDataEntity1, false);
-            RepositoryStubUtilities.SetupGetEntityStub(repository, rawDeliveryDataEntityId2, rawDeliveryDataEntity2, false);
-            RepositoryStubUtilities.SetupGetEntityStub(repository, nodeMapId, nodeMapEntity, false);
-            RepositoryStubUtilities.SetupGetEntityStub(repository, companyEntityId, companyEntity, false);
-            RepositoryStubUtilities.SetupGetEntityStub(repository, campaignEntityId, campaignEntity, false);
-            RepositoryStubUtilities.SetupGetUserStub(repository, campaignOwnerId, ownerEntity, false);
+            // Add user access list if access repository provided
+            if (userAccessRepository != null)
+            {
+                var acl = ((string)ownerEntity.AccessList).Split('|');
+                Assert.IsTrue(
+                    userAccessRepository.AddUserAccessList(ownerEntity.ExternalEntityId, acl),
+                    "Unable to add user access list.");
+            }
         }
 
         /// <summary>Determine if the repository is a Rhino proxy stub</summary>
