@@ -107,39 +107,25 @@ namespace ApiLayer
                 DataServiceResultsFormat.Json);
         }
 
-        /// <summary>Builds the data response from the activity result.</summary>
-        /// <remarks>This is the only place from which the response needs to be built.</remarks>
-        /// <param name="result">Result returned from the activity</param>
-        /// <returns>Stream that contains the json response to be returned</returns>
-        protected override Stream BuildResponse(ActivityResult result)
-        {
-            using (var writer = new StringWriter(CultureInfo.InvariantCulture))
-            {
-                this.WriteResponse(result, writer);
-                writer.Flush();
-                return new MemoryStream(Encoding.UTF8.GetBytes(writer.ToString()));
-            }
-        }
-
         /// <summary>
-        /// Writes the data service results to the response
-        /// and sets the status code and content type
+        /// Sets the web context status code and content type then
+        /// writes the data service results to the response
         /// </summary>        
         /// <param name="result">Result returned from the activity</param>
         /// <param name="writer">Text writer to which the response is to be written</param>
         protected override void WriteResponse(ActivityResult result, TextWriter writer)
         {
-            WebOperationContext.Current.OutgoingResponse.StatusCode = this.Context.ResponseCode;
+            WebContext.OutgoingResponse.StatusCode = this.Context.ResponseCode;
 
             if (result == null || string.IsNullOrWhiteSpace(result.Values[DataServiceActivityValues.Results]))
             {
-                WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.NotFound;
+                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.NotFound;
             }
             else
             {
-                WebOperationContext.Current.OutgoingResponse.Headers.Add(HttpResponseHeader.CacheControl, "private,max-age=7200");
+                WebContext.OutgoingResponse.Headers.Add(HttpResponseHeader.CacheControl, "private,max-age=7200");
                 var format = result.Values[DataServiceActivityValues.ResultsFormat].ToLowerInvariant();
-                WebOperationContext.Current.OutgoingResponse.ContentType =
+                WebContext.OutgoingResponse.ContentType =
                     format == "xml" ? "text/xml" : "application/json";
                 writer.Write(result.Values[DataServiceActivityValues.Results]);
             }
@@ -158,11 +144,10 @@ namespace ApiLayer
             if (string.IsNullOrWhiteSpace(dataType) ||
                 !RequestMappings.ContainsKey(dataType))
             {
-                this.SetContextErrorState(
+                return this.BuildErrorResponse(
                     HttpStatusCode.NotFound,
                     "Unknown data type: {0}",
                     dataType);
-                return this.BuildResponse(null);
             }
 
             var requestMapping = RequestMappings[dataType];

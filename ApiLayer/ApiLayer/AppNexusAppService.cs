@@ -106,31 +106,17 @@ namespace ApiLayer
             return this.ProcessActivity(request, false, 30000);
         }
 
-        /// <summary>Builds the data response from the activity result.</summary>
-        /// <remarks>This is the only place from which the response needs to be built.</remarks>
-        /// <param name="result">Result returned from the activity</param>
-        /// <returns>Stream that contains the json response to be returned</returns>
-        protected override Stream BuildResponse(ActivityResult result)
-        {
-            using (var writer = new StringWriter(CultureInfo.InvariantCulture))
-            {
-                this.WriteResponse(result, writer);
-                writer.Flush();
-                return new MemoryStream(Encoding.UTF8.GetBytes(writer.ToString()));
-            }
-        }
-
         /// <summary>
-        /// Writes the data service results to the response
-        /// and sets the status code and content type
-        /// </summary>        
+        /// Sets the web context status code, content type, and headers
+        /// then writes the entity service results to the response
+        /// </summary>
         /// <param name="result">Result returned from the activity</param>
         /// <param name="writer">Text writer to which the response is to be written</param>
         protected override void WriteResponse(ActivityResult result, TextWriter writer)
         {
-            WebOperationContext.Current.OutgoingResponse.StatusCode = this.Context.ResponseCode;
-            WebOperationContext.Current.OutgoingResponse.Headers.Add(HttpResponseHeader.CacheControl, "private,no-cache");
-            WebOperationContext.Current.OutgoingResponse.ContentType = "application/json";
+            WebContext.OutgoingResponse.StatusCode = this.Context.ResponseCode;
+            WebContext.OutgoingResponse.ContentType = "application/json";
+            WebContext.OutgoingResponse.Headers.Add(HttpResponseHeader.CacheControl, "private,no-cache");
 
             if (result != null && result.Values != null && result.Values.Count > 0)
             {

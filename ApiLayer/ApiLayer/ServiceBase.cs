@@ -18,6 +18,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -48,6 +50,9 @@ namespace ApiLayer
 
         /// <summary>Activity result value key for processing times information</summary>
         protected const string ActivityResultProcessingTimesKey = "ProcessingTimes";
+
+        /// <summary>Activity processed log entry format</summary>
+        private const string ProcessedActivityLogEntryFormat = "Processed {0} request - {1} {2}\nProcessing times: {3}\nBuild response time: {4}s\nTotal time: {5}s";
 
         /// <summary>Queuer used to submit activity work items</summary>
         private static IQueuer queuer;
@@ -124,43 +129,65 @@ namespace ApiLayer
             get { return DefaultMaxQueueResponseWaitTime; }
         }
 
-        /// <summary>Builds the response from the activity result.</summary>
-        /// <remarks>This is the only place from which the response needs to be built.</remarks>
-        /// <param name="result">Result returned from the activity</param>
-        /// <returns>Stream that contains the json response to be returned</returns>
-        protected abstract Stream BuildResponse(ActivityResult result);
-
-        /// <summary>
-        /// Builds the json response by inspecting callcontext and sets the response code
-        /// This is the only place where the response needs to be built from
-        /// </summary>        
-        /// <param name="result">Result returned from the activity</param>
-        /// <param name="writer">Text writer to which the response is to be written</param>
-        protected virtual void WriteResponse(ActivityResult result, TextWriter writer)
+        /// <summary>Serializes entity result values</summary>
+        /// <remarks>Creates a JSON response including JSON values inline and serializing non-JSON values</remarks>
+        /// <param name="values">Result values</param>
+        /// <returns>Response JSON</returns>
+        protected static string SerializeValuesAsJson(IDictionary<string, string> values)
         {
-            if (WebOperationContext.Current != null)
-            {
-                WebOperationContext.Current.OutgoingResponse.StatusCode = this.Context.ResponseCode;
-                WebOperationContext.Current.OutgoingResponse.ContentType = "application/json";
-            }
+            var result = values
+                .Where(kvp => kvp.Key != ActivityResultProcessingTimesKey)
+                .Select(kvp => new KeyValuePair<string, object>(kvp.Key, TryParseJson(kvp.Value) ?? kvp.Value))
+                .ToDictionary();
+            return JsonConvert.SerializeObject(result);
+        }
 
-            if (this.Context.Success)
+        /// <summary>Attempts to parse a json string</summary>
+        /// <param name="json">String to parse</param>
+        /// <returns>If successful, the deserialized object; otherwise, null.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Try pattern must not throw")]
+        protected static object TryParseJson(string json)
+        {
+            try
             {
-                if (result.Values != null && result.Values.Keys.Count > 0)
-                {
-                    writer.Write("{");
-                    foreach (KeyValuePair<string, string> entry in result.Values)
-                    {
-                        writer.Write(@"""{0}"":{1}", entry.Key, entry.Value);
-                    }
+                return JsonConvert.DeserializeObject(json);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
-                    writer.Write("}");
-                }
-            }
-            else
+        /// <summary>Implemented by derived classes to write activity results to response content streams</summary>
+        /// <param name="result">Result returned from the activity</param>
+        /// <param name="writer">Text writer to which the response is written</param>
+        protected abstract void WriteResponse(ActivityResult result, TextWriter writer);
+
+        /// <summary>Builds an API response from a activity result.</summary>
+        /// <param name="result">Result returned from the activity</param>
+        /// <returns>Stream that contains the response body</returns>
+        protected virtual Stream BuildResponseFromResult(ActivityResult result)
+        {
+            using (var writer = new StringWriter(CultureInfo.InvariantCulture))
             {
-                writer.Write(JsonConvert.SerializeObject(this.Context.ErrorDetails));
+                this.WriteResponse(result, writer);
+                writer.Flush();
+                return new MemoryStream(Encoding.UTF8.GetBytes(writer.ToString()));
             }
+        }
+
+        /// <summary>Builds an error response with details serialized as JSON and an error message</summary>
+        /// <param name="code">HTTP status code</param>
+        /// <param name="errorMessage">Error message</param>
+        /// <param name="errorMessageArgs">Args for the error message (optional)</param>
+        /// <returns>Stream that contains the response body</returns>
+        protected Stream BuildErrorResponse(HttpStatusCode code, string errorMessage, params object[] errorMessageArgs)
+        {
+            WebContext.OutgoingResponse.StatusCode = code;
+            WebContext.OutgoingResponse.ContentType = "application/json";
+            this.SetContextErrorState(code, errorMessage, errorMessageArgs);
+            var errorJson = JsonConvert.SerializeObject(this.Context.ErrorDetails);
+            return new MemoryStream(Encoding.UTF8.GetBytes(errorJson));
         }
 
         /// <summary>Runs an activity request and builds a response</summary>
@@ -182,7 +209,7 @@ namespace ApiLayer
             if (request == null)
             {
                 this.SetContextErrorState(HttpStatusCode.InternalServerError, "Error while creating activity request");
-                return this.BuildResponse(null);
+                return this.BuildResponseFromResult(null);
             }
 
             var submitTime = DateTime.UtcNow;
@@ -225,7 +252,7 @@ namespace ApiLayer
             }
 
             var buildResponseStartTime = DateTime.UtcNow;
-            var response = this.BuildResponse(result);
+            var response = this.BuildResponseFromResult(result);
             var buildResponseTime = DateTime.UtcNow - buildResponseStartTime;
 
             this.LogProcessedActivityStats(result, submitTime, buildResponseTime);
@@ -241,7 +268,7 @@ namespace ApiLayer
         /// <param name="fetchOnly">True if the operation is just a fetch; otherwise, false.</param>
         /// <param name="activityResultTimeout">How long to wait for the activity result.</param>
         /// <returns>The result of processing the activity</returns>     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011", Justification = "Will have to check if this can be resolved")]
+        [SuppressMessage("Microsoft.Design", "CA1011", Justification = "Will have to check if this can be resolved")]
         protected ActivityResult RunActivity(ActivityRequest request, bool fetchOnly, long activityResultTimeout)
         {
             WorkItem workItem = new WorkItem
@@ -302,7 +329,11 @@ namespace ApiLayer
         {
             this.Context.Success = false;
             this.Context.ResponseCode = httpStatus;
-            this.Context.ErrorDetails.Message = responseMessage.FormatInvariant(responseMessageArgs);
+            if (responseMessage != null)
+            {
+                this.Context.ErrorDetails.Id = (int)httpStatus;
+                this.Context.ErrorDetails.Message = responseMessage.FormatInvariant(responseMessageArgs);
+            }
         }
 
         /// <summary>Verify that the InstanceContextMode is per-call</summary>
@@ -327,14 +358,9 @@ namespace ApiLayer
                 (result != null && result.Values != null && result.Values.ContainsKey(ActivityResultProcessingTimesKey)) ?
                 result.Values[ActivityResultProcessingTimesKey] : "(unavailable)";
 
-            var processedLogEntryFormat =
-@"Processed {0} request - {1} {2}
-Processing times: {3}
-Build response time: {4}s
-Total time: {5}s";
             LogManager.Log(
                 LogLevels.Trace,
-                processedLogEntryFormat,
+                ProcessedActivityLogEntryFormat,
                 this.GetType().Name,
                 HttpContext.Current != null ? HttpContext.Current.Request.HttpMethod : string.Empty,
                 HttpContext.Current != null ? HttpContext.Current.Request.RawUrl : "(unavailable)",

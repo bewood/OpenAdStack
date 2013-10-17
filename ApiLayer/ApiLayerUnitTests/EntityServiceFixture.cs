@@ -150,7 +150,7 @@ namespace ApiLayerUnitTests
             result.Succeeded = true;
             result.Values.Add("Test", @"{""ExternalEntityId"":""1fc563c0ae5c409d9c2a767f2bfe66b1"",""EntityCategory"":""User""}");
             Context.Success = true;
-            using (StreamReader reader = new StreamReader(BuildResponse(result)))
+            using (StreamReader reader = new StreamReader(this.BuildResponseFromResult(result)))
             {
                 Assert.AreEqual(@"{""Test"":{""ExternalEntityId"":""1fc563c0ae5c409d9c2a767f2bfe66b1"",""EntityCategory"":""User""}}", reader.ReadToEnd());
             }
@@ -165,7 +165,7 @@ namespace ApiLayerUnitTests
             string actualResult = string.Empty;
             Context.Success = false;
             Context.ErrorDetails.Message = "Fail JSON response";
-            using (StreamReader resultStream = new StreamReader(BuildResponse(new ActivityResult())))
+            using (StreamReader resultStream = new StreamReader(BuildResponseFromResult(new ActivityResult())))
             {
                 actualResult = resultStream.ReadToEnd();
             }
@@ -468,7 +468,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(postActivityRequest);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -492,7 +492,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(getActivityResponse);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(getActivityResponse);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -579,7 +579,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(postActivityRequest);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -740,7 +740,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(putActivityRequest);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -786,7 +786,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(putActivityRequest);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -908,7 +908,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(getActivityRequest);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -924,7 +924,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(getActivityRequest);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>
@@ -940,7 +940,7 @@ namespace ApiLayerUnitTests
             var reader = new StreamReader(getActivityRequest);
             string activityResponse = reader.ReadToEnd();
             Assert.IsTrue(
-                activityResponse.Contains(@"""Id"":null,""Message"":""Message Accepted and Queued successfully"""));
+                activityResponse.Contains(@"""Id"":202,""Message"":""Message Accepted and Queued successfully"""));
         }
 
         /// <summary>

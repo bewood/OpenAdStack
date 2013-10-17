@@ -37,11 +37,10 @@ namespace ApiLayerUnitTests
     [TestClass]
     public class DataServiceFixture : ServiceBase
     {
-        /// <summary>Builds the response from the activity result.</summary>
-        /// <remarks>This is the only place from which the response needs to be built.</remarks>
+        /// <summary>Implemented by derived classes to write activity results to response content streams</summary>
         /// <param name="result">Result returned from the activity</param>
-        /// <returns>Stream that contains the json response to be returned</returns>
-        protected override Stream BuildResponse(ActivityResult result)
+        /// <param name="writer">Text writer to which the response is written</param>
+        protected override void WriteResponse(ActivityResult result, TextWriter writer)
         {
             throw new NotImplementedException();
         }

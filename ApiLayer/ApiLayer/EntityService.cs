@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -30,9 +31,9 @@ using System.Text;
 using System.Web.Script.Serialization;
 using Activities;
 using DataAccessLayer;
-////using Doppler.TraceListeners;
 using EntityUtilities;
 using Microsoft.Practices.Unity;
+using Newtonsoft.Json;
 using ResourceAccess;
 using RuntimeIoc.WebRole;
 
@@ -51,7 +52,7 @@ namespace ApiLayer
         /// <summary>User Access Respository</summary>
         private static IUserAccessRepository userAccessRepository;
 
-        /// <summary>Resource Handler/// </summary>
+        /// <summary>Resource Handler</summary>
         private static IResourceAccessHandler accessResourceHandler;
 
         /// <summary>
@@ -178,10 +179,7 @@ namespace ApiLayer
             // verify caller has permission to read the subNamespace
             if (!this.CheckAuthorization("https://localhost/api/entity/{0}/{1}/{2}/{3}".FormatInvariant(parentNamespace, parentId, subNamespace, subNamespaceId), "GET"))
             {
-                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
-                WebContext.OutgoingResponse.ContentType = "application/json";
-                this.SetContextErrorState(HttpStatusCode.Unauthorized, "Access denied");
-                return WriteResultToStream(new JavaScriptSerializer().Serialize(this.Context.ErrorDetails));
+                return this.BuildErrorResponse(HttpStatusCode.Unauthorized, "Access denied");
             }
 
             NameValueCollection nameValueCollection = WebContext.IncomingRequest.UriTemplateMatch.QueryParameters;
@@ -203,10 +201,7 @@ namespace ApiLayer
             // verify caller has permission to read the subNamespace
             if (!this.CheckAuthorization("https://localhost/api/entity/{0}/{1}/{2}/{3}".FormatInvariant(parentNamespace, parentId, subNamespace, subNamespaceId), "GET"))
             {
-                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
-                WebContext.OutgoingResponse.ContentType = "application/json";
-                this.SetContextErrorState(HttpStatusCode.Unauthorized, "Access denied");
-                return WriteResultToStream(new JavaScriptSerializer().Serialize(this.Context.ErrorDetails));
+                return this.BuildErrorResponse(HttpStatusCode.Unauthorized, "Access denied");
             }
 
             NameValueCollection nameValueCollection = WebContext.IncomingRequest.UriTemplateMatch.QueryParameters;
@@ -365,9 +360,11 @@ namespace ApiLayer
         {
             if (!this.CheckAuthorization("https://localhost/api/entity/{0}/{1}".FormatInvariant(parentNamespace, parentResource), "PUT"))
             {
-                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
-                this.SetContextErrorState(HttpStatusCode.Unauthorized, "User is not authorized to update entity type: {0}, id: {1}".FormatInvariant(parentNamespace, parentResource));
-                return this.BuildResponse(null);
+                return this.BuildErrorResponse(
+                    HttpStatusCode.Unauthorized,
+                    "User is not authorized to update entity type: {0}, id: {1}",
+                    parentNamespace,
+                    parentResource);
             }
 
             return this.ProcessActivity(this.GetActivityRequestFromPostOrPut(parentNamespace, string.Empty, parentResource, "PUT", postBody, null), false);
@@ -385,9 +382,13 @@ namespace ApiLayer
         {
             if (!this.CheckAuthorization("https://localhost/api/entity/{0}/{1}/{2}/{3}".FormatInvariant(parentNamespace, parentResource, subNamespace, resourceId), "PUT"))
             {
-                WebContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
-                this.SetContextErrorState(HttpStatusCode.Unauthorized, "User is not authorized to update entity type: {0}, id: {1}, subentity type: {2}, subentity id: {3}".FormatInvariant(parentNamespace, parentResource, subNamespace, resourceId));
-                return this.BuildResponse(null);
+                return this.BuildErrorResponse(
+                    HttpStatusCode.Unauthorized, 
+                    "User is not authorized to update entity type: {0}, id: {1}, subentity type: {2}, subentity id: {3}",
+                    parentNamespace,
+                    parentResource,
+                    subNamespace,
+                    resourceId);
             }
 
             return this.ProcessActivity(this.GetActivityRequestFromSubNamespacePostOrPut(parentNamespace, parentResource, subNamespace, string.Empty, resourceId, "PUT", postBody, null), false);
@@ -419,21 +420,6 @@ namespace ApiLayer
         }
 
         /// <summary>
-        /// Creates a memory stream, writes the result, flushes and rewinds before returning the stream
-        /// </summary>
-        /// <param name="result">The result text</param>
-        /// <returns>MemoryStream containing the result</returns>
-        internal static Stream WriteResultToStream(string result)
-        {
-            var resultStream = new MemoryStream();
-            var resultWriter = new StreamWriter(resultStream, Encoding.ASCII);
-            resultWriter.Write(result);
-            resultWriter.Flush();
-            resultStream.Seek(0, SeekOrigin.Begin);
-            return resultStream;
-        }
-
-        /// <summary>
         /// try/get activity from map
         /// validate resource name, sets context success to false on failure
         /// </summary>
@@ -443,7 +429,7 @@ namespace ApiLayer
         /// <returns>activity name</returns>
         internal string TryGetActivity(string resourceNamespace, string verb, string message)
         {
-            ////Namespace is not in the map
+            // Namespace is not in the map
             string task = null;
             string requestTypeForLookup = resourceNamespace.ToUpper(CultureInfo.CurrentCulture) + ":" + verb.ToUpper(CultureInfo.CurrentCulture);
             requestTypeForLookup += string.IsNullOrWhiteSpace(message) ? string.Empty : ":" + message.ToUpper(CultureInfo.CurrentCulture);
@@ -452,7 +438,7 @@ namespace ApiLayer
                 this.SetContextErrorState(HttpStatusCode.BadRequest, "Invalid Namespace - " + resourceNamespace);
             }
 
-            ////empty name space
+            // empty name space
             if (string.IsNullOrWhiteSpace(resourceNamespace))
             {
                 this.SetContextErrorState(HttpStatusCode.BadRequest, "Empty Namespace");
@@ -690,46 +676,22 @@ namespace ApiLayer
         }
 
         /// <summary>
-        /// Builds the json response by inspecting callcontext and sets the response code
-        /// This is the only place where the response needs to be built from
-        /// </summary>
-        /// <param name="result">
-        /// Result returned from the activity
-        /// </param>
-        /// <returns>
-        /// Stream that contains the json response to be returned
-        /// </returns>
-        protected override Stream BuildResponse(ActivityResult result)
+        /// Sets the web context status code and content type then
+        /// writes the entity service results to the response
+        /// </summary>        
+        /// <param name="result">Result returned from the activity</param>
+        /// <param name="writer">Text writer to which the response is to be written</param>
+        protected override void WriteResponse(ActivityResult result, TextWriter writer)
         {
-            Stream toReturn = null;
             WebContext.OutgoingResponse.ContentType = "application/json";
             WebContext.OutgoingResponse.StatusCode = this.Context.ResponseCode;
 
-            if (this.Context.Success)
-            {
-                StringBuilder response = new StringBuilder();
-                if (result.Values != null && result.Values.Keys.Count > 0)
-                {
-                    response.Append("{");
-                    foreach (KeyValuePair<string, string> entry in result.Values)
-                    {
-                        if (entry.Key != ActivityResultProcessingTimesKey)
-                        {
-                            response.Append("\"").Append(entry.Key).Append("\"").Append(":").Append(entry.Value);
-                        }
-                    }
+            var responseJson =
+                !this.Context.Success ? JsonConvert.SerializeObject(this.Context.ErrorDetails) :
+                result.Values != null ? SerializeEntityResultValues(result.Values) :
+                string.Empty;
 
-                    response.Append("}");
-                }
-
-                toReturn = WriteResultToStream(response.ToString());
-            }
-            else
-            {
-                toReturn = WriteResultToStream(new JavaScriptSerializer().Serialize(this.Context.ErrorDetails));
-            }
-
-            return toReturn;
+            writer.Write(responseJson);
         }
 
         /// <summary>
@@ -766,7 +728,7 @@ namespace ApiLayer
                 activityRequest.QueryValues.Add(
                     nameValueCollection.AllKeys
                     .Select(key =>
-                        new KeyValuePair<string, string>(key.ToLower(CultureInfo.InvariantCulture), nameValueCollection[key])));
+                        new KeyValuePair<string, string>(key.ToLowerInvariant(), nameValueCollection[key])));
             }
 
             //// now add the entity id, a new one for creates, the exiting one for messages
@@ -828,6 +790,19 @@ namespace ApiLayer
             }
 
             return activityRequest;
+        }
+
+        /// <summary>Serializes entity result values</summary>
+        /// <remarks>Creates a JSON response including JSON values inline and serializing non-JSON values</remarks>
+        /// <param name="values">Result values</param>
+        /// <returns>Response JSON</returns>
+        private static string SerializeEntityResultValues(IDictionary<string, string> values)
+        {
+            var result = values
+                .Where(kvp => kvp.Key != ActivityResultProcessingTimesKey)
+                .Select(kvp => new KeyValuePair<string, object>(kvp.Key, TryParseJson(kvp.Value) ?? kvp.Value))
+                .ToDictionary();
+            return JsonConvert.SerializeObject(result);
         }
 
         /// <summary>

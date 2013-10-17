@@ -31,7 +31,7 @@ namespace ApiLayer
         /// <summary>
         /// Gets or sets external error id
         /// </summary>
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets error message 
