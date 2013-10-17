@@ -22,11 +22,13 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.ServiceModel.Web;
 using System.Text;
 using Activities;
 using ApiLayer;
 using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using Queuing;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
@@ -42,6 +44,24 @@ namespace ApiLayerUnitTests
     {
         /// <summary>Activity result timeout</summary>
         private const long ActivityResultTimeout = 10;
+
+        /// <summary>Mock Web contect used for testing</summary>
+        private IWebOperationContext webContextMock;
+        
+        /// <summary>Mock outgoing web response context</summary>
+        private IOutgoingWebResponseContext outgoingWebResponseContextMock;
+
+        /// <summary>
+        /// Initialize the mock queuer before each test and set the timeout values for waiting on the queue
+        /// </summary>
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            this.webContextMock = MockRepository.GenerateStub<IWebOperationContext>();
+            WebContext = this.webContextMock;
+            this.outgoingWebResponseContextMock = MockRepository.GenerateStub<IOutgoingWebResponseContext>();
+            this.webContextMock.Stub(f => f.OutgoingResponse).Return(this.outgoingWebResponseContextMock);
+        }
 
         /// <summary>
         /// Tests if RunActivity responsds with expected result
@@ -71,15 +91,11 @@ namespace ApiLayerUnitTests
         {
             ActivityResult result = new ActivityResult();
             result.Succeeded = true;
-            result.Values.Add("Test", @"{""ExternalEntityId"":""1fc563c0ae5c409d9c2a767f2bfe66b1"",""EntityCategory"":""User""}");
+            result.Values.Add("Test", "Some Value");
             Context.Success = true;
-            using (var writer = new StringWriter())
-            {
-                WriteResponse(result, writer);
-                Assert.AreEqual(
-                    @"{""Test"":{""ExternalEntityId"":""1fc563c0ae5c409d9c2a767f2bfe66b1"",""EntityCategory"":""User""}}",
-                    writer.ToString());
-            }
+            var response = this.BuildResponseFromResult(result);
+            var responseJson = new StreamReader(response).ReadToEnd();
+            Assert.AreEqual(@"{""Test"":""Some Value""}", responseJson);
         }
 
         /// <summary>
@@ -88,23 +104,19 @@ namespace ApiLayerUnitTests
         [TestMethod]
         public void BuildFailResponseTest()
         {
-            Context.Success = false;
-            Context.ErrorDetails.Message = "Fail JSON response";
-
-            using (var writer = new StringWriter())
-            {
-                WriteResponse(new ActivityResult(), writer);
-                Assert.IsTrue(writer.ToString().Contains("Fail JSON response"));
-            }
+            var response = this.BuildErrorResponse(HttpStatusCode.InternalServerError, "Fail JSON response");
+            Assert.IsFalse(Context.Success);
+            Assert.AreEqual("Fail JSON response", Context.ErrorDetails.Message);
+            var responseJson = new StreamReader(response).ReadToEnd();
+            Assert.IsTrue(responseJson.Contains("Fail JSON response"));
         }
 
-        /// <summary>Builds the response from the activity result.</summary>
-        /// <remarks>This is the only place from which the response needs to be built.</remarks>
+        /// <summary>Implemented by derived classes to write activity results to response content streams</summary>
         /// <param name="result">Result returned from the activity</param>
-        /// <returns>Stream that contains the json response to be returned</returns>
-        protected override Stream BuildResponse(ActivityResult result)
+        /// <param name="writer">Text writer to which the response is written</param>
+        protected override void WriteResponse(ActivityResult result, TextWriter writer)
         {
-            throw new NotImplementedException();
+            writer.Write(JsonConvert.SerializeObject(result.Values));
         }
     }
 }
