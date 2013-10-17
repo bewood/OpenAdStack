@@ -176,7 +176,7 @@ function getDAAllocationIndex(advertiser, campaign, campaignObject){
     }
     var indexBlobId = campaignObject.Associations.DAAllocationHistoryIndex.TargetEntityId;
     var allocationIndex = campaignJSONCall("GET", false, $RCAPI.URI.CampaignGetBlob.format(advertiser, campaign, indexBlobId));
-    return allocationIndex.Blob.sort(function(a,b){return a.AllocationStartTime > b.AllocationStartTime; });
+    return allocationIndex.Blob.sort(function (a, b) { if (a.AllocationOutputsId === b.AllocationOutputsId) { return 0; }; return a.AllocationStartTime > b.AllocationStartTime ? 1 : -1; });
 }
 
 function campaignJSONCall(messageType, async, url, data) {
