@@ -29,9 +29,9 @@
     function thisPageRender() {
         workarea.progressOn();
 
-        if (cClient.Get('Id') !== '2db94cfc39fe40ec893807fc807a77a9' && cClient.Get('Id') !== '1aa0788c10f24ab38c1e6a168ea51793') {
+        if (cClient.Get('Id') !== '2db94cfc39fe40ec893807fc807a77a9' && cClient.Get('Id') !== '80de114702b444f288b54d41bc2dd8c8') {
             var allocIndex = cClient.Get('DAAllocationIndex');
-            for (var i = 0; i < allocIndex.length; i++ ) {
+            for (var i = 0; i < allocIndex.length; i++) {
                 deliveryDataList.push($RCAPI.URI.CampaignGetBlob.format($RCUI.advertiser, $RCUI.campaign, allocIndex[i].AllocationOutputsId));
             }
         }
