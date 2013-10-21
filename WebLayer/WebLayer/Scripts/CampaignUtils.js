@@ -198,16 +198,12 @@ function routeErrors(data, errorType, errorText) {
             $RCUI.debugReport.record('accepted but not complete, please refresh the page');
             break;
         case 401:
-            authExpiration();
+            accessDenied(data, errorType, errorText);
             break;
         default:
             $RCUI.debugReport.record('Could not load campaign info: ' + errorType);
             break;
     };
-}
-
-function authExpiration() {
-    alert("Not Authorized");
 }
 
 function getMeasureInfoSetFromCampaign(camp) {

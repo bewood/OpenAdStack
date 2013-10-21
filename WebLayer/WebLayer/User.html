@@ -129,7 +129,7 @@
                 alert('Server appears to be backlogged, please try later');
                 break;
             case 401:
-                authExpiration();
+                accessDenied(data, errorType, errorText);
                 break;
             default:
                 getCompanyListFailure(data, errorType, errorText);

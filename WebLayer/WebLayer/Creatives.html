@@ -394,7 +394,7 @@
                 alert('accepted but not complete');
                 break;
             case 401:
-                authExpiration();
+                accessDenied(data, errorType, errorText);
                 break;
             default:
                 alert('fail - ' + errorType + ' - ' + errorText);
