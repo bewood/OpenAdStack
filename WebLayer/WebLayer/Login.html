@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Please Register with Rare Crowds, Inc.</title>
+    <link rel="stylesheet" type="text/css" href="./dhtml/codebase/dhtmlx.css" />
+    <link rel="stylesheet" type="text/css" href="./dhtml/codebase/dhtmlx_custom.css" /> 
+    <link rel="stylesheet" type="text/css" href="./css/basestyle.css" /> 
+    <script type="text/javascript" src="./scripts/GlobalObjects.js"></script>
+    <script type="text/javascript" src="./scripts/baselayout.js"></script>
+    <script src="https://js.live.net/v5.0/wl.js"></script>
+    <script type="text/javascript">
+        WL.init({
+            client_id: "0000000044106420",
+            redirect_uri: window.location.href,
+            scope: "wl.signin",
+            response_type: "token"
+        });
+
+        WL.getLoginStatus(
+            function (response) {
+                if (response.status == "connected") {
+                    document.location = "/";
+                }
+            });
+
+        function signin() {
+            WL.login({
+                scope: "wl.signin"
+            }).then(
+                function (response) {
+                    document.location = "/";
+                },
+                function (responseFailed) {
+                    alert("Error signing in: " + responseFailed.error_description);
+                }
+            );
+        }
+
+        function thisPageRender() {
+            workarea.attachObject("mainContent");
+        }
+    </script>
+</head>
+<body onload="pageRender(thisPageRender);">
+<div id="mainContent">
+<h1>How does Rare Crowds Dynamic Allocation Work?</h1>
+<p>
+The "rare crowd" is premium inventory that is customized to match the explicit goals of an ad campaign. 
+We can find thousands of small pockets of audience that are the most ideal available at the moment you have budget to spend. 
+The inventory we find is more targeted than any other ad inventory that you can buy at scale on any media. 
+<br /><br />
+Reach your "most perfect" available audience, extend your inventory footprint, and get much better results using Rare Crowds.  
+This simple tool only takes a few minutes to learn, and campaign setup takes less than 10 minutes.
+</p>
+    <button onclick="signin()">Sign In</button>
+</div>
+</body>
+</html>

@@ -61,6 +61,16 @@ namespace Utilities.Web
         /// <summary>Backing field for AnonymousAccessUris</summary>
         private Regex[] anonymousAccessUris;
 
+        /// <summary>Gets a value indicating whether security is enabled</summary>
+        protected static ApplicationSecurityMode SecurityMode
+        {
+            get
+            {
+                return (securityMode = securityMode ??
+                    Config.GetEnumValue<ApplicationSecurityMode>("ApplicationSecurityMode")).Value;
+            }
+        }
+
         /// <summary>Gets the runtime unity dependency container</summary>
         protected abstract IUnityContainer RuntimeIocContainer { get; }
 
@@ -93,16 +103,6 @@ namespace Utilities.Web
             {
                 return this.authorizationManager = this.authorizationManager ??
                     this.RuntimeIocContainer.Resolve<IAuthorizationManager>();
-            }
-        }
-
-        /// <summary>Gets a value indicating whether security is enabled</summary>
-        private static ApplicationSecurityMode SecurityMode
-        {
-            get
-            {
-                return (securityMode = securityMode ??
-                    Config.GetEnumValue<ApplicationSecurityMode>("ApplicationSecurityMode")).Value;
             }
         }
 
@@ -157,7 +157,6 @@ namespace Utilities.Web
             LogManager.Initialize(this.RuntimeIocContainer.ResolveAll<ILogger>());
             LogManager.Log(LogLevels.Trace, "{0}.Application_Start", this.GetType().FullName);
             PersistentDictionaryFactory.Initialize(this.RuntimeIocContainer.ResolveAll<IPersistentDictionaryFactory>());
-
             this.RegisterRoutes();
         }
 
