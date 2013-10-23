@@ -1,6 +1,8 @@
 //globals
 var header, Nav, workarea, navTree, content, footer, debugArea;
 var Toolbar;
+var WLClientId = '${WindowsLiveClientId}';
+var SignOut_Step1 = '\/SignOut.html', SignOut_Step2 = '\/SignOut.aspx';
 var $RCAPI = {
     URI: {
         UserCreate: '\/api\/entity\/user',
@@ -653,7 +655,7 @@ function JsonSort(a, b, propertyOrder, desc) {
 }
 
 function accessDenied(data, errorType, errorText) {
-    document.location = "/Login.html";
+    document.location = "/SignIn.html";
 }
 
 insertScriptTag('.\/scripts\/ApnxHandshake.js');

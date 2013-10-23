@@ -72,7 +72,7 @@ function pageRender(localPageRenderer) {
     logout.hideHeader();
 
     if (chromeOn) {
-        logout.attachHTMLString('<div style="float:right;padding:8;" onclick="location.href=\'\/LogOff.aspx\'">Logout</div>')
+        logout.attachHTMLString('<div style="float:right;padding:8;" onclick="location.href=\'' + SignOut_Step1 + '\'">Logout</div>')
     }
 
     Toolbar = navBar.attachToolbar();

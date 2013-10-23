@@ -123,7 +123,7 @@ namespace ApiLayerUnitTests
 
             this.uriTemplateMatch = new UriTemplateMatch();
             this.outgoingWebResponseContextMock = MockRepository.GenerateStub<IOutgoingWebResponseContext>();
-            this.uriTemplateMatch.BaseUri = new Uri("http://localhost/api/entity");
+            this.uriTemplateMatch.BaseUri = new Uri("http://oas.local/api/entity");
 
             this.webContextMock.Stub(f => f.IncomingRequest.UriTemplateMatch).Return(this.uriTemplateMatch);
             this.webContextMock.Stub(f => f.OutgoingResponse).Return(this.outgoingWebResponseContextMock);
@@ -598,7 +598,7 @@ namespace ApiLayerUnitTests
             var postBody = new MemoryStream(Encoding.ASCII.GetBytes(postBodyText));
             var resourceName = "User"; // use well known activity name
             PostResourceMessageHandler(resourceName, new EntityId(), string.Empty, postBody);
-            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://localhost/api/entity"));
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://oas.local/api/entity"));
         }
         
         /// <summary>
@@ -636,7 +636,7 @@ namespace ApiLayerUnitTests
             var postBody = new MemoryStream(Encoding.ASCII.GetBytes(postBodyText));
             var resourceName = "company"; // use well known activity name
             PostResourceMessageHandler(resourceName, new EntityId(), "UpdateBillingInfo", postBody);
-            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://localhost/api/entity"));
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://oas.local/api/entity"));
         }
 
         /// <summary>
@@ -656,7 +656,7 @@ namespace ApiLayerUnitTests
             var parentNamespace = "Company"; // use well known activity name
             var subNamespace = "Campaign"; // use well known activity name
             PostSubNamespaceHandler(parentNamespace, new EntityId(), subNamespace, postBody);
-            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://localhost/api/entity"));
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://oas.local/api/entity"));
         }
 
         /// <summary>
@@ -697,7 +697,7 @@ namespace ApiLayerUnitTests
             var subNamespaceId = new EntityId();
             var resourceNamespace = "Report";
             PostSubNamespaceResourceHandler(parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace);
-            var responseFragment = "http://localhost/api/entity/{0}/{1}/{2}/{3}/{4}".FormatInvariant(
+            var responseFragment = "http://oas.local/api/entity/{0}/{1}/{2}/{3}/{4}".FormatInvariant(
                 parentNamespace, parentId, subNamespace, subNamespaceId, resourceNamespace);
             Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains(responseFragment));
         }
@@ -829,7 +829,7 @@ namespace ApiLayerUnitTests
             var postBody = new MemoryStream(Encoding.ASCII.GetBytes(postBodyText));
             var parentNamespace = "Company"; // use well known activity name
             PostNamespaceHandler(parentNamespace, postBody);
-            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://localhost/api/entity"));
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://oas.local/api/entity"));
         }
 
         /// <summary>
@@ -870,7 +870,7 @@ namespace ApiLayerUnitTests
             var message = "SomeMessageName";
             PostSubNamespaceMessageHandler(
                 parentNamespace, new EntityId(), subNamespace, new EntityId(), message, postBody);
-            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://localhost/api/entity"));
+            Assert.IsTrue(this.webContextMock.OutgoingResponse.Location.Contains("http://oas.local/api/entity"));
         }
        
         /// <summary>

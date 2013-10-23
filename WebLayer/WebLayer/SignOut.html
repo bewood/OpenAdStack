@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Signing out...</title>
+    <style>
+        #signout
+        {
+            display:block;
+            height:auto;
+            font-family:sans-serif;
+            font-size:x-large;
+            text-align:center;
+            vertical-align:middle;
+        }
+        #signout img
+        {
+            position:relative;
+            top:-2px;
+            vertical-align:middle;
+            padding-right:5px;
+        }
+    </style>
+    <script type="text/javascript" src="./scripts/GlobalObjects.js"></script>
+    <script src="https://js.live.net/v5.0/wl.debug.js"></script>
+    <script type="text/javascript">
+        // Init Windows Live javascript SDK
+        WL.init({
+            client_id: WLClientId,
+            redirect_uri: window.location.href,
+            scope: "wl.signin",
+            response_type: "token"
+        });
+
+        function signout() {
+            WL.getLoginStatus(
+                function (response) {
+                    if (response.status == "connected") {
+                        WL.logout().then(
+                            function (response) {
+                                document.location = SignOut_Step2;
+                            },
+                            function (response) {
+                                alert("Error signing out: " + JSON.stringify(response) + "\n" + WLClientId);
+                                document.location = SignOut_Step2;
+                            });
+                    }
+                });
+        }
+    </script>
+</head>
+<body onload="signout();">
+    <img src="./images/rclogo.png" height="30" width="255" />
+    <div id="signout"><img src="images/progress.gif" />Signing out...</div>
+</body>
+</html>

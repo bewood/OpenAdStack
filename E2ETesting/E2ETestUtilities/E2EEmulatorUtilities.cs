@@ -70,7 +70,7 @@ namespace E2ETestUtilities
             }
 
             // Wait until the web role responds with something other than 404
-            var testClient = new RestTestClient("https://localhost/");
+            var testClient = new RestTestClient("https://oas.local/");
             var emulatorStartupTimeout = DateTime.UtcNow.AddSeconds(EmulatorStartupTimeoutSeconds);
             while (true)
             {

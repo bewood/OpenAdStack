@@ -75,6 +75,7 @@ must be replaced with a reference to this file:
     <AfterBuildDependsOn>
       ProjectAfterBuild;
       EnvironmentConfigTransform;
+      DetokenizeJavascript;
       CopyWebApplicationOutput;
       StyleCop;
       FxCop;
@@ -195,7 +196,36 @@ must be replaced with a reference to this file:
                                                  CommandLineValues="$(ProjectTokens)"
                                                  ReplacementValues="@(TokenValues)"/>
   </Target>
-
+  
+  <!--
+  ==============================================================
+  Detokenise javascript files in web projects
+  Token format is ${Token} and found in the EnvironmentSettings
+  ==============================================================
+  -->
+  <Target Name="DetokenizeJavascript" Condition="$(ProjectTypeGuids.Contains('$(WebApplicationProjectTypeGuid)'))">
+      <Message Importance="high" Text="Detokenizing javascript files with values from '$(EnvironmentSettings)'" />
+    <ItemGroup>
+      <Javascript Include="$(WebProjectOutputDir)\**\*.js" />
+    </ItemGroup>
+    <PropertyGroup>
+      <TokenExtractionPattern>(?&lt;=\$\{)[0-9a-zA-Z-._]+(?=\})</TokenExtractionPattern>
+      <TokenPattern>\$\{[0-9a-zA-Z-._]+\}</TokenPattern>
+    </PropertyGroup>
+    <MSBuild.ExtensionPack.FileSystem.Detokenise Condition="'@(Javascript)'!=''"
+                                                 TaskAction="Analyse"
+                                                 TargetFiles="@(Javascript)"
+                                                 DisplayFiles="True"
+                                                 TokenExtractionPattern="$(TokenExtractionPattern)"
+                                                 TokenPattern="$(TokenPattern)"/>
+    <MSBuild.ExtensionPack.FileSystem.Detokenise Condition="'@(Javascript)'!=''"
+                                                 TaskAction="Detokenise"
+                                                 TargetFiles="@(Javascript)"
+                                                 DisplayFiles="True"
+                                                 TokenExtractionPattern="$(TokenExtractionPattern)"
+                                                 TokenPattern="$(TokenPattern)"/>
+  </Target>
+  
   <!--
   ==============================================================
   Run code analysis

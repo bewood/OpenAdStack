@@ -98,8 +98,7 @@
     <Content Include="Global.asax" />
     <Content Include="JSON.html" />
     <Content Include="JSONFormatter.html" />
-    <Content Include="Login.html" />
-    <Content Include="LogOff.aspx" />
+    <Content Include="SignIn.aspx" />
     <Content Include="Overrides.html" />
     <Content Include="PersonaCreate.html" />
     <Content Include="Ping.html" />
@@ -109,6 +108,9 @@
     <Content Include="Report.html" />
     <Content Include="ReportDelivery.html" />
     <Content Include="ReportDeliverySA.html" />
+    <Content Include="SignIn.html" />
+    <Content Include="SignOut.aspx" />
+    <Content Include="SignOut.html" />
     <Content Include="User.html" />
     <Content Include="UserPermissionTreeGrid.htm" />
     <Content Include="UserVerification.html" />
@@ -119,7 +121,17 @@
   <ItemGroup>
     <Content Include="CSS\**\*" />
     <Content Include="dhtml\**\*" />
-    <Content Include="images\**\*" />
+    <Content Include="images\blank.gif" />
+    <Content Include="images\Forward.png" />
+    <Content Include="images\ForwardToEnd.png" />
+    <Content Include="images\padlock-closed.png" />
+    <Content Include="images\padlock-open.png" />
+    <Content Include="images\progress.gif" />
+    <Content Include="images\rclogo.png" />
+    <Content Include="images\Rewind.png" />
+    <Content Include="images\RewindToStart.png" />
+    <Content Include="images\StartPause.png" />
+    <Content Include="images\rclogo-wlid.gif" />
     <Content Include="Jquery\**\*" />
     <Content Include="Scripts\**\*" />
   </ItemGroup>
@@ -127,14 +139,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="LogOff.aspx.cs">
-      <DependentUpon>LogOff.aspx</DependentUpon>
+    <Compile Include="SignIn.aspx.cs">
+      <DependentUpon>SignIn.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="LogOff.aspx.designer.cs">
-      <DependentUpon>LogOff.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignOut.aspx.cs">
+      <DependentUpon>SignOut.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

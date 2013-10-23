@@ -39,7 +39,7 @@
       <Setting name="ApplicationSecurityMode" value="AcsTokens" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="Website SSL" thumbprint="9F430E1E4BFD24CD6872CD4D894300C18017C008" thumbprintAlgorithm="sha1" />
+      <Certificate name="Website SSL" thumbprint="643d208e282259c3c350314d2b7ea81949b1c4d5" thumbprintAlgorithm="sha1" />
       <Certificate name="Intermediate CA" thumbprint="3E4B4FBD77E5A8A89D58E835B9652E8BCFA2C3FA" thumbprintAlgorithm="sha1" />
       <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="8FE52936F15FCBAE28B77738AE28752E08048825" thumbprintAlgorithm="sha1" />
     </Certificates>

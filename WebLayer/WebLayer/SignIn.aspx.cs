@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LogOff.aspx.cs" company="Rare Crowds Inc">
+// <copyright file="SignIn.aspx.cs" company="Rare Crowds Inc">
 // Copyright 2012-2013 Rare Crowds, Inc.
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,36 +17,18 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Security;
-using System.Threading;
-using ConfigManager;
-////using Microsoft.IdentityModel.Web;
+using System.Web.UI;
 
 namespace WebLayer
 {
-    /// <summary>
-    /// Class to manage logging off
-    /// </summary>
-    public partial class LogOff : System.Web.UI.Page
+    /// <summary>Page to manage signing in</summary>
+    public partial class SignIn : Page
     {
-        /// <summary>
-        /// Event that occurs when the page loads
-        /// </summary>
+        /// <summary>Event that occurs when the page loads</summary>
         /// <param name="sender">sender of this event</param>
         /// <param name="e">event arguments</param>
         protected void Page_Load(object sender, EventArgs e)
         {
-            /*
-            // Erase session cookies
-            WSFederationAuthenticationModule authModule = FederatedAuthentication.WSFederationAuthenticationModule;
-            authModule.SignOut(true);
-            Response.Cookies.Clear(); 
-
-            // Pause for 3 seconds so the user can see the message on the page. (Message is that the user will be logged off)
-            Thread.Sleep(3000);
-            */
-            Response.Redirect(Config.GetValue("WL.WLIDLogOffUrl"), true);
         }
     }
 }

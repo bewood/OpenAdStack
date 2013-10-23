@@ -57,7 +57,7 @@ echo Deploying to devfabric...
 echo.
 
 echo Launching browser...
-start https://localhost/
+start https://oas.local/
 
 echo Done.
 popd

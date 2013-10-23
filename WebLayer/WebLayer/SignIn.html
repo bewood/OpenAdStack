@@ -9,35 +9,39 @@
     <script type="text/javascript" src="./scripts/baselayout.js"></script>
     <script src="https://js.live.net/v5.0/wl.js"></script>
     <script type="text/javascript">
-        WL.init({
-            client_id: "0000000044106420",
-            redirect_uri: window.location.href,
-            scope: "wl.signin",
-            response_type: "token"
-        });
+        // Render the page
+        function thisPageRender() {
+            workarea.attachObject("mainContent");
 
+            // Init Windows Live javascript SDK
+            WL.init({
+                client_id: WLClientId,
+                redirect_uri: window.location.href,
+                scope: "wl.signin",
+                response_type: "token"
+            });
+        }
+
+        // If already signed in immediately redirect through ACS
         WL.getLoginStatus(
             function (response) {
                 if (response.status == "connected") {
-                    document.location = "/";
+                    document.location = "SignIn.aspx";
                 }
             });
 
+        // Display the Windows Live signin UI
         function signin() {
             WL.login({
                 scope: "wl.signin"
             }).then(
                 function (response) {
-                    document.location = "/";
+                    document.location = "SignIn.aspx";
                 },
                 function (responseFailed) {
                     alert("Error signing in: " + responseFailed.error_description);
                 }
             );
-        }
-
-        function thisPageRender() {
-            workarea.attachObject("mainContent");
         }
     </script>
 </head>
