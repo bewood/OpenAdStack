@@ -65,5 +65,20 @@ namespace ApiLayer
         {
             get { return RuntimeIoc.WebRole.RuntimeIocContainer.Instance; }
         }
+
+        /// <summary>Global end request handler</summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event args</param>
+        protected void Application_EndRequest(object sender, EventArgs e)
+        {
+            // Convert ACS login redirects to 401 responses
+            if (this.Context.Response.StatusCode == 302 &&
+                this.Context.Response.RedirectLocation != null &&
+                this.Context.Response.RedirectLocation.ToLowerInvariant().Contains(".accesscontrol."))
+            {
+                this.Context.Response.StatusCode = 401;
+                this.Context.Response.RedirectLocation = null;
+            }
+        }
     }
 }

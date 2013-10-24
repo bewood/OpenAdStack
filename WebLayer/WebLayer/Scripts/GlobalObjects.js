@@ -656,4 +656,8 @@ function JsonSort(a, b, propertyOrder, desc) {
     }
 }
 
+function accessDenied(data, errorType, errorText) {
+    document.location = "/";
+}
+
 insertScriptTag('.\/scripts\/ApnxHandshake.js');

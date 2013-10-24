@@ -137,7 +137,7 @@
     function routePostErrors(data, errorType, errorText) {
         switch (data.status) {
             case 401:
-                authExpiration();
+                accessDenied(data, errorType, errorText);
                 break;
             default:
                 getCompanyListFailure(data, errorType, errorText);
@@ -151,7 +151,7 @@
                 getCompanyListPending(data, errorType, errorText);
                 break;
             case 401:
-                authExpiration();
+                accessDenied(data, errorType, errorText);
                 break;
             default:
                 getCompanyListFailure(data, errorType, errorText);
@@ -161,10 +161,6 @@
 
     function getCompanyListFailure(data, errorType, errorText) {
         alert(errorType + ' - ' + errorText + ' - ' + JSON.stringify(data));
-    }
-
-    function authExpiration(data, errorType, errorText) {
-        alert('Auth Expiration - ' + errorType + ' - ' + errorText + ' - ' + JSON.stringify(data));
     }
 
     function getCompanyListPending(data, errorType, errorText) {
