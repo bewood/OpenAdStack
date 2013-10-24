@@ -108,6 +108,7 @@
     <Content Include="Report.html" />
     <Content Include="ReportDelivery.html" />
     <Content Include="ReportDeliverySA.html" />
+    <Content Include="ReportHistory.html" />
     <Content Include="SignIn.html" />
     <Content Include="SignOut.aspx" />
     <Content Include="SignOut.html" />
@@ -121,17 +122,7 @@
   <ItemGroup>
     <Content Include="CSS\**\*" />
     <Content Include="dhtml\**\*" />
-    <Content Include="images\blank.gif" />
-    <Content Include="images\Forward.png" />
-    <Content Include="images\ForwardToEnd.png" />
-    <Content Include="images\padlock-closed.png" />
-    <Content Include="images\padlock-open.png" />
-    <Content Include="images\progress.gif" />
-    <Content Include="images\rclogo.png" />
-    <Content Include="images\Rewind.png" />
-    <Content Include="images\RewindToStart.png" />
-    <Content Include="images\StartPause.png" />
-    <Content Include="images\rclogo-wlid.gif" />
+
     <Content Include="Jquery\**\*" />
     <Content Include="Scripts\**\*" />
   </ItemGroup>
