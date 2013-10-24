@@ -122,7 +122,7 @@
   <ItemGroup>
     <Content Include="CSS\**\*" />
     <Content Include="dhtml\**\*" />
-
+    <Content Include="images\**\*" />
     <Content Include="Jquery\**\*" />
     <Content Include="Scripts\**\*" />
   </ItemGroup>
