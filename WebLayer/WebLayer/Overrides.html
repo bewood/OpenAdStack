@@ -179,6 +179,11 @@
             }
         }
 
+        function removeAllOverrides() {
+            $RCUI.isDirty = true;
+            campaignData.NodeValuations=[];
+        }
+
         function disableNext() {
             editWindow.close();
         }
@@ -294,6 +299,7 @@
                 { type: "button", name: "Reset", width: 55, value: 'Reset' }
                 ]},
             { type: "button", name: "Save", width: 200, value: 'Save and Recalculate Valuations' },
+            { type: "button", name: "ResetAll", width: 200, value: 'Reset all valuations' }
             ];
             overrideFrom = new dhtmlXForm("OverrideForm");
             overrideFrom.setSkin("dhx_web");
@@ -312,11 +318,16 @@
                     removeOverride();
                     visualizerObject.ShowValuationGraph(campaignData.Valuations, sortByTier, getValuationCalcTypeColor);
                     break;
+                case 'ResetAll':
+                    removeAllOverrides();
+                    updateCampaignWithNewOverrides();
+                    location.reload(false);
+                    break;
                 case 'Save':
                     if ($RCUI.isDirty) {
                         updateCampaignWithNewOverrides();
                     }
-                    location.href = location.href;
+                    location.reload(false);
                     break;
             }
         }

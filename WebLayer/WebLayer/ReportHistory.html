@@ -125,6 +125,7 @@
       if (cClient.Get('Status') === 'Approved' && Date.parseISO(cClient.Get('StartDate')) > Date.now()){
         campaignJSONCall("POST", false, $RCAPI.URI.CampaignReportList.format($RCUI.advertiser,$RCUI.campaign), null);
         alert('Report Requested, this can take several minutes. Please return to the reports tab later.');
+        location.reload(false);
       }
       else {
         alert('Campaign is currently not running, please return later.');
