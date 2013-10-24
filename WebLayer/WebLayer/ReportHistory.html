@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Page</title>
+    <link rel="stylesheet" type="text/css" href="./dhtml/codebase/dhtmlx.css" />
+    <link rel="stylesheet" type="text/css" href="./dhtml/codebase/dhtmlx_custom.css" /> 
+    <link rel="stylesheet" type="text/css" href="./css/basestyle.css" /> 
+
+    <script type="text/javascript" src="./scripts/GlobalObjects.js"></script>
+    <script type="text/javascript" src="./scripts/wizardlayout.js"></script>
+    <script type="text/javascript" src="./scripts/CampaignUtils.js"></script>
+    
+    <!-- Page Scoped Functions --> 
+    <script type="text/javascript">
+    //page globals
+    helpTopic = "Reports";
+    var reportNameDict = {"ClientCampaignBilling":"Standard Campaign Report"};
+    var reportListGrid, reportGrid, reportCell, reportListCell;
+    function pageExit() {
+        return true;
+    }
+
+    function ReportListJsonToGridArray(reportListJson) {
+      var gridArray = {rows: [] };
+      for (var item in reportListJson) {
+        var row = {
+                  id: reportListJson[item].ReportEntityId,
+                  data: [reportNameDict[reportListJson[item].ReportType],
+                        Date.parseISO(reportListJson[item].ReportDate).toLocaleString()]
+                  };
+        gridArray.rows.push(row);
+      }
+      return gridArray;
+    }
+
+    function thisPageRender() {
+      workarea.progressOn();
+      setupReportGrids(workarea);
+      var reportList;
+      if ($RCUI.campaign === '80de114702b444f288b54d41bc2dd8c8' || 
+            $RCUI.campaign === '2db94cfc39fe40ec893807fc807a77a9'){
+        reportList = campaignJSONCall("GET", false, '/scripts/sim/reportlist.js', null);
+      }
+      else {
+        reportList = cClient.Get('ReportIndex');
+      }
+      if (reportList.Reports.length === 0){
+        var FormJson = [{ type: 'button', 
+                          name: 'requestReport', 
+                          width: 125, 
+                          value: 'Request a Report' }];
+        var requestForm = reportListCell.attachForm();
+        requestForm.loadStruct(FormJson, 'json');
+        requestForm.setSkin('dhx_web');
+        requestForm.attachEvent('onButtonClick', requestReport);
+      }
+      else {
+        loadGrid(reportList.Reports, reportListGrid);
+      }
+      workarea.progressOff();
+    }
+
+    //display routines
+    function setupReportGrids(layoutCell){
+      var reportLayout = layoutCell.attachLayout("2U");
+      reportListCell = reportLayout.cells('a');
+      reportCell = reportLayout.cells('b');
+      reportListGrid = reportListCell.attachGrid();
+      reportListCell.hideHeader();
+      reportListCell.setWidth(475);
+      reportListCell.fixSize(1,1);
+      reportCell.hideHeader();
+    }
+    
+    function loadGrid(reportList, listGrid) {
+      //Report List Grid formatting and population
+      var menu = new dhtmlXMenuObject();
+      menu.renderAsContextMenu();
+      menu.addNewChild(null, 0, "0", "Request Report", false);
+      menu.attachEvent("onClick", requestReport);
+      listGrid.setHeader("Report Name,Date,Id");
+      listGrid.setColAlign("left,left");                
+      listGrid.setInitWidths("225,*");
+      listGrid.setColSorting("str,str,str");
+      listGrid.setColTypes("ro,ro,ro");
+      listGrid.setColumnsVisibility("false,false,true");
+      listGrid.enableRowsHover(true, "highlight");
+      listGrid.attachEvent('onRowSelect', navToReport);
+      listGrid.enableContextMenu(menu);
+      listGrid.init();
+      listGrid.setSkin("dhx_web");
+      listGrid.parse(ReportListJsonToGridArray(reportList), "json");
+      listGrid.sortRows(1);
+    }
+
+    function navToReport(rowId) {
+      reportCell.detachObject();
+      var menu = new dhtmlXMenuObject();
+      menu.renderAsContextMenu();
+      menu.addNewChild(null, 0, "0", "Show TSV", false);
+      menu.attachEvent("onClick", showTSV);
+      reportGrid = reportCell.attachGrid();
+      reportArray = getReportArray(rowId);
+      reportGrid.setHeader(reportArray[0].join(','));
+      reportArray.shift(); //remove header row
+      reportGrid.enableContextMenu(menu);
+      reportGrid.setColumnsVisibility("true,true,true,false,false,true,false,false,true,true,false,true,true,true,true,true,true,false,false");
+      reportGrid.setInitWidths("*,*,*,*,*,*,*");
+      reportGrid.init();
+      var minCol = 18;
+      var currentCol = reportGrid.getColumnsNum()-1;
+      while (currentCol > minCol) {
+        reportGrid.setColumnHidden(currentCol,true);
+        currentCol--;
+      }
+      reportGrid.setSkin("dhx_web");
+      reportGrid.enableSmartRendering(true);
+      reportGrid.parse(reportArray, "jsarray");
+      reportGrid.setCSVDelimiter('\t');
+      reportGrid.enableCSVHeader(true);
+      reportGrid.sortRows(1);
+    }
+    
+    function requestReport(){
+      if (cClient.Get('Status') === 'Approved' && Date.parseISO(cClient.Get('StartDate')) > Date.now()){
+        campaignJSONCall("POST", false, $RCAPI.URI.CampaignReportList.format($RCUI.advertiser,$RCUI.campaign), null);
+        alert('Report Requested, this can take several minutes. Please return to the reports tab later.');
+      }
+      else {
+        alert('Campaign is currently not running, please return later.');
+      }
+    }    
+    
+    function showTSV(){
+      var dxWins = new dhtmlXWindows();
+      var tsvWindow = dxWins.createWindow("tsv",0,0,workarea.getWidth(),workarea.getHeight());
+      tsvWindow.attachObject(tsvWindowHtml());
+      tsvWindow.setText('Select the text below, then Cut & Paste into Excel');
+      var tsvView = document.getElementById('tsvView');
+      tsvView.value = reportGrid.serializeToCSV();
+      return true;
+    }    
+    
+    function tsvWindowHtml(){
+      var div = document.createElement('div');
+      div.setAttribute('id','tsvDiv');
+      div.setAttribute('style','width:100%;height:100%;display:none;');
+      var textArea = document.createElement('textarea');
+      textArea.setAttribute('id','tsvView');
+      textArea.setAttribute('style','font-size:8pt;font:Tahoma;width:100%;height:100%');
+      div.appendChild(textArea);
+      return div;
+    }
+
+    function getReportArray(reportId) {
+      var reportUrl = $RCAPI.URI.CampaignReport.format($RCUI.advertiser,$RCUI.campaign,reportId);
+      if ($RCUI.campaign === '80de114702b444f288b54d41bc2dd8c8' || 
+            $RCUI.campaign === '2db94cfc39fe40ec893807fc807a77a9'){
+        reportUrl = 'scripts/sim/report.js';
+      }
+      var rawReportJson = campaignJSONCall("GET", false, reportUrl, null);
+      var rawReportArray = rawReportJson.ReportData.split('\r\n');
+      var reportArray = [];
+      for (i=0; i<rawReportArray.length; i++){
+        reportArray.push(rawReportArray[i].split(','));
+      }
+      return reportArray;
+    }
+</script>
+</head>
+<body onload="pageRender(thisPageRender);">
+</body>
+</html>
