@@ -1,14 +1,14 @@
-﻿function CampaignClient(company, campaign, campaginSchemaDictionary) {
+function CampaignClient(company, campaign, campaginSchemaDictionary) {
     //assumes global reference to JSONPath
     var Now = new Date();
-    var campaignObject = { ExternalName: 'New Campaign', Properties: { Budget: 0.00, CPM: 0.00, StartDate: Now.toISOString(), EndDate: Now.toISOString(), Status: 'Draft', InventoryStrategy: 2} }
+    var campaignObject = { ExternalName: 'New Campaign', Properties: { Budget: 0.00, CPM: 0.00, StartDate: Now.toISOString(), EndDate: Now.toISOString(), Status: 'Draft', InventoryStrategy: 2} };
 
-    if (company != null && campaign != null) {
+    if (company !== null && campaign !== null) {
         campaignObject = getCachedCampaign(company, campaign);
     }
 
     var isDirty = false;
-    this.Save = function () { saveCampaign(); return campaignObject };
+    this.Save = function () { saveCampaign(); return campaignObject; };
     this.Refresh = function () { getCampaignFromServerAndUpdateCache(company, campaign); campaignObject = getCachedCampaign(company, campaign); return true; };
     this.Campaign = function () { return campaignObject; };
     this.Set = function (key, value) { return trySetProperty(key, value); };
@@ -18,12 +18,12 @@
     function saveCampaign() {
         var verb = "PUT";
         var url = $RCAPI.URI.CampaignUpdate.format(company, campaign);
-        if (tryGetProperty("Id") == undefined) {
+        if (tryGetProperty("Id") === undefined || tryGetProperty("Id") === null) {
             verb = "POST";
             url = $RCAPI.URI.CampaignCreate.format(company);
         }
         var campaignAjaxResponse = new $RCAjax(url, JSON.stringify(campaignObject), verb, null, null, false, null, routeErrors);
-        if (verb == "POST") {
+        if (verb === "POST") {
             campaignObject = campaignAjaxResponse.responseData.Campaign;
         }
         else {
@@ -36,15 +36,15 @@
         var schemaVersion = 0;
         var propertyValue = null;
         if (campaginSchemaDictionary[schemaVersion][key].IsPath) { //if schema key is a property or likely an association or requiries other JS to fetch the property
-            propertyValue = jsonPath(campaignObject, '$.' + campaginSchemaDictionary[schemaVersion][key].value)
+            propertyValue = jsonPath(campaignObject, '$.' + campaginSchemaDictionary[schemaVersion][key].value);
             propertyValue = propertyValue ? propertyValue[0] : null; 
         }
         else {
             propertyValue = campaginSchemaDictionary[schemaVersion][key].value(company, campaign, campaignObject);
         }
-        while (propertyValue == null && schemaVersion < campaginSchemaDictionary.length - 1) {
+        while (propertyValue === null && schemaVersion < campaginSchemaDictionary.length - 1) {
             schemaVersion++;
-            if (campaginSchemaDictionary[schemaVersion][key] != undefined) {
+            if (campaginSchemaDictionary[schemaVersion][key] !== undefined) {
                 if (jsonPath(campaignObject, '$.' + campaginSchemaDictionary[schemaVersion][key].IsPath)) {
                     propertyValue = jsonPath(campaignObject, '$.' + campaginSchemaDictionary[schemaVersion][key].value);
                     propertyValue = propertyValue ? propertyValue[0] : null;
@@ -62,7 +62,7 @@
     }
 
     function trySetProperty(key, val) {
-        if (campaginSchemaDictionary[0][key].value == undefined) {
+        if (campaginSchemaDictionary[0][key].value === undefined) {
             return false; //not known in the schema
         }
         isDirty = true;
@@ -70,16 +70,16 @@
         var nodes = path.split('.');
 // TODO make this support N-depth and encapsulate the functionality
 
-        if (nodes.length >= 1 && campaignObject[nodes[0]] == undefined) {
+        if (nodes.length >= 1 && campaignObject[nodes[0]] === undefined) {
             campaignObject[nodes[0]] = {};
         }
-        if (nodes.length >= 2 && campaignObject[nodes[0]][nodes[1]] == undefined) {
+        if (nodes.length >= 2 && campaignObject[nodes[0]][nodes[1]] === undefined) {
             campaignObject[nodes[0]][nodes[1]] = {};
         }
-        if (nodes.length >= 3 && campaignObject[nodes[0]][nodes[1]][nodes[2]] == undefined) {
+        if (nodes.length >= 3 && campaignObject[nodes[0]][nodes[1]][nodes[2]] === undefined) {
             campaignObject[nodes[0]][nodes[1]][nodes[2]] = {};
         }
-        if (nodes.length >= 4 && campaignObject[nodes[0]][nodes[1]][nodes[2]][nodes[3]] == undefined) {
+        if (nodes.length >= 4 && campaignObject[nodes[0]][nodes[1]][nodes[2]][nodes[3]] === undefined) {
             campaignObject[nodes[0]][nodes[1]][nodes[2]][nodes[3]] = {};
         }
         // TODO make this support N-depth and encapsulate the functionality
@@ -118,7 +118,7 @@
 
         //Check to see if the cached item is the one we are looking for
         try {
-            if (campaignId != JSON.parse(sessionStorage.getItem(sessionCampaignKey)).campaign.Campaign.ExternalEntityId) {
+            if (campaignId !== JSON.parse(sessionStorage.getItem(sessionCampaignKey)).campaign.Campaign.ExternalEntityId) {
                 getCampaignFromServerAndUpdateCache(companyId, campaignId);
             }
             return JSON.parse(sessionStorage.getItem(sessionCampaignKey)).campaign.Campaign;
@@ -142,7 +142,6 @@
 }
 ////END of campaign client
 
-
 var campaignSchema = [
 {
     Budget: { IsPath: true, value: "Properties.Budget" },
@@ -158,26 +157,36 @@ var campaignSchema = [
     MeasureInfoSet: { IsPath: true, value: "Properties.MeasureInfoSet" },
     NodeValuationSet: { IsPath: true, value: "Properties.NodeValuationSet" },
     DAAllocationIndex: { IsPath: false, value: getDAAllocationIndex },
+    ReportIndex: { IsPath: false, value: getReportIndex },
     DAApprovedVersion: { IsPath: true, value: "Properties.DAInputsApprovedVersion" }
 },
 {
     MeasureInfoSet: { IsPath: false, value: getEmptyMeasureInfoSet },
-    NodeValuationSet: { IsPath: false, value: function (a, b, c) { return [] } }
+    NodeValuationSet: { IsPath: false, value: function () { return []; } }
 }
 ];
+//campaign schema helpers
+function getReportIndex(advertiser, campaign, campaignObject) {
+    return campaignJSONCall("GET", false, $RCAPI.URI.CampaignReportList.format(advertiser, campaign));
+}
 
-function getEmptyMeasureInfoSet(advertiser, campaign, campaignObject) {
+function getCalculatedValuationList(companyId, campaignId) {
+    return campaignJSONCall("GET", false, $RCAPI.URI.CampaignGetValuationPending.format(companyId, campaignId));
+}
+
+function getEmptyMeasureInfoSet() {
     return { IdealValuation: 0, MaxValuation: 0, Measures: [] };
 }
 
 function getDAAllocationIndex(advertiser, campaign, campaignObject){
-    if (campaignObject.Associations == undefined || campaignObject.Associations.DAAllocationHistoryIndex == undefined) {
+    if (campaignObject.Associations === undefined || campaignObject.Associations.DAAllocationHistoryIndex === undefined) {
         return null;
     }
     var indexBlobId = campaignObject.Associations.DAAllocationHistoryIndex.TargetEntityId;
     var allocationIndex = campaignJSONCall("GET", false, $RCAPI.URI.CampaignGetBlob.format(advertiser, campaign, indexBlobId));
     return allocationIndex.Blob.sort(function (a, b) { if (a.AllocationOutputsId === b.AllocationOutputsId) { return 0; }; return a.AllocationStartTime > b.AllocationStartTime ? 1 : -1; });
 }
+//end schema helpers
 
 function campaignJSONCall(messageType, async, url, data) {
     var companyAjax = new $RCAjax(url, data, messageType, null, null, async, null, routeErrors);
@@ -186,10 +195,6 @@ function campaignJSONCall(messageType, async, url, data) {
 
 function getCampaignList(companyId) {
     return campaignJSONCall("GET", false, $RCAPI.URI.CampaignCampaignForCompany.format(companyId));
-}
-
-function getCalculatedValuationList(companyId, campaignId) {
-    return campaignJSONCall("GET", false, $RCAPI.URI.CampaignGetValuationPending.format(companyId, campaignId));
 }
 
 function routeErrors(data, errorType, errorText) {
@@ -230,14 +235,14 @@ function getGroupedValuations() {
     var MeasureInfoSet = getMeasuresFromCampaign(cClient);
     for (var i = 0; i < MeasureInfoSet.length; i++) {
         topGroup = MeasureInfoSet[i].pinned ? "Pinned" : "UnPinned";
-        groupName = MeasureInfoSet[i].group == "" ? "_" : MeasureInfoSet[i].group;
+        groupName = MeasureInfoSet[i].group === "" ? "_" : MeasureInfoSet[i].group;
         escGroupName = groupName.replace(' ', '_');
 
-        if (groupedMeasures[topGroup] == undefined) {
+        if (groupedMeasures[topGroup] === undefined) {
             groupedMeasures[topGroup] = {};
         }
 
-        if (groupedMeasures[topGroup][escGroupName] == undefined) {
+        if (groupedMeasures[topGroup][escGroupName] === undefined) {
             groupedMeasures[topGroup][escGroupName] = { Name: groupName, Measures: new Array };
         }
 
@@ -253,7 +258,7 @@ function getGroupedValuations() {
 //lookup display name for the measure
 function getMeasureDisplayName(measureId) {
     var measureMapping = cachedMeasureMap.Get(measureId);
-    if (measureMapping == undefined) {
+    if (measureMapping === undefined) {
         return "**Measure not found** (" + measureId + ")";
     }
     return measureMapping.displayName.replace(/:/g, ": ");
@@ -263,7 +268,7 @@ function getMeasureValuation(measureId) {
     var valuationList = getMeasuresFromCampaign(cClient);
     var valuation = 50;
     for (var i = 0; i < valuationList.length; i++) {
-        if (valuationList[i].measureId == measureId) {
+        if (valuationList[i].measureId === measureId) {
             valuation = valuationList[i].valuation;
             break;
         }
@@ -284,12 +289,12 @@ function getTierCount(measures) {
     var groupedMeasures = jsonPath(measures, '$.[?(@.group != "" && @.group != undefined && @.pinned == false)]');
     var tempBucket = ',';
     for (var measure in groupedMeasures) {
-        if (tempBucket.indexOf(',' + groupedMeasures[measure].group + ',') == -1) {
+        if (tempBucket.indexOf(',' + groupedMeasures[measure].group + ',') === -1) {
             count++;
             tempBucket = tempBucket + groupedMeasures[measure].group + ',';
         }
     }
-    if (count == 0 && measures.length > 0) { count = 1;}
+    if (count === 0 && measures.length > 0) { count = 1;}
     return count;
 }
 
@@ -304,15 +309,15 @@ var cClient;
 var measureArray;
 var cachedMeasureMap;
 function initializeCampaignClient() {
-    if (getQueryString()['campaign'] != undefined) {
+    if (getQueryString()['campaign'] !== undefined) {
         cClient = new CampaignClient($RCUI.advertiser, $RCUI.campaign, campaignSchema);
         //get domain data for measures
-        measureArray = jsonPath(getMeasuresFromCampaign(cClient), '$..measureId')
-        var measuresAsString = measureArray ? measureArray.join(',') : ''
+        measureArray = jsonPath(getMeasuresFromCampaign(cClient), '$..measureId');
+        var measuresAsString = measureArray ? measureArray.join(',') : '';
         cachedMeasureMap = new lazyDictionary('', 3000, measuresAsString);
     }
     else {
-        cClient = new CampaignClient($RCUI.advertiser, null, campaignSchema)
+        cClient = new CampaignClient($RCUI.advertiser, null, campaignSchema);
     }
 }
 
@@ -321,7 +326,7 @@ function getGroupNames(GroupedMeasures) {
     for (var measure in GroupedMeasures) {
         var found = false;
         for (var group in GroupNames) {
-            if (GroupedMeasures[measure].group == GroupNames[group]) {
+            if (GroupedMeasures[measure].group === GroupNames[group]) {
                 found = true;
                 break;
             }
@@ -332,4 +337,3 @@ function getGroupNames(GroupedMeasures) {
     }
     return GroupNames;
 }
-

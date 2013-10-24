@@ -60,7 +60,7 @@ function pageRender(localPageRenderer) {
     header.fixSize(1, 1);
     header.setWidth(250);
     header.hideHeader();
-    header.attachHTMLString('<img src=".\/images\/rclogo.png" height="30" width="235" \/>')
+    header.attachHTMLString('<img src=".\/images\/rclogo.png" height="30" width="235" \/>');
 
     var navBar = navLayout.cells('b');
     navBar.fixSize(1, 1);
@@ -72,7 +72,7 @@ function pageRender(localPageRenderer) {
     logout.hideHeader();
 
     if (chromeOn) {
-        logout.attachHTMLString('<div style="float:right;padding:8;" onclick="location.href=\'\/LogOff.aspx\'">Logout</div>')
+        logout.attachHTMLString('<div style="float:right;padding:8;" onclick="location.href=\'\/LogOff.aspx\'">Logout</div>');
     }
 
     Toolbar = navBar.attachToolbar();
@@ -106,7 +106,7 @@ function pageRender(localPageRenderer) {
     }
     footerHTML.innterHTML = '';
     var preCache = ''; //used to precache the measures.js file
-    if (getQueryString()['advertiser'] != undefined && getQueryString()['campaign'] != undefined) {
+    if (getQueryString()['advertiser'] !== undefined && getQueryString()['campaign'] !== undefined) {
         preCache += '<img style="display:none" height="1" width="1" src="\/api\/data\/measures.xml?mode=all&company={0}&campaign={1}" \/>'.format(getQueryString()['advertiser'], getQueryString()['campaign']);
     }
     footerHTML.innerHTML += '<div id="rcFooter" width="20%" style="float:left;">EULA | Privacy | Contact Us<\/div>';
@@ -118,15 +118,15 @@ function pageRender(localPageRenderer) {
 }
 
 function displayJSONPage() {
-    if ($RCUI.campaign != undefined) {
+    if ($RCUI.campaign !== undefined) {
         location.href = 'JSON.html?agency=' + $RCUI.agency + '&advertiser=' + $RCUI.advertiser + '&campaign=' + $RCUI.campaign;
         return;
     }
-    if ($RCUI.advertiser != undefined) {
+    if ($RCUI.advertiser !== undefined) {
         location.href = 'JSON.html?agency=' + $RCUI.agency + '&advertiser=' + $RCUI.advertiser;
         return;
     }
-    if ($RCUI.agency != undefined) {
+    if ($RCUI.agency !== undefined) {
         location.href = 'JSON.html?agency=' + $RCUI.agency;
         return;
     }

@@ -108,6 +108,7 @@
     <Content Include="Report.html" />
     <Content Include="ReportDelivery.html" />
     <Content Include="ReportDeliverySA.html" />
+    <Content Include="ReportHistory.html" />
     <Content Include="User.html" />
     <Content Include="UserPermissionTreeGrid.htm" />
     <Content Include="UserVerification.html" />

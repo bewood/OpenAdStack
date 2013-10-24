@@ -1,4 +1,4 @@
-﻿//globals
+//globals
 var rightRail, header, workarea;
 var $RCUI = rcBaseWindow.$RCUI;
 var helpTopic;
@@ -23,12 +23,11 @@ insertScriptTag('.\/jquery\/jquery-1.7.1.min.js');
 
 function pageRender(localPageRenderer) {
     initializeCampaignClient();
-    var helpContent = ''
-    if (helpTopic != undefined) {
+    if (helpTopic !== undefined) {
         if (window.ApnxApp) {
-            var appHelpTopic = helpTopic + 'APNX'
+            var appHelpTopic = helpTopic + 'APNX';
             var appHelpContent = $RCUI.resources('Campaign', 'Help' + appHelpTopic);
-            if (appHelpContent != undefined) {
+            if (appHelpContent !== undefined) {
                 helpTopic = appHelpTopic;
             }
         }

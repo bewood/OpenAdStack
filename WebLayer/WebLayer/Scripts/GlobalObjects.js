@@ -26,6 +26,9 @@ var $RCAPI = {
         CampaignCampaignForCompany: '\/api\/entity\/company\/{0}\/campaign',
         CampaignUpdate: '\/api\/entity\/company\/{0}\/campaign\/{1}',
 
+        CampaignReportList: '\/api\/entity\/company\/{0}\/campaign\/{1}\/report',
+        CampaignReport: '\/api\/entity\/company\/{0}\/campaign\/{1}\/report\/{2}',
+
         CampaignGetCreatives: '\/api\/entity\/company\/{0}\/campaign\/{1}?Flags=Creatives',
         CampaignGetValuationPending: '\/api\/entity\/company\/{0}\/campaign\/{1}?Valuations=pending',
         CampaignGetBlob: '\/api\/entity\/company\/{0}\/campaign\/{1}?BLOB={2}',
@@ -193,7 +196,8 @@ function LookUpResource(object, resource) {
             { DisplayText: 'Valuations', Href: 'Overrides.html' },
             { DisplayText: 'Assign Creatives', Href: 'Creatives.html' },
             { DisplayText: 'Summary', Href: 'Report.html' },
-            { DisplayText: 'Delivery Review', Href: 'ReportDelivery.html' }
+            { DisplayText: 'Delivery Review', Href: 'ReportDelivery.html'},
+            { DisplayText: 'Reports', Href: 'ReportHistory.html' }
             ],
             DefaultWizardMenu: [{ DisplayText: 'New Campaign', Href: 'campaignCreate.html'}],
             HelpDefaultTitle: 'Help',
@@ -204,6 +208,7 @@ function LookUpResource(object, resource) {
             HelpReview: 'This page describes the rules of how we will deliver your campaign.<br><br>The right side of the page shows the segments you selected for creating your campaign, and the rules for how we can combine segments to create inventory. You\'ll see phrases like "always one of these", "Optionally one of these", and "Optionally one or more of these".<br><br>On the bottom left of the page are the overall campaign "business terms".  This includes the budget, the combinations (the number of potential line items that might exist), the maximum average CPM you input, and the flight dates you signed up for.  These can all be adjusted on the setup screen.<br><br>On the top left side of the page is the layer model showing how we\'ll attempt to distribute your budget. At the bottom is standard inventory, which is inventory you can buy today that has between 1-3 targeting segments applied. Each layer becomes progressively more targeted as you move upward. Depending on how you set up your campaign, the system will optimize how it allocates budget in different ways, affecting the budget allocation on this page. We always try to deliver budget inventory we can find during the life of the campaign.',
             HelpMeasureCreate: 'From this page, select the measures you want to add to your campaign. You can also group measures together into "or groups" and set measures or groups as "required" or Locked.<br><br>On the left side of the screen, find measures you\'d like to add to your campaign, to add them to your campaign, either double-click them, or select and click the ">>" button to move them to the right. You can search for measures using the Search Filter box at the top of that screen. You must add at least 8 measures to your campaign to get the real value of Rare Crowds. Please limit your campaign to no more than 20 measures (you can go over this limit, but rendering your valuations screen may take a long time). You can always set up multiple campaigns if you want to try different approaches.<br><br>On the right side of the screen, you can group measures together by clicking the "select" box, then clicking the "group" button groups can also be given custom names. This is useful for measures that are mutually exclusive - e.g. Age Ranges, Gender, Geography, etc...<br><br>You can also lock measures or groups that are required to ensure all impressions contain them. <b>NOTE:</b> By locking (requiring) specific measures or groups of measures you may significantly reduce the amount of available inventory - in some cases making it impossible to find. If any individual measure is by nature rare, take into account that you may want to avoid locking the measure. Please contact Rare Crowds support for assistance here.',
             HelpInventoryDefinition: '',
+            HelpReports: 'From this page you can request reports by either clicking the request report button or right-clicking on the report list.<br><br>You can see a preview of the report data by selecting a report from the list.<br><br>You can get the full report data in a TSV format, ready to paste into Excel, by right clicking the report data.<br><br>Note: Report data can take some time to load depending on the size of the campaign.',
             HelpCreative: 'From this screen you can upload new creatives (3rd Party Ad Tags, Images or Flash) or you can select existing creatives from other campaigns and assign them to this campaign.',
             HelpNodeOverride: '<table width="100%" style="font:13px Tahoma">' +
                 '<tr><td style="background:#ffff00;height:20px;width:20px" /></tr><tr><td>Explicit Valuation</td></tr>' +
@@ -248,7 +253,6 @@ function getBaseWindowRef() {
     var keepGoing = true;
     while (keepGoing){
         try {
-            var parentLocation = '' + baseWindowCandidate.parent.location;
             baseWindowCandidate = baseWindowCandidate.parent;
             if (baseWindowCandidate === window.top) {
                 keepGoing = false;
@@ -275,7 +279,7 @@ function breadCrumbs() {
 }
 
 breadCrumbs.prototype.showBreadCrumbs = function () {
-    if (window.self == rcBaseWindow) {//only if outer chrome
+    if (window.self === rcBaseWindow) {//only if outer chrome
         if (!window.ApnxApp && ($RCUI.querystring["agency"]) && ($RCUI.querystring["agency"] !== "undefined")) {
             Toolbar.addButton("crumb:" + $RCUI.querystring["agency"], 10, this.crumbs[$RCUI.querystring["agency"]]["name"]);
         }
