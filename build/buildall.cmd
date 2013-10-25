@@ -425,11 +425,13 @@ if /i '%SQL_CLEAN%'=='True' (
 )
 
 if /i '%SQL_DEPLOY%'=='True' (
-  %TC%[blockOpened name='Setup SQLExpress Mixed Mode AuthN and Networking']
-  net stop MSSQL$SQLEXPRESS
-  regedit.exe /s "%~dp0SQLExpressAuthN+Network.reg"
-  net start MSSQL$SQLEXPRESS
-  %TC%[blockClosed name='Setup SQLExpress Mixed Mode AuthN and Networking']
+	for %%p in (Local Integration) do if /i '%TARGETPROFILE%'=='%%p' (
+    %TC%[blockOpened name='Setup SQLExpress Mixed Mode AuthN and Networking']
+    net stop MSSQL$SQLEXPRESS
+    regedit.exe /s "%~dp0SQLExpressAuthN+Network.reg"
+    net start MSSQL$SQLEXPRESS
+    %TC%[blockClosed name='Setup SQLExpress Mixed Mode AuthN and Networking']
+  )
   
 	%TC%[blockOpened name='Deploy Sql Databases']
 	echo Creates database or updates - may generate benign warnings if the database exists already
