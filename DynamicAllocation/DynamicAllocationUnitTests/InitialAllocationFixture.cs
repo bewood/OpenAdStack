@@ -388,8 +388,8 @@ namespace DynamicAllocationUnitTests
             // the singles should be covered
             Assert.AreEqual(0, measureSetsToCover[1].Count);
 
-            // in this set up, 4 pairs are left uncovered
-            Assert.AreEqual(4, measureSetsToCover[2].Count);
+            // in this set up, 3 or 4 pairs are left uncovered
+            Assert.IsTrue(measureSetsToCover[2].Count == 3 || measureSetsToCover[2].Count == 4);
         }
 
         /// <summary>
