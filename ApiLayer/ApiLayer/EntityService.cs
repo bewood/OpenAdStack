@@ -31,6 +31,7 @@ using System.Text;
 using System.Web.Script.Serialization;
 using Activities;
 using DataAccessLayer;
+using Diagnostics;
 using EntityUtilities;
 using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
@@ -820,8 +821,9 @@ namespace ApiLayer
                 // Get the user
                 user = Repository.GetUser(new RequestContext(), userId);
             }
-            catch (ArgumentException)
+            catch (ArgumentException ae)
             {
+                LogManager.Log(LogLevels.Trace, "[AuthN Failure] Invalid/unknown user id: {0}\n{1}", userId, ae);
                 return false;
             }
 
