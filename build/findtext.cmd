@@ -32,7 +32,7 @@ if '%QUIET%'=='' set QUIET=False
 :: Search files matching the filter for the specified text
 ::
 set FILES=0
-for /f "delims=" %%i in ('dir /b /s /a:-d %FILTER%') do (
+for /f "delims=" %%i in ('dir /b /s /a:-d %FILTER% ^| find /i /v "\bin\" ^| find /i /v "\.git\" ^| find /i /v "\obj\"') do (
   for /f "tokens=1,2,3 delims=:" %%j in ('find /i /c %TEXT% "%%i"') do (
     if not "%%l"==" 0" (
       echo %%i

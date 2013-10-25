@@ -15,7 +15,6 @@
       <Setting name="Logging.ScheduledTransferPeriodMinutes" value="1" />
       <Setting name="Logging.ConnectionString" value="$(AzureConnectionString)" />
       <Setting name="ACS.SecurityTokenDuration" value="03:00:00" />
-      <Setting name="WL.WLIDLogOffUrl" value="https://login.live.com/logout.srf" />
       <Setting name="ApiLayer.QueueResponsePollTime" value="70" />
       <Setting name="ApiLayer.MaxQueueResponseWaitTime" value="7000" />
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
@@ -35,7 +34,7 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" value="15000" />
       <Setting name="ACS.SecurityTokenAutoRenew" value="00:05:00" />
-      <Setting name="ACS.AuthErrorRedirect" value="https://$(DeployedWebsiteAddress)/LogOff.aspx" />
+      <Setting name="ACS.AuthErrorRedirect" value="https://$(DeployedWebsiteAddress)/SignOut.html" />
       <Setting name="ApplicationSecurityMode" value="AcsTokens" />
     </ConfigurationSettings>
     <Certificates>

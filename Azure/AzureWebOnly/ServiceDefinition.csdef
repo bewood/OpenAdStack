@@ -31,7 +31,6 @@
       <Setting name="Logging.ScheduledTransferPeriodMinutes" />
       <Setting name="Logging.ConnectionString" />
       <Setting name="ACS.SecurityTokenDuration" />
-      <Setting name="WL.WLIDLogOffUrl" />
       <Setting name="ApiLayer.QueueResponsePollTime" />
       <Setting name="ApiLayer.MaxQueueResponseWaitTime" />
       <Setting name="PersistentDictionary.CompressionThresholdBytes" />

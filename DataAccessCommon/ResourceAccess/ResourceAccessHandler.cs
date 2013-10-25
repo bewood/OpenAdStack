@@ -85,7 +85,7 @@ namespace ResourceAccess
                 {
                     "ROOT:#:GET",
                     "*.html:#:GET:*", // allows user access to any .html page
-                    "LogOff.aspx:#:GET:*",
+                    "SignOut.aspx:#:GET:*",
                     "userverification.html:#:GET:*",
                     "home.html:#:GET:*",
                     "ping.html:#:GET:*",
