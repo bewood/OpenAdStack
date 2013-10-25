@@ -280,7 +280,7 @@ namespace EntityActivities
         public ActivityResult UserNotFoundError(string userId)
         {
             return this.ErrorResult(
-                ActivityErrorId.InvalidEntityId,
+                ActivityErrorId.UserAccessDenied,
                 "User not found: '{0}'",
                 userId);
         }
