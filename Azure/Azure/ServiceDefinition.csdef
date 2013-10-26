@@ -50,6 +50,7 @@
       <Certificate name="Website SSL" storeLocation="LocalMachine" storeName="My" />
       <Certificate name="Intermediate CA" storeLocation="LocalMachine" storeName="CA" />
       <Certificate name="JWT" storeLocation="LocalMachine" storeName="TrustedPeople" />
+      <Certificate name="RSA Cookies" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
     <LocalResources>
       <LocalStorage name="DiagnosticsStore" cleanOnRoleRecycle="false" sizeInMB="512" />

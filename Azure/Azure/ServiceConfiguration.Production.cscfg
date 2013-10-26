@@ -41,6 +41,7 @@
       <Certificate name="Intermediate CA" thumbprint="3E4B4FBD77E5A8A89D58E835B9652E8BCFA2C3FA" thumbprintAlgorithm="sha1" />
       <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="8FE52936F15FCBAE28B77738AE28752E08048825" thumbprintAlgorithm="sha1" />
       <Certificate name="JWT" thumbprint="48DA82750D930B9764020EC0F7FC6E407C8F18D2" thumbprintAlgorithm="sha1" />
+      <Certificate name="RSA Cookies" thumbprint="FF2A45707AE236888AC09B2EEAE557B970DD3A99" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <Role name="WorkerRole">

@@ -18,7 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IdentityModel;
 using System.IdentityModel.Services;
+using System.IdentityModel.Services.Configuration;
 using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Net;
@@ -167,6 +169,11 @@ namespace Utilities.Web
             LogManager.Log(LogLevels.Trace, "{0}.Application_Start", this.GetType().FullName);
             PersistentDictionaryFactory.Initialize(this.RuntimeIocContainer.ResolveAll<IPersistentDictionaryFactory>());
             this.RegisterRoutes();
+
+            if (SecurityMode == ApplicationSecurityMode.AcsTokens)
+            {
+                FederatedAuthentication.FederationConfigurationCreated += this.OnFederationConfigurationCreated;
+            }
         }
 
         /// <summary>Event that manages sliding session</summary>
@@ -265,6 +272,24 @@ namespace Utilities.Web
                 }
             }
         }
+        
+        /// <summary>Sets a custom session cookie handler that uses the FedAuth RSA key</summary>
+        /// <remarks>Secure cookies must use a shared RSA key to be interchangable between web role instances</remarks>
+        /// <param name="sender">sender of the event</param>
+        /// <param name="e">event arguments</param>
+        private void OnFederationConfigurationCreated(object sender, FederationConfigurationCreatedEventArgs e)
+        {
+            var sessionTransforms = new CookieTransform[] 
+            {
+                new DeflateCookieTransform(), 
+                new RsaEncryptionCookieTransform(e.FederationConfiguration.ServiceCertificate),
+                new RsaSignatureCookieTransform(e.FederationConfiguration.ServiceCertificate),
+            }
+            .ToList();
+
+            var sessionHandler = new SessionSecurityTokenHandler(sessionTransforms.AsReadOnly());
+            e.FederationConfiguration.IdentityConfiguration.SecurityTokenHandlers.AddOrReplace(sessionHandler);
+        }
 
         /// <summary>Registers routes handled by this application</summary>
         private void RegisterRoutes()
@@ -281,7 +306,7 @@ namespace Utilities.Web
                 var routePrefix = serviceRouteMapping.Key;
                 var service = serviceRouteMapping.Value;
                 var route = new ServiceRoute(routePrefix, new WebServiceHostFactory(), service);
-                
+
                 LogManager.Log(LogLevels.Trace, "\tAdding route {0} -> {1}", route.Url, service.FullName);
                 RouteTable.Routes.Add(route);
             }
