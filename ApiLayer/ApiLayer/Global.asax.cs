@@ -28,6 +28,15 @@ namespace ApiLayer
     /// </summary>
     public class Global : SecureHttpApplication
     {
+        /// <summary>
+        /// Gets a value indicating whether to redirect to sign-off when auth errors
+        /// occur instead of logging the error and translating the response to a 401
+        /// </summary>
+        protected virtual bool RedirectOnAuthErrors
+        {
+            get { return false; }
+        }
+
         /// <summary>Gets uri patterns for which authentication is not required</summary>
         protected override IEnumerable<string> AnonymousAccessUriPatterns
         {

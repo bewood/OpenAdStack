@@ -86,6 +86,15 @@ namespace Utilities.Web
             get { return null; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether to redirect to sign-off when auth errors
+        /// occur instead of logging the error and translating the response to a 401
+        /// </summary>
+        protected virtual bool RedirectOnAuthErrors
+        {
+            get { return true; }
+        }
+
         /// <summary>Gets the authentication manager</summary>
         protected IAuthenticationManager AuthenticationManager
         {
@@ -242,7 +251,18 @@ namespace Utilities.Web
                 lastError is System.Security.Cryptography.CryptographicException ||
                 lastError is System.InvalidOperationException)
             {
-                Response.Redirect(AuthErrorRedirect, true);
+                if (this.RedirectOnAuthErrors)
+                {
+                    // Redirect to a page which should clean up state so the user
+                    // can attempt to log in again (such as the sign-out page)
+                    Response.Redirect(AuthErrorRedirect, true);
+                }
+                else
+                {
+                    // Treat errors in crypto as authentication failures and let the
+                    // requester handle the 401 response as appropriate
+                    Response.StatusCode = 401;
+                }
             }
         }
 
