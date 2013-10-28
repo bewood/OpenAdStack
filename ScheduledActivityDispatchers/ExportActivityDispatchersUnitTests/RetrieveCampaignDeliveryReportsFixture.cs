@@ -123,13 +123,21 @@ namespace DeliveryNetworkActivityDispatchersUnitTests
             var companyEntityId = new EntityId().ToString();
 
             var source = this.CreateScheduledActivitySource();
+            /*
             Scheduler.AddToSchedule<string, DeliveryNetworkDesignation>(
                 DeliveryNetworkSchedulerRegistries.ReportsToRequest,
                 DateTime.UtcNow,
                 campaignEntityId,
                 companyEntityId,
                 DeliveryNetworkDesignation.AppNexus);
-
+            */
+            Scheduler.AddToSchedule<string, DeliveryNetworkDesignation>(
+                DeliveryNetworkSchedulerRegistries.ReportsToRequest,
+                DateTime.UtcNow,
+                "2ef372e57c004b99ba37fcf74c97211c",
+                "0e032f5fb9e740c6a4f9e3215a83c30d",
+                DeliveryNetworkDesignation.AppNexus);
+            
             source.CreateScheduledRequests();
 
             Assert.AreEqual(1, this.queuedWorkItems.Count);
