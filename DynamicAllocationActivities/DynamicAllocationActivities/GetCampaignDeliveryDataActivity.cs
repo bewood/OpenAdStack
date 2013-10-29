@@ -51,13 +51,6 @@ namespace DynamicAllocationActivities
         /// </summary>
         internal static readonly TimeSpan ReportDeadZone = new TimeSpan(0, 0, 0);
 
-        /// <summary>
-        /// Amount of history we retrieve for calculating node metrics.
-        /// This should be more than adequate to make sure we are including all new data since the
-        /// last time data was retrieved, but small enough to still be performant.
-        /// </summary>
-        internal static readonly TimeSpan HistoryLookBack = new TimeSpan(72, 0, 0);
-
         /// <summary>Value to use for lifetime lookback.</summary>
         internal static readonly TimeSpan LifetimeLookBack = new TimeSpan(0);
 
@@ -71,6 +64,16 @@ namespace DynamicAllocationActivities
                     { DeliveryNetworkDesignation.AppNexus, new ApnxReportCsvParser() },
                     { DeliveryNetworkDesignation.GoogleDfp, new DfpReportCsvParser() }
                 };
+
+        /// <summary>
+        /// Gets the amount of history we retrieve for calculating node metrics.
+        /// This should be more than adequate to make sure we are including all new data since the
+        /// last time data was retrieved, but small enough to still be performant.
+        /// </summary>
+        internal static TimeSpan HistoryLookBack
+        {
+            get { return ConfigManager.Config.GetTimeSpanValue("DynamicAllocation.DeliveryHistoryLookBack"); }
+        }
 
         /// <summary>Gets or sets the IDynamicAllocationCampaign instance.</summary>
         internal IDynamicAllocationCampaign Dac { get; set; }

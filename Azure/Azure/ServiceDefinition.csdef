@@ -202,6 +202,8 @@
       <Setting name="AppNexus.SegmentDataCostsRequired" />
       <Setting name="PaymentProcessor.ApiSecretKey" />
       <Setting name="PaymentProcessor.ApiPublicKey" />
+      <Setting name="DynamicAllocation.DeliveryHistoryLookBack" />
+      <Setting name="AppNexus.ReportInterval" />
     </ConfigurationSettings>
     <LocalResources>
       <LocalStorage name="DiagnosticsStore" cleanOnRoleRecycle="false" sizeInMB="512" />

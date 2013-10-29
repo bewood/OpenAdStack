@@ -84,6 +84,7 @@
     <Compile Include="IAppNexusApiClient.cs" />
     <Compile Include="PageLocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AppNexusReportIntervalType.cs" />
   </ItemGroup>
   <Import Project="$(SolutionDir)..\build\common.proj" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

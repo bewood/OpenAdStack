@@ -39,6 +39,25 @@ namespace AppNexusClient
         /// <summary>Page size for member segment TryGetCollection calls</summary>
         private const int MemberSegmentGetCollectionPageSize = 1000;
 
+        /// <summary>Mappings from ReportIntervalType to report_interval property values</summary>
+        /// <seealso href="https://wiki.appnexus.com/display/api/Advertiser+Analytics"/>
+        private static readonly IDictionary<AppNexusReportIntervalType, string> ReportIntervalMappings =
+            new Dictionary<AppNexusReportIntervalType, string>
+            {
+                { AppNexusReportIntervalType.CurrentHour, "current_hour" },
+                { AppNexusReportIntervalType.LastHour, "last_hour" },
+                { AppNexusReportIntervalType.Today, "today" },
+                { AppNexusReportIntervalType.Yesterday, "yesterday" },
+                { AppNexusReportIntervalType.Last48Hours, "last_48_hours" },
+                { AppNexusReportIntervalType.Last2Days, "last_2_days" },
+                { AppNexusReportIntervalType.Last7Days, "last_7_days" },
+                { AppNexusReportIntervalType.MonthToDate, "month_to_date" },
+                { AppNexusReportIntervalType.MonthToYesterday, "month_to_yesterday" },
+                { AppNexusReportIntervalType.QuarterToDate, "quarter_to_date" },
+                { AppNexusReportIntervalType.LastMonth, "last_month" },
+                { AppNexusReportIntervalType.Lifetime, "lifetime" },
+            };
+
         /// <summary>Mappings from AppNexusFrequencyType to profile property values</summary>
         private static readonly IDictionary<AppNexusFrequencyType, string> ProfileFrequencyMappings =
             new Dictionary<AppNexusFrequencyType, string>
@@ -124,6 +143,16 @@ namespace AppNexusClient
                 }
 
                 return this.id;
+            }
+        }
+
+        /// <summary>Gets the AppNexus delivery report request report_interval</summary>
+        private string AppNexusReportInterval
+        {
+            get
+            {
+                var reportInterval = this.Config.GetEnumValue<AppNexusReportIntervalType>("AppNexus.ReportInterval");
+                return ReportIntervalMappings[reportInterval];
             }
         }
 
@@ -810,7 +839,7 @@ namespace AppNexusClient
         public string RequestDeliveryReport(int advertiserId, int lineItemId)
         {
             var reportRequestJson = AppNexusJson.DeliveryReportRequestFormat
-                .FormatInvariant(lineItemId);
+                .FormatInvariant(lineItemId, this.AppNexusReportInterval);
             return this.RequestReport(advertiserId, reportRequestJson);
         }
 

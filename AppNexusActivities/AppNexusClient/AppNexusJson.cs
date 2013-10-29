@@ -600,13 +600,19 @@ namespace AppNexusClient
         /// <remarks>
         /// Requests a report containing the campaign_id, campaign_code (MeasureSets Blob EntityId), impressions and eCPM
         /// for the entire lifetime with one row per campaign.
+        /// 0: Line-item id
+        /// 1: Report interval (aka "look-back")
+        ///    Valid values are: current_hour, last_hour, today, yesterday,
+        ///    last_48_hours, last_2_days, last_7_days, month_to_date,
+        ///    month_to_yesterday, quarter_to_date, last_month, lifetime
         /// </remarks>
+        /// <seealso href="https://wiki.appnexus.com/display/api/Advertiser+Analytics"/>
         public const string DeliveryReportRequestFormat = @"
 {{
     ""report"":
     {{
         ""report_type"":""advertiser_analytics"",
-        ""report_interval"":""last_48_hours"",
+        ""report_interval"":""{1}"",
         ""columns"":[""campaign_id"", ""hour"", ""campaign_code"", ""imps"", ""ecpm"", ""spend"", ""clicks""],
         ""row_per"":[""campaign_id"", ""hour""],
         ""filters"":[{{""line_item_id"":{0}}}],

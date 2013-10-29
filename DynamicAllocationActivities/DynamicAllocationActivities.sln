@@ -1,13 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DED8BFC0-5F9C-4E26-861D-4C1BE54CE18D}"
-	ProjectSection(SolutionItems) = preProject
-		DynamicAllocationActivities.vsmdi = DynamicAllocationActivities.vsmdi
-		Local.testsettings = Local.testsettings
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicAllocationActivities", "DynamicAllocationActivities\DynamicAllocationActivities.csproj", "{11C1B56C-69BF-4CCD-83E0-3EF394444F3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicAllocationActivitiesIntegrationTests", "DynamicAllocationActivitiesIntegrationTests\DynamicAllocationActivitiesIntegrationTests.csproj", "{C0FC7FC1-F9DF-466E-87D2-1B2E4A480E44}"

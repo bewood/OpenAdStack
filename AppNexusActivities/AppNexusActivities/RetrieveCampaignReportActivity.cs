@@ -73,7 +73,8 @@ namespace AppNexusActivities
         {
             LogManager.Log(
                 result.Succeeded ? LogLevels.Trace : LogLevels.Warning,
-                "RetrieveCampaignReportActivity: Submitted APNXtoDAHistoryActivity request {0}.",
+                "RetrieveCampaignReportActivity: Submitted {0} request {1}.",
+                result.Task,
                 result.Succeeded ? "succeeded" : "failed");
         }
 
@@ -318,7 +319,7 @@ namespace AppNexusActivities
             error = null;
 
             // Submit request to transform as needed
-            // Create and submit an APNXtoDAHistoryActivity
+            // Create and submit a GetCampaignDeliveryData request
             var activityRequest = CreateRequestFromContext(
                 context,
                 DynamicAllocationActivityTasks.GetCampaignDeliveryData,
