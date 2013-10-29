@@ -123,14 +123,6 @@ namespace DeliveryNetworkActivityDispatchersUnitTests
             var companyEntityId = new EntityId().ToString();
 
             var source = this.CreateScheduledActivitySource();
-            /*
-            Scheduler.AddToSchedule<string, DeliveryNetworkDesignation>(
-                DeliveryNetworkSchedulerRegistries.ReportsToRequest,
-                DateTime.UtcNow,
-                campaignEntityId,
-                companyEntityId,
-                DeliveryNetworkDesignation.AppNexus);
-            */
             Scheduler.AddToSchedule<string, DeliveryNetworkDesignation>(
                 DeliveryNetworkSchedulerRegistries.ReportsToRequest,
                 DateTime.UtcNow,
