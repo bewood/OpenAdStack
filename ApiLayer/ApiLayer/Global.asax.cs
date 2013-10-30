@@ -32,7 +32,7 @@ namespace ApiLayer
         /// Gets a value indicating whether to redirect to sign-off when auth errors
         /// occur instead of logging the error and translating the response to a 401
         /// </summary>
-        protected virtual bool RedirectOnAuthErrors
+        protected override bool RedirectOnAuthErrors
         {
             get { return false; }
         }

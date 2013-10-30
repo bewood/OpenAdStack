@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Activities;
+using DataAccessLayer;
 using Diagnostics;
 using EntityActivities;
 using EntityUtilities;
@@ -57,6 +58,11 @@ namespace ReportingActivities
                 var activityHandler = this.ActivityHandlerFactory.CreateActivityHandler(request, this.Context);
                 var results = activityHandler.Execute();
                 return this.SuccessResult(results.ToDictionary());
+            }
+            catch (DataAccessEntityNotFoundException dae)
+            {
+                LogManager.Log(LogLevels.Warning, "CreateCampaignReportActivity: Unable to retrieve entity\n{1}", dae);
+                return this.ErrorResult(ActivityErrorId.InvalidEntityId, dae);
             }
             catch (Exception e)
             {

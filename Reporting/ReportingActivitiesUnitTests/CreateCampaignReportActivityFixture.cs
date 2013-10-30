@@ -107,16 +107,29 @@ namespace ReportingActivitiesUnitTests
             ActivityTestHelpers.AssertValidSuccessResult(result);
         }
 
-        /// <summary>Process request returns error result when handler throws.</summary>
+        /// <summary>Process request returns error result when handler throws DAL ENF exception.</summary>
         [TestMethod]
-        public void ProcessRequestHandlerException()
+        public void ProcessRequestHandlerEntityNotFoundException()
         {
             this.handler.Stub(f => f.Execute())
                 .Throw(new DataAccessEntityNotFoundException("error message"));
             this.handlerFactory.Stub(f => f.CreateActivityHandler(null, null)).IgnoreArguments().Return(this.handler);
             var result = this.activity.Run(this.request);
 
-            // Assert activity completed successfully
+            // Assert activity failed correctly
+            ActivityTestHelpers.AssertValidErrorResult(result, ActivityErrorId.InvalidEntityId, "error message");
+        }
+
+        /// <summary>Process request returns error result when handler throws any exception.</summary>
+        [TestMethod]
+        public void ProcessRequestHandlerGenericException()
+        {
+            this.handler.Stub(f => f.Execute())
+                .Throw(new ArgumentException("error message"));
+            this.handlerFactory.Stub(f => f.CreateActivityHandler(null, null)).IgnoreArguments().Return(this.handler);
+            var result = this.activity.Run(this.request);
+
+            // Assert activity failed correctly
             ActivityTestHelpers.AssertValidErrorResult(result, ActivityErrorId.GenericError, "error message");
         }
 
