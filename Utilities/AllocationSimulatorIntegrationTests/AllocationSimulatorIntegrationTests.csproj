@@ -153,7 +153,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(SolutionDir)..\build\common.proj" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
