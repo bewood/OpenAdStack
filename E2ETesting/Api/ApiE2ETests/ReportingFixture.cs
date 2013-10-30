@@ -111,10 +111,11 @@ namespace ApiIntegrationTests
                     { EntityActivityValues.CampaignEntityId, this.campaignEntityId },
                 });
 
-            response = this.RestClient.SendRequest(HttpMethod.POST, createReportUrl, createReportBody)
-                .AssertStatusCode(HttpStatusCode.SeeOther)
-                .FollowIfRedirect(this.RestClient);
-            response.AssertStatusCode(HttpStatusCode.OK);
+            this.RestClient.MaxRetries = 0;
+            var postResponse = this.RestClient.SendRequest(HttpMethod.POST, createReportUrl, createReportBody)
+                .AssertStatusCode(HttpStatusCode.SeeOther);
+            var getResponse = postResponse.FollowIfRedirect(this.RestClient);
+            getResponse.AssertStatusCode(HttpStatusCode.OK);
         }
     }
 }
