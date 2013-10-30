@@ -147,6 +147,10 @@ namespace DeliveryNetworkActivityDispatchers
 
             try
             {
+                string companyEntityId, reportId;
+                bool reschedule, requestSucceeded;
+                DeliveryNetworkDesignation deliveryNetwork;
+
                 if (!result.Succeeded)
                 {
                     LogManager.Log(
@@ -157,33 +161,41 @@ namespace DeliveryNetworkActivityDispatchers
                         request.Id,
                         result.Error.ErrorId,
                         result.Error.Message);
-                    return;
-                }
 
-                // Verify success result is well formed
-                if (!result.Values.ContainsKey(DeliveryNetworkActivityValues.ReportId) ||
-                    !result.Values.ContainsKey(EntityActivityValues.CampaignEntityId) ||
-                    !result.Values.ContainsKey(EntityActivityValues.CompanyEntityId) ||
-                    !result.Values.ContainsKey(DeliveryNetworkActivityValues.RescheduleReportRequest))
+                    reportId = string.Empty;
+                    companyEntityId = request.Values[EntityActivityValues.CompanyEntityId];
+                    reschedule = true;
+                    deliveryNetwork = RequestReportTasks.Single(kvp => kvp.Value == request.Task).Key;
+                    requestSucceeded = false;
+                }
+                else
                 {
-                    LogManager.Log(
-                        LogLevels.Error,
-                        true,
-                        "Request report result for campaign '{0}' missing required value(s) (workitem '{1}')\n{2}",
-                        campaignEntityId,
-                        request.Id,
-                        result.SerializeToXml());
-                    return;
-                }
+                    // Verify success result is well formed
+                    if (!result.Values.ContainsKey(DeliveryNetworkActivityValues.ReportId) ||
+                        !result.Values.ContainsKey(EntityActivityValues.CampaignEntityId) ||
+                        !result.Values.ContainsKey(EntityActivityValues.CompanyEntityId) ||
+                        !result.Values.ContainsKey(DeliveryNetworkActivityValues.RescheduleReportRequest))
+                    {
+                        LogManager.Log(
+                            LogLevels.Error,
+                            true,
+                            "Request report result for campaign '{0}' missing required value(s) (workitem '{1}')\n{2}",
+                            campaignEntityId,
+                            request.Id,
+                            result.SerializeToXml());
+                        return;
+                    }
 
-                // Get values from result
-                var reportId = result.Values[DeliveryNetworkActivityValues.ReportId];
-                var companyEntityId = result.Values[EntityActivityValues.CompanyEntityId];
-                var reschedule = bool.Parse(result.Values[DeliveryNetworkActivityValues.RescheduleReportRequest]);
-                var deliveryNetwork = RequestReportTasks.Single(kvp => kvp.Value == result.Task).Key;
-                var requestSucceeded = !string.IsNullOrWhiteSpace(reportId);
+                    // Get values from result
+                    reportId = result.Values[DeliveryNetworkActivityValues.ReportId];
+                    companyEntityId = result.Values[EntityActivityValues.CompanyEntityId];
+                    reschedule = bool.Parse(result.Values[DeliveryNetworkActivityValues.RescheduleReportRequest]);
+                    deliveryNetwork = RequestReportTasks.Single(kvp => kvp.Value == result.Task).Key;
+                    requestSucceeded = !string.IsNullOrWhiteSpace(reportId);
+                }
 
                 // Schedule retrieval for the requested report (if request succeeded)
+                // Otherwise reschedule the request to retry immediately
                 if (!requestSucceeded)
                 {
                     LogManager.Log(
@@ -192,6 +204,7 @@ namespace DeliveryNetworkActivityDispatchers
                         "Report request failed for {0} report of campaign '{1}'. Rescheduling.",
                         deliveryNetwork,
                         campaignEntityId);
+                    reschedule = true;
                 }
                 else
                 {

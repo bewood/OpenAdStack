@@ -247,9 +247,15 @@ namespace DeliveryNetworkActivityDispatchersUnitTests
         /// <summary>
         /// Test that failed report request are immediately rescheduled.
         /// </summary>
+        /// <remarks>
+        /// A "soft" failure is when the delivery network client fails but is handled
+        /// gracefully by the activity returning a result without a report id
+        /// </remarks>
         [TestMethod]
-        public void RequestReportFailed()
+        public void RequestReportSoftFailed()
         {
+            var now = DateTime.UtcNow;
+
             // Test ids
             var campaignEntityId = new EntityId().ToString();
             var companyEntityId = new EntityId().ToString();
@@ -265,7 +271,7 @@ namespace DeliveryNetworkActivityDispatchersUnitTests
                 }
             };
 
-            // Test result from RequestCampaignReportActivity
+            // Test "soft" fail result from RequestCampaignReportActivity
             var requestResult = new ActivityResult
             {
                 Task = AppNexusActivityTasks.RequestCampaignReport,
@@ -287,15 +293,100 @@ namespace DeliveryNetworkActivityDispatchersUnitTests
             var reportsToRequest = Scheduler.GetRegistry<Tuple<string, DeliveryNetworkDesignation>>(
                 DeliveryNetworkSchedulerRegistries.ReportsToRequest);
             reportsToRequest.Add(
-                DateTime.UtcNow,
+                now,
                 campaignEntityId,
                 new Tuple<string, DeliveryNetworkDesignation>(
                     companyEntityId,
                     DeliveryNetworkDesignation.AppNexus));
+            Assert.AreEqual(1, reportsToRequest[DateTime.UtcNow].Count);
 
-            // Handle the result of the request
-            // This will schedule the retrieve
+            // Turn the crank (moves entry to InProgress)
+            source.CreateScheduledRequests();
+            Assert.AreEqual(0, reportsToRequest[now].Count);
+            Assert.AreEqual(1, reportsToRequest.InProgress.Count);
+
+            // Handle the result of the simulated request
             RetrieveCampaignDeliveryReports.OnRequestReportResult(requestRequest, requestResult);
+
+            // Assert that the entry was removed from InProgress
+            Assert.AreEqual(0, reportsToRequest.InProgress.Count);
+
+            // Assert that the failed request was rescheduled
+            Assert.AreEqual(1, reportsToRequest[now].Count);
+
+            // Assert that the retrieve was NOT scheduled
+            var appNexusReportsToRetrieveRegistry =
+                DeliveryNetworkSchedulerRegistries.ReportsToRetrieve +
+                DeliveryNetworkDesignation.AppNexus.ToString();
+            var reportsToRetrieve = Scheduler.GetRegistry<Tuple<string, string>>(
+                appNexusReportsToRetrieveRegistry);
+            Assert.AreEqual(0, reportsToRetrieve[now].Count);
+        }
+
+        /// <summary>
+        /// Test that failed report request are immediately rescheduled.
+        /// </summary>
+        /// <remarks>
+        /// A "hard" failure is when the activity fails completely
+        /// due to a criticle error such as an unhandled exception
+        /// </remarks>
+        [TestMethod]
+        public void RequestReportHardFailed()
+        {
+            var now = DateTime.UtcNow;
+
+            // Test ids
+            var campaignEntityId = new EntityId().ToString();
+            var companyEntityId = new EntityId().ToString();
+
+            // Test request for RequestCampaignReportActivity
+            var requestRequest = new ActivityRequest
+            {
+                Task = AppNexusActivityTasks.RequestCampaignReport,
+                Values =
+                {
+                    { EntityActivityValues.CompanyEntityId, companyEntityId },
+                    { EntityActivityValues.CampaignEntityId, campaignEntityId },
+                }
+            };
+
+            // Test "hard" fail result from RequestCampaignReportActivity
+            var requestResult = new ActivityResult
+            {
+                Task = AppNexusActivityTasks.RequestCampaignReport,
+                RequestId = requestRequest.Id,
+                Succeeded = false,
+                Error =
+                {
+                     ErrorId = (int)ActivityErrorId.GenericError,
+                     Message = "Unhandled Exception",
+                },
+            };
+
+            // Create the scheduled activity source
+            var source = this.CreateScheduledActivitySource();
+
+            // Add an entry to the registry for a report request
+            var reportsToRequest = Scheduler.GetRegistry<Tuple<string, DeliveryNetworkDesignation>>(
+                DeliveryNetworkSchedulerRegistries.ReportsToRequest);
+            reportsToRequest.Add(
+                now,
+                campaignEntityId,
+                new Tuple<string, DeliveryNetworkDesignation>(
+                    companyEntityId,
+                    DeliveryNetworkDesignation.AppNexus));
+            Assert.AreEqual(1, reportsToRequest[DateTime.UtcNow].Count);
+
+            // Turn the crank (moves entry to InProgress)
+            source.CreateScheduledRequests();
+            Assert.AreEqual(0, reportsToRequest[now].Count);
+            Assert.AreEqual(1, reportsToRequest.InProgress.Count);
+
+            // Handle the result of the simulated request
+            RetrieveCampaignDeliveryReports.OnRequestReportResult(requestRequest, requestResult);
+
+            // Assert that the entry was removed from InProgress
+            Assert.AreEqual(0, reportsToRequest.InProgress.Count);
 
             // Assert that the request was rescheduled
             Assert.AreEqual(1, reportsToRequest[DateTime.UtcNow].Count);
