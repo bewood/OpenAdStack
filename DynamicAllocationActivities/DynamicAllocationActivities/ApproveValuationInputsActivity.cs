@@ -41,6 +41,13 @@ namespace DynamicAllocationActivities
     [RequiredValues(EntityActivityValues.CompanyEntityId, EntityActivityValues.CampaignEntityId), ResultValues("BudgetAllocation")]
     public class ApproveValuationInputsActivity : DynamicAllocationActivity
     {
+        /// <summary>
+        /// Log format string used when Campaign is successfully saved after being approved.
+        /// </summary>
+        private const string ApprovedLogMessageFormat =
+            @"{0} - Campaign Approved.
+            Campaign JSON: {1}";
+
         /// <summary>Override to handle results of submitted requests.</summary>
         /// <param name="result">The result of the previously submitted work item</param>
         public override void OnActivityResult(ActivityResult result)
@@ -127,6 +134,13 @@ namespace DynamicAllocationActivities
                     ReallocationScheduleType.Initial,
                     DateTime.UtcNow);
             }
+
+            LogManager.Log(
+                LogLevels.Information, 
+                true, 
+                ApprovedLogMessageFormat, 
+                campaign.ExternalName, 
+                campaign.SerializeToJson());
         }
     }
 }
