@@ -35,24 +35,18 @@
   <ItemGroup>
     <Reference Include="ConfigManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Common\Public\bin\Debug\ConfigManager.dll</HintPath>
     </Reference>
     <Reference Include="DeliveryNetworkUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ActivitiesCommon\Public\bin\Debug\DeliveryNetworkUtilities.dll</HintPath>
     </Reference>
     <Reference Include="Diagnostics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Common\Public\bin\Debug\Diagnostics.dll</HintPath>
     </Reference>
     <Reference Include="Google.Ads.Common">
-      <HintPath>..\..\External\Public\bin\Debug\Google.Ads.Common.dll</HintPath>
     </Reference>
     <Reference Include="Google.Ads.OAuth">
-      <HintPath>..\..\External\Public\bin\Debug\Google.Ads.OAuth.dll</HintPath>
     </Reference>
     <Reference Include="Google.Dfp">
-      <HintPath>..\..\External\Public\bin\Debug\Google.Dfp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,7 +61,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Common\Public\bin\Debug\Utilities.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

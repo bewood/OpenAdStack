@@ -410,7 +410,7 @@ namespace BillingUnitTests
             {
                 // {PaymentProcessor:"Stripe",ChargeDate:"",ChargeId:"uid",ChargeAmount:10.00}
                 Assert.AreEqual(StripePaymentProcessor.ProcessorNameBack, (string)historyItem["proc"]);
-                Assert.IsNotNull((DateTime)(new PropertyValue(PropertyType.Date, (string)historyItem["date"])));
+                Assert.IsInstanceOfType(historyItem["date"], typeof(DateTime));
                 Assert.AreEqual(this.chargeId, (string)historyItem["cid"]);
                 Assert.AreEqual(this.chargeAmount, Convert.ToDecimal((double)historyItem["camt"]));
 

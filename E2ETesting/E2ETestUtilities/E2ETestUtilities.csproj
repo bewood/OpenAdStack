@@ -36,22 +36,17 @@
   <ItemGroup>
     <Reference Include="DataAccessLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Public\bin\Debug\DataAccessLayer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Http">
-      <HintPath>..\..\External\Public\bin\Debug\Microsoft.Http.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Public\bin\Debug\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\External\Public\bin\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RuntimeIoc.WorkerRole, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Public\bin\Debug\RuntimeIoc.WorkerRole.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -62,10 +57,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TestUtilities">
-      <HintPath>..\..\TestUtilities\Public\bin\Debug\TestUtilities.dll</HintPath>
     </Reference>
     <Reference Include="Utilities">
-      <HintPath>..\..\Common\Public\bin\Debug\Utilities.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

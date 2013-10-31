@@ -76,8 +76,8 @@ namespace ApiIntegrationTests
                 .AssertContainsJsonValue("Properties")
                 .AssertContainsJsonValue("Status", "Draft")
                 .AssertContainsJsonValue("Budget", 12345m)
-                .AssertContainsJsonValue("StartDate", "2012-07-23T16:25:00.0000000Z")
-                .AssertContainsJsonValue("EndDate", "2012-08-07T16:25:00.0000000Z");
+                .AssertContainsJsonValue("StartDate", "2012-07-23T16:25:00Z")
+                .AssertContainsJsonValue("EndDate", "2012-08-07T16:25:00Z");
             var campaign = createCampaignResponse
                 .TryDeserializeContentJson()["Campaign"]
                 as IDictionary<string, object>;
@@ -99,8 +99,8 @@ namespace ApiIntegrationTests
                 .AssertContainsJsonValue("Properties")
                 .AssertContainsJsonValue("Status", "Draft")
                 .AssertContainsJsonValue("Budget", 12345m)
-                .AssertContainsJsonValue("StartDate", "2012-07-23T16:25:00.0000000Z")
-                .AssertContainsJsonValue("EndDate", "2012-08-07T16:25:00.0000000Z");
+                .AssertContainsJsonValue("StartDate", "2012-07-23T16:25:00Z")
+                .AssertContainsJsonValue("EndDate", "2012-08-07T16:25:00Z");
         }
     }
 }

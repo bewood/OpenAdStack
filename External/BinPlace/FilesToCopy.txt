@@ -7,18 +7,24 @@
 # Stuff\*.xml|XML Stuff
 #
 
-xsd.exe
-WCF REST Starter Kit Preview 2\*.dll
+# Newtonsoft JSON Parsing
 Json45r7\Bin\Net40\Newtonsoft.Json.*
-Rhino Mocks\3.6\Rhino.Mocks.*
-OpenXml\DocumentFormat.OpenXml.dll
+
+# Unity Dependency Injection
 MS Enterprise Library\*.dll
-FedUtil\FedUtil.*
-Selenium\*.dll
-WatiN\lib\net40\*.dll
-NUnit 2.5.10\bin\net-2.0\framework|NUnit
-DopplerAgent\doppleragent\Doppler.TraceListeners.*
+
+# Google DFP Libraries
 dfpapi_dotnet_lib_v4.6.0\lib\*
+
+# Microsoft Http (for simple REST clients)
+WCF REST Starter Kit Preview 2\*.dll
+
+# Open SSL (for AppNexus REST client)
 openssl-1.0.1c\*.dll
+
+# Stripe CC Billing
 Stripe\*.dll
+
+# Unit test mocks
+Rhino Mocks\3.6\Rhino.Mocks.*
 
