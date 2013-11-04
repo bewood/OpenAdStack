@@ -41,23 +41,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transforms", "Transforms", 
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.ApnxAppProd.xml = ..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.ApnxAppProd.xml
 		..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.ApnxAppSand.xml = ..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.ApnxAppSand.xml
-		..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Cloud.xml = ..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Cloud.xml
+		..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.AzureDev.xml = ..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.AzureDev.xml
 		..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Integration.xml = ..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Integration.xml
 		..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Local.xml = ..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Local.xml
 		..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Production.xml = ..\..\..\LucyConfig\ConfigTransforms\ApiLayer.web.config.Production.xml
 		..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.ApnxAppProd.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.ApnxAppProd.xml
 		..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.ApnxAppSand.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.ApnxAppSand.xml
-		..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.Cloud.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.Cloud.xml
+		..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.AzureDev.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateCompany.app.config.AzureDev.xml
 		..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.ApnxAppProd.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.ApnxAppProd.xml
 		..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.ApnxAppSand.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.ApnxAppSand.xml
-		..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.Cloud.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.Cloud.xml
+		..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.AzureDev.xml = ..\..\..\LucyConfig\ConfigTransforms\CreateUser.app.config.AzureDev.xml
 		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppProd.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppProd.xml
 		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppSand.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.ApnxAppSand.xml
-		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Cloud.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Cloud.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.AzureDev.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.AzureDev.xml
 		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Integration.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Integration.xml
 		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Local.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Local.xml
 		..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Production.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayer.web.config.Production.xml
-		..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Cloud.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Cloud.xml
+		..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.AzureDev.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.AzureDev.xml
 		..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Local.xml = ..\..\..\LucyConfig\ConfigTransforms\WebLayerTest.app.config.Local.xml
 	EndProjectSection
 EndProject
@@ -65,7 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EnvironmentSettings", "Envi
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.ApnxAppProd.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.ApnxAppProd.proj
 		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.ApnxAppSand.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.ApnxAppSand.proj
-		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Cloud.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Cloud.proj
+		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.AzureDev.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.AzureDev.proj
 		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Local.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Local.proj
 		..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Production.proj = ..\..\..\LucyConfig\EnvironmentSettings\EnvironmentSettings.Production.proj
 	EndProjectSection

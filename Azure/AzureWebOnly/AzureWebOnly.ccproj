@@ -43,7 +43,7 @@
   <ItemGroup>
     <ServiceConfiguration Include="ServiceConfiguration.Local.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Integration.cscfg" />
-    <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
+    <ServiceConfiguration Include="ServiceConfiguration.AzureDev.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.ApnxAppSand.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.ApnxAppProd.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Production.cscfg" />
@@ -58,19 +58,6 @@
       <RoleName>WebRole</RoleName>
       <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PublishProfile Include="$(AzureProfiles)$(Name)\*.azurePubxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="..\" />
-    <Folder Include="..\..\" />
-    <Folder Include="..\..\..\" />
-    <Folder Include="..\..\..\..\" />
-    <Folder Include="..\..\..\..\LucyConfig\" />
-    <Folder Include="..\..\..\..\LucyConfig\Azure\" />
-    <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\" />
-    <Folder Include="..\..\..\..\LucyConfig\Azure\Profiles\AzureWebOnly\" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>

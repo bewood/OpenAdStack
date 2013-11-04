@@ -1,4 +1,20 @@
 @echo off
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Copyright 2012-2013 Rare Crowds, Inc.
+::
+::   Licensed under the Apache License, Version 2.0 (the "License");
+::   you may not use this file except in compliance with the License.
+::   You may obtain a copy of the License at
+::
+::       http://www.apache.org/licenses/LICENSE-2.0
+::
+::   Unless required by applicable law or agreed to in writing, software
+::   distributed under the License is distributed on an "AS IS" BASIS,
+::   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+::   See the License for the specific language governing permissions and
+::   limitations under the License.
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 ::::::::::::::::::::::::::::::
 :: Ensure environment setup
 ::::::::::::::::::::::::::::::
@@ -59,14 +75,16 @@ if /i not '%1'=='' (
       shift /1
     )
   )
-  
-  :: Azure Packaging and Deployment
-  if /i '%1'=='Cloud' set TARGETPROFILE=Cloud
-  if /i '%1'=='ApnxAppSand' set TARGETPROFILE=ApnxAppSand
-  if /i '%1'=='ApnxAppProd' set TARGETPROFILE=ApnxAppProd
+
+  :: Target environment profiles  
   if /i '%1'=='Local' set TARGETPROFILE=Local
   if /i '%1'=='Integration' set TARGETPROFILE=Integration
+  if /i '%1'=='AzureDev' set TARGETPROFILE=AzureDev
   if /i '%1'=='Production' set TARGETPROFILE=Production
+  if /i '%1'=='ApnxAppSand' set TARGETPROFILE=ApnxAppSand
+  if /i '%1'=='ApnxAppProd' set TARGETPROFILE=ApnxAppProd
+
+  :: Azure Packaging and Deployment
   if /i '%1'=='Package' set PACKAGE=True
   if /i '%1'=='Deploy' (
     set DEPLOY=True
@@ -223,12 +241,15 @@ if '%SQL_CLEAN%'=='' set SQL_CLEAN=False
 if '%SQL_SERVER%'=='' set SQL_SERVER=.\SQLEXPRESS
 if '%SQL_TO_INSTALL%'=='' set SQL_TO_INSTALL=%CONFIG%\databasesToInstall.txt
 if '%CREATE_DEFAULT_USER%'=='' set CREATE_DEFAULT_USER=False
+
+:: Gets the default user id (ACS NamedIdentifier claim value) from the private settings
+:: Note that production value MUST be passed in from the command line and should not be checked in
 if '%DEFAULT_USER_ID%'=='' (
-  if '%TARGETPROFILE%'=='Cloud' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_Cloud%
+  if '%TARGETPROFILE%'=='Local' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_Local%
+  if '%TARGETPROFILE%'=='AzureDev' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_AzureDev%
+  if '%TARGETPROFILE%'=='Integration' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_Integration%
   if '%TARGETPROFILE%'=='ApnxAppSand' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_ApnxAppSand%
   if '%TARGETPROFILE%'=='ApnxAppProd' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_ApnxAppProd%
-  if '%TARGETPROFILE%'=='Local' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_Local%
-  if '%TARGETPROFILE%'=='Integration' set DEFAULT_USER_ID=%settings.DEFAULT_USER_ID_Integration%
 )
 if '%DEFAULT_ACCESS%'=='' set DEFAULT_ACCESS=*:#:*:*
 if '%DEFAULT_COMPANY_ID%'=='' set DEFAULT_COMPANY_ID=00000000000000000000000000000001
@@ -445,7 +466,7 @@ if /i '%SQL_DEPLOY%'=='True' (
 	echo.
 
 	%TC%[blockOpened name='Initialize Default Entities']
-    if /i '%TARGETPROFILE%'=='Cloud' (
+    if /i '%TARGETPROFILE%'=='AzureDev' (
       if '%SQL_CONNECTION_STRING%'=='' set SQL_CONNECTION_STRING=Data Source=%SQL_SERVER%;Initial Catalog=IndexDatastore;Integrated Security=False;User ID=lucyAppUser;Password=%settings.SQLUSERPWD%
     ) else if /i '%TARGETPROFILE%'=='ApnxAppSand' (
       if '%SQL_CONNECTION_STRING%'=='' set SQL_CONNECTION_STRING=Data Source=%SQL_SERVER%;Initial Catalog=IndexDatastore;Integrated Security=False;User ID=lucyAppUser;Password=%settings.SQLUSERPWD%
