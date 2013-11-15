@@ -16,10 +16,10 @@ must be replaced with a reference to this file:
   <PropertyGroup>
     <BuildTools>$(SolutionDir)..\build\</BuildTools>
     <TargetProfile Condition=" '$(TargetProfile)' == '' ">Local</TargetProfile>
-    <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(SolutionDir)..\..\..\LucyConfig\</PrivateConfig>
+    <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(OpenAdStack.PrivateConfig)</PrivateConfig>
     <EnvironmentSettings>EnvironmentSettings.$(TargetProfile).proj</EnvironmentSettings>
   </PropertyGroup>
-  <Import Project="$(PrivateConfig)EnvironmentSettings\$(EnvironmentSettings)"/>
+  <Import Project="$(PrivateConfig)\EnvironmentSettings\$(EnvironmentSettings)"/>
   <Import Project="$(BuildTools)MSBuildExtensionPack\MSBuild.ExtensionPack.tasks"/>
   <!--
     ============================================================
@@ -152,13 +152,13 @@ must be replaced with a reference to this file:
     <PropertyGroup>
       <BaseConfig>$(ProjectDir)app.config</BaseConfig>
       <OutputConfig>$(TargetPath).config</OutputConfig>
-      <TransformXml>$(PrivateConfig)ConfigTransforms\$(ProjectName).app.config.$(TargetProfile).xml</TransformXml>
+      <TransformXml>$(PrivateConfig)\ConfigTransforms\$(ProjectName).app.config.$(TargetProfile).xml</TransformXml>
     </PropertyGroup>
     <!-- Settings for ASP.NET WebApplication projects -->
     <PropertyGroup Condition="$(ProjectTypeGuids.Contains('$(WebApplicationProjectTypeGuid)'))">
       <BaseConfig>$(ProjectDir)web.config</BaseConfig>
       <OutputConfig>$(WebProjectOutputDir)\web.config</OutputConfig>
-      <TransformXml>$(PrivateConfig)ConfigTransforms\$(ProjectName).web.config.$(TargetProfile).xml</TransformXml>
+      <TransformXml>$(PrivateConfig)\ConfigTransforms\$(ProjectName).web.config.$(TargetProfile).xml</TransformXml>
     </PropertyGroup>
     <TransformXml Condition="$([System.IO.File]::Exists(`$(TransformXml)`))"
                   Source="$(BaseConfig)"

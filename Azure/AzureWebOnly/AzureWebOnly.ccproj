@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <BuildTools>$(ProjectDir)..\..\build\</BuildTools>
-    <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(ProjectDir)..\..\..\..\LucyConfig\</PrivateConfig>
-    <AzureProfiles>$(PrivateConfig)Azure\Profiles\</AzureProfiles>
+    <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(OpenAdStack.PrivateConfig)</PrivateConfig>
+    <AzureProfiles>$(PrivateConfig)\Azure\Profiles\</AzureProfiles>
     <TargetProfile Condition=" '$(TargetProfile)' == '' ">Local</TargetProfile>
     <UseIISExpressByDefault>False</UseIISExpressByDefault>
   </PropertyGroup>
-  <Import Project="$(PrivateConfig)EnvironmentSettings\EnvironmentSettings.$(TargetProfile).proj" />
+  <Import Project="$(PrivateConfig)\EnvironmentSettings\EnvironmentSettings.$(TargetProfile).proj" />
   <Import Project="$(BuildTools)MSBuildExtensionPack\MSBuild.ExtensionPack.tasks" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>

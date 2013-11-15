@@ -36,6 +36,12 @@ set GIT_PATH=C:\Program Files (x86)\Git\bin
 set PATH=%PATH%;%GIT_PATH%;%~dp0;%~dp0..\Public\bin\Release;%~dp0..\Public\bin\Debug;
 
 ::
+:: Locate PrivateConfig (TODO: Add support to read from user prefs)
+::
+call %~dp0\LocatePrivateConfig.cmd
+echo Using PrivateConfig at "%PRIVATECONFIG%"
+
+::
 :: Chdir to the project root
 ::
 cd %~dp0\..

@@ -1,0 +1,10 @@
+"<string xmlns=""http://schemas.microsoft.com/2003/10/Serialization/"">APNXId",displayName,dataProvider,DataCost,MinCPM,PercentOfMedia,member_id,provider,code,subtype
+110,Age:18-24,exelate,0.5,,,39,exelate,18,Demographic
+111,Age:25-34,exelate,0.5,,,39,exelate,19,Demographic
+105967,Behavioral:Art:Photography,Lotame,0.75,,,422,,3819,
+240033,In-Market:Autos:Makes &amp; Models:Citroen:C6,BlueKai,1.71,,,1262,,bk_123983,BlueKai
+253403,Geographic:IP based:USA:New Hampshire:Manchester-Nashua,BlueKai,0.58,,,1262,,bk_33343,geotargeting
+253404,Geographic:IP based:USA:New Jersey,BlueKai,0.58,,,1262,,bk_32820,geotargeting
+949078,Music Equipment &amp; Technology:Affinity:High,A6,0.15,,,1713,,ra_QiQ7aYt6T82sNhTAreZBJA_w0roamdeTDapP5TpiLhvpA,content
+949079,Laundry:Affinity:Medium,A6,0.15,,,1713,,ra_N7yjFxyzTOKExUIJ0wgt9w_YdB_xzm4TeyMt2YDTLxbLw,content
+</string>,,,,,,,,,

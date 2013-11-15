@@ -40,6 +40,7 @@ set DEPLOYMENT_TESTS_PASSED=0
 set INTEGRATION_TESTS_RUN=0
 set INTEGRATION_TESTS_PASSED=0
 set CONFIG=%~dp0Config
+set ROOT=%CD%
 
 :: Check if running elevated
 set ELEVATED=False
@@ -189,14 +190,25 @@ if /i not '%1'=='' (
 )
 
 ::::::::::::::::::::::::::::::
+:: Create OpenAdStack prefs
+::::::::::::::::::::::::::::::
+set PrefsDir=%USERPROFILE%\OpenAdStack
+echo Checking for prefs at "%PrefsDir%"
+if not exist "%PrefsDir%" mkdir "%PrefsDir%"
+
+::::::::::::::::::::::::::::::
 :: Private Configuration
 ::::::::::::::::::::::::::::::
-:: Default private config located in separate SVN alongside Lucy
-if '%PRIVATECONFIG%'=='' set PRIVATECONFIG=%~dp0..\..\..\LucyConfig\
+if not exist "%PRIVATECONFIG%" (
+  echo Unable to locate PrivateConfig
+  goto Failed
+)
+echo Loading PrivateConfig from "%PRIVATECONFIG%"
+
 :: Load settings from private config
 for /f "tokens=1 delims=" %%i in (%PRIVATECONFIG%\settings.txt) do set settings.%%i
 :: Specific purpose config paths
-set AZURECONFIG=%PRIVATECONFIG%Azure
+set AZURECONFIG=%PRIVATECONFIG%\Azure
 set AZUREPROFILES=%AZURECONFIG%\Profiles
 :: Default initial data source, if unspecified.
 if /i '%UPLOAD_PERSISTENT_DATA%'=='True' (
@@ -323,12 +335,6 @@ echo.
 echo ----------------------------------------------------------------------------------------------------
 echo [!DATE! !TIME!] Cleaning Public\bin folders
 echo ----------------------------------------------------------------------------------------------------
-echo.
-if '%ELEVATED%'=='True' (
-  %TC%[blockOpened name='Stopping Doppler Service']
-  net stop DopplerInstrumentationService
-  %TC%[blockClosed name='Stopping Doppler Service']
-)
 echo.
 %TC%[blockOpened name='Delete Public\bin folder']
 if exist %OUTDIR% (
@@ -801,7 +807,8 @@ popd
 endlocal & exit /b %BUILD_RESULT%
 
 :Usage
-echo %~nx0 [Debug^|Release] [NoFxCop] [NCover] [RunAllTests^|RunIntegrationTests^|RunUnitTests^|RunBVTs]
+echo %~nx0 [Debug^|Release] [Local|Integration|AzureDev|Production] [Package] [Deploy] [NoFxCop] [NoXmlDoc] [NCover] [RunAllTests^|RunIntegrationTests^|RunUnitTests^|RunBVTs]
+:: TODO - Add detailed documentation in buildall.readme.txt and type out here
 goto :EOF
 
 ::::::::::::::::::::::::::::::

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    New tokens used in Azure role settings must also be added the .ccproj file.
+    To do so, add something similar to this in the ItemGroup of the DetokeniseServiceModel target:
+      <EnvironmentTokenValues Include="AzureSqlConnectionString">
+        <Replacement>$(AzureSqlConnectionString)</Replacement>
+      </EnvironmentTokenValues>
+  -->
+  <PropertyGroup>
+    <!-- Address where the website is to be deployed -->
+    <DeployedWebsiteAddress>${DeployedWebsiteAddress}</DeployedWebsiteAddress>
+    
+    <!-- Address to which registration requests are to be sent -->
+    <RegistrationEmailFromAddress>${RegistrationEmailFromAddress}</RegistrationEmailFromAddress>
+
+    <!-- Email address to send alerts -->
+    <AlertRecipients>${AlertRecipients}</AlertRecipients>
+    
+    <!-- Azure storage connection strings -->
+    <AzureConnectionString>${AzureConnectionString}</AzureConnectionString>
+    <AzureSqlConnectionString>${AzureSqlConnectionString}</AzureSqlConnectionString>
+    <AzureSqlDictionaryConnectionString>${AzureSqlDictionaryConnectionString}</AzureSqlDictionaryConnectionString>
+
+    <!-- Azure ACS + JWT and Microsoft Connect information -->
+    <AcsNamespace>${AcsNamespace}</AcsNamespace>
+    <AcsRealm>${AcsRealm}</AcsRealm>
+    <AcsIssuerThumbprint>${AcsIssuerThumbprint}</AcsIssuerThumbprint>
+    <RsaCookieThumbprint>${RsaCookieThumbprint}</RsaCookieThumbprint>
+    <WindowsLiveClientId>${WindowsLiveClientId}</WindowsLiveClientId>
+
+    <!-- SMTP account/endpoint information -->
+    <MailSmtpHost>${MailSmtpHost}</MailSmtpHost> <!-- ex: smtp.sendgrid.net -->
+    <MailUsername>${MailUsername}</MailUsername>
+    <MailPassword>${MailPassword}</MailPassword>
+   
+    <!-- AppNexus account/endpoint information -->
+    <AppNexusEndpoint>https://api.appnexus.com/</AppNexusEndpoint>
+    <AppNexusUsername>${AppNexusUsername}</AppNexusUsername>
+    <AppNexusPassword>${AppNexusPassword}</AppNexusPassword>
+    <AppNexusSandbox>false</AppNexusSandbox>
+    <AppNexusAppPrivateKey></AppNexusAppPrivateKey>
+    <AppNexusAppPrivateKeyPassword></AppNexusAppPrivateKeyPassword>
+
+    <!-- Google DFP account information -->
+    <GoogleApplicationName>${GoogleApplicationName}</GoogleApplicationName>
+    <GoogleDfpNetworkId>${GoogleDfpNetworkId}</GoogleDfpNetworkId>
+    <GoogleDfpUsername>${GoogleDfpUsername}</GoogleDfpUsername>
+    <GoogleDfpPassword>${GoogleDfpPassword}</GoogleDfpPassword>
+    <GoogleDfpTraffickerId>${GoogleDfpTraffickerId}</GoogleDfpTraffickerId>
+    <GoogleDfpNetworkTimezone>Pacific Standard Time</GoogleDfpNetworkTimezone>
+
+    <!-- Stripe payment processing keys -->
+    <PaymentProcessorApiSecretKey>${StripeApiSecretKey}</PaymentProcessorApiSecretKey>
+    <PaymentProcessorApiPublicKey>${StripeApiPublicKey}</PaymentProcessorApiPublicKey>
+
+    <!-- For simulator/testing only -->
+    <ReadOnlyIndexConnectionString></ReadOnlyIndexConnectionString>
+    <ReadOnlyEntityConnectionString></ReadOnlyEntityConnectionString>
+  </PropertyGroup>
+</Project>
