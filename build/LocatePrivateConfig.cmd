@@ -19,32 +19,48 @@ setlocal enabledelayedexpansion
 ::
 :: Locates the PrivateConfig for the current environment
 ::
+
 set PrefsDir=%USERPROFILE%\OpenAdStack
 set EnvRoot=%~dp0..
 
-:: To override simply set PRIVATECONFIG in your local environment variables
-if '%PRIVATECONFIG%'=='' (
-  set PrivateConfigSearchPath=%EnvRoot%\..\..\LucyConfig;%PrefsDir%\PrivateConfig;%EnvRoot%\..\PrivateConfig;%EnvRoot%\..\..\PrivateConfig;%EnvRoot%\build\Setup\PrivateConfig
-  for /d %%i in (!PrivateConfigSearchPath!) do (
-    set PRIVATECONFIG=%%~dpni
-    :: echo Checking for PrivateConfig at "!PRIVATECONFIG!"
-    if exist "!PRIVATECONFIG!" (
-      goto FoundPrivateConfig
-    )
-  )
+:: Clear OpenAdStack.PrivateConfig if it is currently set to the setup template
+for /f "delims=" %%i in ('echo %OpenAdStack.PrivateConfig% ^| find /i "build\Setup\PrivateConfig"') do (
+  set OpenAdStack.PrivateConfig=
 )
 
-:FoundPrivateConfig
-if not exist "%PRIVATECONFIG%" (
-  echo WARNING: Unable to locate PrivateConfig!
-) else (
-  :: Set user environment variable in registry
-  set EnvVarReg=%TEMP%\OpenAdStack-%RANDOM%.reg
-  echo Windows Registry Editor Version 5.00>!EnvVarReg!
-  echo.>>!EnvVarReg!
-  echo [HKEY_CURRENT_USER\Environment]>>!EnvVarReg!
-  echo "OpenAdStack.PrivateConfig"="%PRIVATECONFIG:\=\\%">>!EnvVarReg!
-  regedit /s !EnvVarReg!
-  del /f !EnvVarReg!
+set PrivateConfigSearchPath=^
+%OpenAdStack.PrivateConfig%;^
+%EnvRoot%\..\..\LucyConfig;^
+%PrefsDir%\PrivateConfig;^
+%EnvRoot%\PrivateConfig;^
+%EnvRoot%\..\PrivateConfig;^
+%EnvRoot%\..\..\PrivateConfig;^
+%EnvRoot%\build\Setup\PrivateConfig
+
+for /d %%i in (!PrivateConfigSearchPath!) do (
+  set PRIVATECONFIG=%%~dpni
+  if exist "!PRIVATECONFIG!" (
+    goto FoundPrivateConfig
+  )
 )
+goto Failed
+
+:FoundPrivateConfig
+:: Set OpenAdStack.PrivateConfig user environment variable
+:: This is used to build in the Visual Studio IDE
+if not '%OpenAdStack.PrivateConfig%'=='%PRIVATECONFIG%' (
+  echo Updating OpenAdStack.PrivateConfig...
+  call %~dp0\SetEnvVarHKCU.cmd "OpenAdStack.PrivateConfig" "%PRIVATECONFIG:\=\\%"
+)
+goto End
+
+:Failed
+set PRIVATECONFIG=
+echo ###########################################
+echo ## ERROR: UNABLE TO LOCATE PRIVATECONFIG ##
+echo ## LOADING / BUILDING PROJECTS WILL FAIL ##
+echo ###########################################
+call %~dp0\FlashConsole.cmd
+
+:End
 endlocal & set PRIVATECONFIG=%PRIVATECONFIG%

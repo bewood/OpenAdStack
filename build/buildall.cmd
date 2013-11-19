@@ -190,20 +190,12 @@ if /i not '%1'=='' (
 )
 
 ::::::::::::::::::::::::::::::
-:: Create OpenAdStack prefs
-::::::::::::::::::::::::::::::
-set PrefsDir=%USERPROFILE%\OpenAdStack
-echo Checking for prefs at "%PrefsDir%"
-if not exist "%PrefsDir%" mkdir "%PrefsDir%"
-
-::::::::::::::::::::::::::::::
 :: Private Configuration
 ::::::::::::::::::::::::::::::
 if not exist "%PRIVATECONFIG%" (
-  echo Unable to locate PrivateConfig
+  echo PrivateConfig missing or invalid: "%PRIVATECONFIG%"
   goto Failed
 )
-echo Loading PrivateConfig from "%PRIVATECONFIG%"
 
 :: Load settings from private config
 for /f "tokens=1 delims=" %%i in (%PRIVATECONFIG%\settings.txt) do set settings.%%i
