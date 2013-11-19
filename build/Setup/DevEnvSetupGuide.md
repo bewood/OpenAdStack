@@ -111,7 +111,7 @@ Alternatively you may add the entries manually:
   * From the Programs list right-click Notepad
   * Select "Run as administrator"
 * In Notepad open C:\Windows\System32\drivers\etc\hosts
-* Add the following line to the bottom of the file:
+* Add the following to the end of the file:
 
         127.0.0.1 oas.local
         1:: oas.local
@@ -152,18 +152,18 @@ However, here's a quick hack to get up and running in your local environment.
 * Sign in should fail (currently you will just be redirected back to the sign-in page)
 * Switch back to the Compute Emulator UI (which should be active again)
 * Locate the trace message containing the "User not found" error
-    ```
-    <ActivityResult xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Activities">
-      <Error>
-        <ErrorId>8</ErrorId>
-        <Message>User not found: 'qwertfZ7OJR4yz0DFnSFD+p57Xc3FSDFOIRe2MUSjvo='</Message>
-      </Error>
-      <RequestId>GetCompaniesForUser ()</RequestId>
-      <Succeeded>false</Succeeded>
-      <Task>GetCompaniesForUser</Task>
-      <Values xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-    </ActivityResult>
-    ```
+
+        <ActivityResult xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Activities">
+          <Error>
+            <ErrorId>8</ErrorId>
+            <Message>User not found: 'qwertfZ7OJR4yz0DFnSFD+p57Xc3FSDFOIRe2MUSjvo='</Message>
+          </Error>
+          <RequestId>GetCompaniesForUser ()</RequestId>
+          <Succeeded>false</Succeeded>
+          <Task>GetCompaniesForUser</Task>
+          <Values xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+        </ActivityResult>
+
 * Copy the base64 value from the error message ('qwertfZ7...')
 * Close the Compute Emulator UI and Visual Studio
 * Right-click the Azure taskbar icon and select Exit and press OK if prompted
