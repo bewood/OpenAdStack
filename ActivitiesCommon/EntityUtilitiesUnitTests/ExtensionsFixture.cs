@@ -125,6 +125,36 @@ namespace EntityUtilitiesUnitTests
             Assert.AreEqual(campaignEntity.PersonaName, newCampaignEntity.PersonaName);
         }
 
+        /// <summary>Test we can deserialize the campaign entity from json</summary>
+        [TestMethod]
+        public void DeserializeCampaignFromJson()
+        {
+            const string CampaignJson =
+@"{
+  ""ExternalName"":""New Campaign"",
+  ""Properties"":{
+    ""Budget"":50000,
+    ""CPM"":2.34,
+    ""StartDate"":""2013-11-03T00:00:00.000Z"",
+    ""EndDate"":""2013-11-24T10:00:00.000Z"",
+    ""Status"":""Draft"",
+    ""InventoryStrategy"":""2""
+  },
+  ""ExternalType"":""DynamicAllocationCampaign""
+}";
+
+            var deserialized = EntityJsonSerializer.DeserializeCampaignEntity(new EntityId(), CampaignJson);
+
+            // Assert the deserialized campaign has the expected values
+            Assert.AreEqual(6, deserialized.Properties.Count);
+            Assert.AreEqual<string>("Campaign", deserialized.EntityCategory);
+            Assert.AreEqual<string>("New Campaign", deserialized.ExternalName);
+            Assert.AreEqual<double>(50000.00, deserialized.Budget);
+            Assert.AreEqual<DateTime>(new DateTime(2013, 11, 03, 0, 0, 0, 0, DateTimeKind.Utc), deserialized.StartDate);
+            Assert.AreEqual<DateTime>(new DateTime(2013, 11, 24, 10, 0, 0, 0, DateTimeKind.Utc), deserialized.EndDate);
+            Assert.AreEqual<string>("DynamicAllocationCampaign", deserialized.ExternalType);
+        }
+
         /// <summary>Test we can serialize the creative entity to a json object.</summary>
         [TestMethod]
         public void SerializeCreativeToJson()

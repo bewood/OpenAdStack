@@ -224,7 +224,7 @@ namespace EntityUtilitiesUnitTests
             var entityCategory = TestEntity.CategoryName;
             var externalEntityId = new EntityId().ToString();
             var localVersion = int.MinValue;
-            var lastModifiedDate = "2012-10-02T19:36:25.0220653Z";
+            var lastModifiedDate = "2012-10-02T19:36:25.0000000Z";
             var budget = 10000.00;
             var int32Value = int.MaxValue;
             var int64Value = (long)int.MinValue - 1;
@@ -232,7 +232,7 @@ namespace EntityUtilitiesUnitTests
             var boolTrueValue = "true"; // json serializes lower-case
             var boolFalseValue = "false"; // json serializes lower-case
             var guidValue = new EntityId().ToString();
-            var dateValue = "2012-10-02T19:36:25.0220653Z";
+            var dateValue = "2012-10-02T19:36:25.0000000Z";
             var stringValue = "a string, a palpable string";
             var numberAsStringValue = "12345";
             var sourceJson = jsonFormat.FormatInvariant(
@@ -296,7 +296,7 @@ namespace EntityUtilitiesUnitTests
             var roundTripEntity = new TestEntity(EntityJsonSerializer.DeserializeEntity(roundTripJson));
             AssertEntitiesEqual(testEntity, roundTripEntity, null);
 
-            // Assert that numeric and boolean types are not treated as strings in serialized json and the rest are
+            // Assert that dates, numeric and boolean types are not treated as strings in serialized json and the rest are
             var rawProperties = JsonConvert.DeserializeObject<Dictionary<string, object>>(roundTripJson)["Properties"];
             var deserializedProperties = JsonConvert.DeserializeObject<Dictionary<string, object>>(
                 ((JContainer)rawProperties).ToString(Formatting.None));
@@ -305,8 +305,8 @@ namespace EntityUtilitiesUnitTests
             Assert.IsNotInstanceOfType(deserializedProperties["DoubleName"], typeof(string));
             Assert.IsNotInstanceOfType(deserializedProperties["BoolTrueName"], typeof(string));
             Assert.IsNotInstanceOfType(deserializedProperties["BoolFalseName"], typeof(string));
+            Assert.IsNotInstanceOfType(deserializedProperties["DateName"], typeof(string));
             Assert.IsInstanceOfType(deserializedProperties["GuidName"], typeof(string));
-            Assert.IsInstanceOfType(deserializedProperties["DateName"], typeof(string));
             Assert.IsInstanceOfType(deserializedProperties["StringName"], typeof(string));
             Assert.IsInstanceOfType(deserializedProperties["NumberAsStringName"], typeof(string));
         }

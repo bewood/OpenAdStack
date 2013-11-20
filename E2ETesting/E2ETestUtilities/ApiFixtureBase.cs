@@ -35,7 +35,7 @@ namespace E2ETestUtilities
     public class ApiFixtureBase
     {
         /// <summary>How long to wait before following redirects</summary>
-        protected const int FollowRedirectWait = 3000;
+        protected const int FollowRedirectWait = 5000;
 
         /// <summary>The name identifier claim</summary>
         protected const string NameIdentifierClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";

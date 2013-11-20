@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NamedCredentials>
+  <Items>
+    <NamedCredential>
+      <SubscriptionId>{{YOUR-SUBSCRIPTION-ID}}</SubscriptionId>
+      <IsImported>true</IsImported>
+      <CertificateThumbprint>{{YOURCERTIFICATETHUMBPRINT}}</CertificateThumbprint>
+      <ServiceEndpoint>https://management.core.windows.net/</ServiceEndpoint>
+      <Name>{{Your Account Name}}</Name>
+    </NamedCredential>
+  </Items>
+</NamedCredentials>

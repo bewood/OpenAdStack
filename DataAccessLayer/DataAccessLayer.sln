@@ -1,13 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D65DEF5-2B2B-409B-9F52-4DF9B72814CC}"
-	ProjectSection(SolutionItems) = preProject
-		DataAccessLayer.vsmdi = DataAccessLayer.vsmdi
-		Local.testsettings = Local.testsettings
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcreteDataStore", "ConcreteDataStore\ConcreteDataStore.csproj", "{A7CC4F7A-15D3-4F19-BEF7-DAE737FB119E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureStorageIntegrationTests", "AzureStorageIntegrationTests\AzureStorageIntegrationTests.csproj", "{4791AB48-9BCF-4837-AD31-19DB1B2BB94B}"

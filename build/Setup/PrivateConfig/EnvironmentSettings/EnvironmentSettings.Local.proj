@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    New tokens used in Azure role settings must also be added the .ccproj file.
+    To do so, add something similar to this in the ItemGroup of the DetokeniseServiceModel target:
+      <EnvironmentTokenValues Include="AzureSqlConnectionString">
+        <Replacement>$(AzureSqlConnectionString)</Replacement>
+      </EnvironmentTokenValues>
+  -->
+  <PropertyGroup>
+    <AcsNamespace>rcoasemu</AcsNamespace>
+    <AcsRealm>urn:rc-open-ad-stack</AcsRealm>
+    <AcsIssuerThumbprint>60DADEEB845ED978E8479159D3E35D4EAB186211</AcsIssuerThumbprint>
+    <RsaCookieThumbprint>FF2A45707AE236888AC09B2EEAE557B970DD3A99</RsaCookieThumbprint>
+    <WindowsLiveClientId>0000000044106420</WindowsLiveClientId>
+    <DeployedWebsiteAddress>oas.local</DeployedWebsiteAddress>
+    <RegistrationEmailFromAddress>regtest@rarecrowds.com</RegistrationEmailFromAddress>
+    <AzureConnectionString>UseDevelopmentStorage=true</AzureConnectionString>
+    <AzureConnectActivationToken>51511a59-0f4b-4b7f-9cf0-cbd9ca3120bb</AzureConnectActivationToken>
+    <AzureSqlConnectionString>Data Source=.\SQLEXPRESS;Initial Catalog=IndexDatastore;Integrated Security=False;User ID=lucyAppUser;Password=app#user123</AzureSqlConnectionString>
+    <AzureSqlDictionaryConnectionString>Data Source=.\SQLEXPRESS;Initial Catalog=DictionaryStore;Integrated Security=False;User ID=lucyAppUser;Password=app#user123</AzureSqlDictionaryConnectionString>
+    <AppNexusEndpoint>http://hb.sand-08.adnxs.net</AppNexusEndpoint>
+    <AppNexusUsername>RareCrowds</AppNexusUsername>
+    <AppNexusPassword>cb3d46e1</AppNexusPassword>
+    <AppNexusSandbox>true</AppNexusSandbox>
+    <AlertRecipients>nobody@rarecrowds.com</AlertRecipients>
+    <GoogleApplicationName>RareCrowdsEmulator</GoogleApplicationName>
+    <GoogleDfpNetworkId>8010464</GoogleDfpNetworkId>
+    <GoogleDfpUsername>dfp.dev@rarecrowds.com</GoogleDfpUsername>
+    <GoogleDfpPassword>{73577E69-5B15-4047-BA82-041DEE8CA1FB}</GoogleDfpPassword>
+    <GoogleDfpTraffickerId>1234567</GoogleDfpTraffickerId>
+    <GoogleDfpNetworkTimezone>Pacific Standard Time</GoogleDfpNetworkTimezone>
+    <MailSmtpHost>smtp.sendgrid.net</MailSmtpHost>
+    <MailUsername>rarecrowds</MailUsername>
+    <MailPassword>rhut6298$!</MailPassword>
+    <AppNexusAppPrivateKey></AppNexusAppPrivateKey>
+    <AppNexusAppPrivateKeyPassword></AppNexusAppPrivateKeyPassword>
+    <ReadOnlyIndexConnectionString></ReadOnlyIndexConnectionString>
+    <ReadOnlyEntityConnectionString></ReadOnlyEntityConnectionString>
+    <PaymentProcessorApiSecretKey>sk_test_NVHmeiJNAruAcb4catsx8o9g</PaymentProcessorApiSecretKey>
+    <PaymentProcessorApiPublicKey>pk_test_jATyIxjgV5UEkOtTNFj4Xcrt</PaymentProcessorApiPublicKey>
+  </PropertyGroup>
+</Project>

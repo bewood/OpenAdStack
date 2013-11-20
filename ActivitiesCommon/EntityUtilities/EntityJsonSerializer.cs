@@ -390,7 +390,9 @@ namespace EntityUtilities
                 var valueJson = (JValue)propertyJson.Value;
 
                 // Get the string serialized form of the json value
-                var serializedStringValue = valueJson.Value.ToString();
+                var serializedStringValue = valueJson.Type == JTokenType.Date
+                    ? ((DateTime)valueJson.Value).ToString("o", CultureInfo.InvariantCulture)
+                    : valueJson.Value.ToString();
                 
                 // NaN should fail
                 if ((valueJson.Value is double && double.IsNaN((double)valueJson))

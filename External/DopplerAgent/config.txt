@@ -1,1 +1,0 @@
-﻿DefaultEndpointsProtocol=https;AccountName=rarecrowdsstore;AccountKey=YOWtq900BMOCMeEKP4arMTSOvmiSRohrM/ajYwRTrdnYGKmPW32iXmDnYfidJ8mOkJQvVFgtiSVC4PsJJOHrcg==

@@ -1,0 +1,9 @@
+#
+# List of cloud service packages to be deployed
+#
+# Format:
+# <ProjectDir>|<PackageName>|<Profile>
+#
+
+Azure;Azure.cspkg;{{YourTestingEnvironment}}.azurePubxml
+

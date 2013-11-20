@@ -1,7 +1,6 @@
 #
 # List of solutions to build with the Package target
-# This should include all solutions with Cloud projects (ccproj)
+# This should include all solutions with Cloud projects (ccproj) to be deployed
 #
-
 Azure\Azure.sln
 
