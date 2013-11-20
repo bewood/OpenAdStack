@@ -23,13 +23,13 @@ setlocal enabledelayedexpansion
 set PrefsDir=%USERPROFILE%\OpenAdStack
 set EnvRoot=%~dp0..
 
-:: Clear OpenAdStack.PrivateConfig if it is currently set to the setup template
-for /f "delims=" %%i in ('echo %OpenAdStack.PrivateConfig% ^| find /i "build\Setup\PrivateConfig"') do (
-  set OpenAdStack.PrivateConfig=
+:: Clear OpenAdStack_PrivateConfig if it is currently set to the setup template
+for /f "delims=" %%i in ('echo %OpenAdStack_PrivateConfig% ^| find /i "build\Setup\PrivateConfig"') do (
+  set OpenAdStack_PrivateConfig=
 )
 
 set PrivateConfigSearchPath=^
-%OpenAdStack.PrivateConfig%;^
+%OpenAdStack_PrivateConfig%;^
 %EnvRoot%\..\..\LucyConfig;^
 %PrefsDir%\PrivateConfig;^
 %EnvRoot%\PrivateConfig;^
@@ -46,11 +46,11 @@ for /d %%i in (!PrivateConfigSearchPath!) do (
 goto Failed
 
 :FoundPrivateConfig
-:: Set OpenAdStack.PrivateConfig user environment variable
+:: Set OpenAdStack_PrivateConfig user environment variable
 :: This is used to build in the Visual Studio IDE
-if not '%OpenAdStack.PrivateConfig%'=='%PRIVATECONFIG%' (
-  echo Updating OpenAdStack.PrivateConfig...
-  call %~dp0\SetEnvVarHKCU.cmd "OpenAdStack.PrivateConfig" "%PRIVATECONFIG:\=\\%"
+if not '%OpenAdStack_PrivateConfig%'=='%PRIVATECONFIG%' (
+  echo Updating OpenAdStack_PrivateConfig...
+  call %~dp0\SetEnvVarHKCU.cmd "OpenAdStack_PrivateConfig" "%PRIVATECONFIG:\=\\%"
 )
 goto End
 
