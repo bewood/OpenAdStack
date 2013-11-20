@@ -20,7 +20,6 @@
 		},
 		"ExtendedProperties" : {
 			"MeasureSets" : {
-				"IdealValuation" : "20.0",
 				"MaxValuation" : "57.4",
 				"Measures" : [{
 						"measureId" : "107000000000018024",

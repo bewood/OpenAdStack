@@ -131,7 +131,6 @@ namespace DynamicAllocationActivitiesUnitTests
 
             var measureSetsInput = new MeasureSetsInput
             {
-                IdealValuation = 5,
                 MaxValuation = 10,
                 Measures = this.testMeasures.Select(m => new MeasuresInput { Measure = m, Valuation = 50 })
             };
@@ -284,7 +283,7 @@ namespace DynamicAllocationActivitiesUnitTests
         /// <returns>JSON string of measures</returns>
         internal static string SerializeMeasureSetsInputJson(MeasureSetsInput measureSetsInput)
         {
-            const string JsonOuterFormat = @"{{""IdealValuation"": {0},""MaxValuation"": {1},""Measures"":[{2}]}}";
+            const string JsonOuterFormat = @"{{""MaxValuation"": {1},""Measures"":[{2}]}}";
             const string JsonInnerFormat = @"{{""measureId"":{0},""valuation"":{1},""group"":""{2}"",""pinned"":{3}}}";
 
             var innerJsonStrings = new List<string>();
@@ -299,7 +298,7 @@ namespace DynamicAllocationActivitiesUnitTests
             }
 
             return JsonOuterFormat.FormatInvariant(
-                measureSetsInput.IdealValuation, measureSetsInput.MaxValuation, string.Join(",", innerJsonStrings));
+                measureSetsInput.MaxValuation, string.Join(",", innerJsonStrings));
         }
 
         /// <summary>Serialize Measures Json</summary>
@@ -308,7 +307,7 @@ namespace DynamicAllocationActivitiesUnitTests
         internal static string SerializeNodeOverridesToJson(Dictionary<MeasureSet, Tuple<decimal, decimal>> nodeOverrides)
         {
             const string JsonOuterFormat = @"[{0}]";
-            const string JsonInnerFormat = @"{{""MeasureSet"":[{0}],""MaxValuation"":{1},""IdealValuation"":{2}}}";
+            const string JsonInnerFormat = @"{{""MeasureSet"":[{0}],""MaxValuation"":{1}}}";
 
             var innerJsonStrings = new List<string>();
             foreach (var nodeOverride in nodeOverrides)

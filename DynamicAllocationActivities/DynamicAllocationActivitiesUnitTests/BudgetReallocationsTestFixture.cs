@@ -129,7 +129,6 @@ namespace DynamicAllocationActivitiesUnitTests
 
             var measureSetsInput = new MeasureSetsInput
             {
-                IdealValuation = 5,
                 MaxValuation = 10,
                 Measures = this.testMeasures.Select(m => new MeasuresInput { Measure = m, Valuation = 50 })
             };

@@ -67,7 +67,6 @@ namespace ReportingActivities
             {
                 Approved = new LegacyMeasureSetsInputSerialized
                 {
-                    IdealValuation = oldMeasureInputs.IdealValuation,
                     MaxValuation = oldMeasureInputs.MaxValuation,
                     Measures = oldMeasureInputs.Measures.Select(m => new LegacyMeasuresInputElement
                     {
@@ -205,8 +204,6 @@ namespace ReportingActivities
                 var jsonMeasureSetsList =
                     AppsJsonSerializer.DeserializeObject<Dictionary<string, object>>(measuresJson);
                 var jsonMeasureSetsArray = jsonMeasureSetsList["MeasureSets"] as Dictionary<string, object>;
-                var idealValuation = Convert.ToDecimal(
-                    jsonMeasureSetsArray["IdealValuation"], CultureInfo.InvariantCulture);
                 var maxValuation = Convert.ToDecimal(jsonMeasureSetsArray["MaxValuation"], CultureInfo.InvariantCulture);
                 var measuresList = (jsonMeasureSetsArray["Measures"] as ArrayList).ToArray();
 
@@ -225,7 +222,7 @@ namespace ReportingActivities
 
                 return new MeasureSetsInput
                     {
-                        Measures = measures, MaxValuation = maxValuation, IdealValuation = idealValuation,
+                        Measures = measures, MaxValuation = maxValuation,
                     };
             }
 
@@ -298,11 +295,6 @@ namespace ReportingActivities
         /// <summary>Class representing the serialized form of the MeasureSetsInput valuation inputs.</summary>
         internal class LegacyMeasureSetsInputSerialized
         {
-            /// <summary>
-            /// Gets or sets the IdealValuation
-            /// </summary>
-            public decimal IdealValuation { get; set; }
-
             /// <summary>
             /// Gets or sets the MaxValuation
             /// </summary>

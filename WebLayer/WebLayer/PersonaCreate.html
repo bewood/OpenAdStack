@@ -324,8 +324,7 @@
             case 'campaignSubmit':
                 workarea.progressOn();
                 var savedMeasureInfoSet = getMeasureInfoSetFromCampaign(cClient);
-                savedMeasureInfoSet.IdealValuation = CalculatePersonaValuation(savedMeasureInfoSet.Measures);
-                savedMeasureInfoSet.MaxValuation = savedMeasureInfoSet.IdealValuation;
+                savedMeasureInfoSet.MaxValuation = CalculatePersonaValuation(savedMeasureInfoSet.Measures);
                 setMeasureInfoSet(cClient, savedMeasureInfoSet);
                 if (cClient.Save()) {
                     workarea.progressOff();

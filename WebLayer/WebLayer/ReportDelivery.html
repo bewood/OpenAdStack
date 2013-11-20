@@ -243,7 +243,7 @@
 
     function generateMeasuresListHTML(measureList) { //TODO Dedupe with Overrides.html
         var messageText = '<table cellspacing=0 style="font:tahoma;font-size:12px">';
-        var nodeValuationJson = { 'MeasureSet': [], 'IdealValuation': 0, 'MaxValuation': 0 };
+        var nodeValuationJson = { 'MeasureSet': [], 'MaxValuation': 0 };
         for (var i = 0; i < measureList.length; i++) {
             messageText += '<tr><td style="border-bottom:1px solid;">' + getMeasureDisplayName(measureList[i]) + "<\/td><\/tr>";
             nodeValuationJson.MeasureSet.push(measureList[i]);

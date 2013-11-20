@@ -82,7 +82,6 @@ namespace DynamicAllocationActivities
             
             return new MeasureSetsInput
             {
-                IdealValuation = measuresSerializable.IdealValuation,
                 MaxValuation = measuresSerializable.MaxValuation,
                 Measures = measuresSerializable.Measures.Select(m =>
                     new MeasuresInput

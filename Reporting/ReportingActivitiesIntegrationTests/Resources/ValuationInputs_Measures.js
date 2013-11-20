@@ -1,6 +1,5 @@
 {
 	"MeasureSets": {
-		"IdealValuation": 5.50,
 		"MaxValuation": 9.00,
 		"Measures": [
 		{ "measureId": 110000000000142991, "group": "", "pinned": false },

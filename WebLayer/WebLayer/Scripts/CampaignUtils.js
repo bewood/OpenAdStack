@@ -175,7 +175,7 @@ function getCalculatedValuationList(companyId, campaignId) {
 }
 
 function getEmptyMeasureInfoSet() {
-    return { IdealValuation: 0, MaxValuation: 0, Measures: [] };
+    return { MaxValuation: 0, Measures: [] };
 }
 
 function getDAAllocationIndex(advertiser, campaign, campaignObject){
