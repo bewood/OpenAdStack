@@ -1,16 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <BuildTools>$(ProjectDir)..\..\build\</BuildTools>
-    <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(OpenAdStack.PrivateConfig)</PrivateConfig>
-    <AzureProfiles>$(PrivateConfig)\Azure\Profiles\</AzureProfiles>
-    <TargetProfile Condition=" '$(TargetProfile)' == '' ">Local</TargetProfile>
-    <UseIISExpressByDefault>False</UseIISExpressByDefault>
-  </PropertyGroup>
-  <Import Project="$(PrivateConfig)\EnvironmentSettings\EnvironmentSettings.$(TargetProfile).proj" />
-  <Import Project="$(BuildTools)MSBuildExtensionPack\MSBuild.ExtensionPack.tasks" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <TargetProfile Condition=" '$(TargetProfile)' == '' ">Local</TargetProfile>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>2.1</ProductVersion>
@@ -61,97 +53,9 @@
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">11.0</VisualStudioVersion>
     <CloudExtensionsDir Condition=" '$(CloudExtensionsDir)' == '' ">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Windows Azure Tools\2.1\</CloudExtensionsDir>
   </PropertyGroup>
   <Import Project="$(CloudExtensionsDir)Microsoft.WindowsAzure.targets" />
-  <!--
-  Detokenise the target service definition and configuration.
-  -->
-  <Target Name="DetokeniseServiceModel" AfterTargets="GenerateServiceModel">
-    <ItemGroup>
-      <DetokeniseFiles Include="@(TargetServiceDefinition);@(TargetServiceConfiguration)" />
-    </ItemGroup>
-    <ItemGroup>
-      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'!='true'">
-        <Replacement>..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'=='true'">
-        <Replacement>..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="DeployedWebsiteAddress">
-        <Replacement>$(DeployedWebsiteAddress)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="RegistrationEmailFromAddress">
-        <Replacement>$(RegistrationEmailFromAddress)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AlertRecipients">
-        <Replacement>$(AlertRecipients)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureConnectionString">
-        <Replacement>$(AzureConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureConnectActivationToken">
-        <Replacement>$(AzureConnectActivationToken)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureSqlConnectionString">
-        <Replacement>$(AzureSqlConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="TrustedIssuerThumbprint">
-        <Replacement>$(TrustedIssuerThumbprint)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="Configuration">
-        <Replacement>$(Configuration)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusEndpoint">
-        <Replacement>$(AppNexusEndpoint)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusUsername">
-        <Replacement>$(AppNexusUsername)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusPassword">
-        <Replacement>$(AppNexusPassword)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusSandbox">
-        <Replacement>$(AppNexusSandbox)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureSqlDictionaryConnectionString">
-        <Replacement>$(AzureSqlDictionaryConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleApplicationName">
-        <Replacement>$(GoogleApplicationName)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpNetworkId">
-        <Replacement>$(GoogleDfpNetworkId)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpUsername">
-        <Replacement>$(GoogleDfpUsername)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpPassword">
-        <Replacement>$(GoogleDfpPassword)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpTraffickerId">
-        <Replacement>$(GoogleDfpTraffickerId)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpNetworkTimezone">
-        <Replacement>$(GoogleDfpNetworkTimezone)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="MailSmtpHost">
-        <Replacement>$(MailSmtpHost)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="MailUsername">
-        <Replacement>$(MailUsername)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="MailPassword">
-        <Replacement>$(MailPassword)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusAppPrivateKey">
-        <Replacement>$(AppNexusAppPrivateKey)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusAppPrivateKeyPassword">
-        <Replacement>$(AppNexusAppPrivateKeyPassword)</Replacement>
-      </EnvironmentTokenValues>
-    </ItemGroup>
-    <MSBuild.ExtensionPack.FileSystem.Detokenise TaskAction="Analyse" TargetFiles="@(DetokeniseFiles)" ReplacementValues="@(EnvironmentTokenValues)" DisplayFiles="true" />
-    <MSBuild.ExtensionPack.FileSystem.Detokenise TaskAction="Detokenise" TargetFiles="@(DetokeniseFiles)" ReplacementValues="@(EnvironmentTokenValues)" DisplayFiles="true" />
-  </Target>
+  <Import Project="$(ProjectDir)..\..\build\AzureCommon.proj" />
 </Project>

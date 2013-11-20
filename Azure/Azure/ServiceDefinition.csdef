@@ -58,19 +58,6 @@
     <Startup priority="-2">
       <Task commandLine="iisconfig.cmd" executionContext="elevated" taskType="simple">
       </Task>
-      <!--
-      <Task commandLine="doppleragent\Bootstrap.bat" executionContext="elevated" taskType="simple">
-        <Environment>
-          <Variable name="Microsoft.Doppler.EnvironmentId">
-            <RoleInstanceValue xpath="/RoleEnvironment/CurrentInstance/ConfigurationSettings/ConfigurationSetting[@name='Microsoft.Doppler.EnvironmentId']/@value" />
-          </Variable>
-          <Variable name="Microsoft.Doppler.UnprocessedDataStore.ConnectionString">
-            <RoleInstanceValue xpath="/RoleEnvironment/CurrentInstance/ConfigurationSettings/ConfigurationSetting[@name='Microsoft.Doppler.UnprocessedDataStore.ConnectionString']/@value" />
-          </Variable>
-        </Environment>
-      </Task>
-            <Task commandLine="Microsoft.WindowsAzure.Caching\ClientPerfCountersInstaller.exe install" executionContext="elevated" taskType="simple" />
-      -->
     </Startup>
   </WebRole>
   <WorkerRole name="WorkerRole" vmsize="Large">
@@ -216,18 +203,6 @@
           </Variable>
         </Environment>
       </Task>
-      <!--
-      <Task commandLine="doppleragent\Bootstrap.bat" executionContext="elevated" taskType="simple">
-        <Environment>
-          <Variable name="Microsoft.Doppler.EnvironmentId">
-            <RoleInstanceValue xpath="/RoleEnvironment/CurrentInstance/ConfigurationSettings/ConfigurationSetting[@name='Microsoft.Doppler.EnvironmentId']/@value" />
-          </Variable>
-          <Variable name="Microsoft.Doppler.UnprocessedDataStore.ConnectionString">
-            <RoleInstanceValue xpath="/RoleEnvironment/CurrentInstance/ConfigurationSettings/ConfigurationSetting[@name='Microsoft.Doppler.UnprocessedDataStore.ConnectionString']/@value" />
-          </Variable>
-        </Environment>
-      </Task>
-      -->
     </Startup>
   </WorkerRole>
 </ServiceDefinition>
