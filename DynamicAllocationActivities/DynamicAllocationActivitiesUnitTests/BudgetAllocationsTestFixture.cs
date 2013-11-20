@@ -283,7 +283,7 @@ namespace DynamicAllocationActivitiesUnitTests
         /// <returns>JSON string of measures</returns>
         internal static string SerializeMeasureSetsInputJson(MeasureSetsInput measureSetsInput)
         {
-            const string JsonOuterFormat = @"{{""MaxValuation"": {1},""Measures"":[{2}]}}";
+            const string JsonOuterFormat = @"{{""MaxValuation"": {0},""Measures"":[{1}]}}";
             const string JsonInnerFormat = @"{{""measureId"":{0},""valuation"":{1},""group"":""{2}"",""pinned"":{3}}}";
 
             var innerJsonStrings = new List<string>();
