@@ -1,5 +1,4 @@
 {
-    "IdealValuation":5,
     "MaxValuation":10,
     "Measures":
     [

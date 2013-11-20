@@ -129,7 +129,6 @@ namespace DynamicAllocationActivitiesUnitTests
                                 new MeasuresInput { Measure = 1106008, Valuation = 75 },
                             },
                     MaxValuation = 10m,
-                    IdealValuation = 5m,
                 };
 
             this.testValuationsInputs = new ValuationInputs(measureInputs, null);

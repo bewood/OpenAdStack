@@ -189,7 +189,6 @@ namespace DynamicAllocationActivitiesUnitTests
         {
             var measuresInputs = ValuationInputs.DeserializeMeasuresJson(measureListSerializedJson);
             Assert.IsNotNull(measuresInputs);
-            Assert.AreEqual(5, measuresInputs.IdealValuation);
             Assert.AreEqual(10, measuresInputs.MaxValuation);
             Assert.AreEqual(3, measuresInputs.Measures.Count());
             Assert.IsTrue(measuresInputs.Measures.All(m => !m.Pinned));
@@ -283,7 +282,6 @@ namespace DynamicAllocationActivitiesUnitTests
             var measures = TestMeasures.Select(m => new MeasuresInput { Measure = m, Valuation = baseValuation }).ToList();
             var measureSetsInput = new MeasureSetsInput
                 {
-                    IdealValuation = 5,
                     MaxValuation = maxValuation, 
                     Measures = measures
                 };

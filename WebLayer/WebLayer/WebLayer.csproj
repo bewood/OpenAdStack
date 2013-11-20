@@ -91,6 +91,7 @@
     <Content Include="Global.asax" />
     <Content Include="JSON.html" />
     <Content Include="JSONFormatter.html" />
+    <Content Include="OverridesAdvanced.html" />
     <Content Include="SignIn.aspx" />
     <Content Include="Overrides.html" />
     <Content Include="PersonaCreate.html" />

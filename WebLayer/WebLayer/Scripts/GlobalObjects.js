@@ -1,3 +1,4 @@
+/// <reference path="../BaseValuations.html" />
 //globals
 var header, Nav, workarea, navTree, content, footer, debugArea;
 var Toolbar;
@@ -194,10 +195,9 @@ function LookUpResource(object, resource) {
         Campaign: {
             EnabledWizardMenu: [{ DisplayText: 'Setup', Href: 'campaignCreate.html' },
             { DisplayText: 'Measures', Href: 'personaCreate.html' },
-            { DisplayText: 'Measure Weights', Href: 'BaseValuations.html' },
-            { DisplayText: 'Valuations', Href: 'Overrides.html' },
-            { DisplayText: 'Assign Creatives', Href: 'Creatives.html' },
+            { DisplayText: 'Valuations', Href: 'BaseValuations.html' },
             { DisplayText: 'Summary', Href: 'Report.html' },
+            { DisplayText: 'Assign Creatives', Href: 'Creatives.html' },
             { DisplayText: 'Delivery Review', Href: 'ReportDelivery.html'},
             { DisplayText: 'Reports', Href: 'ReportHistory.html' }
             ],
@@ -217,7 +217,7 @@ function LookUpResource(object, resource) {
                 '<tr><td style="background:#000000;height:20px;width:20px" /></tr><tr><td>Default Valuation</td></tr>' +
                 '<tr><td style="background:#0080ff;height:20px;width:20px" /></tr><tr><td>Informed Valuation</td></tr></table>' +
                 '<br><b>Note:</b> This screen may take some time to load if you\'ve chosen more than 20 measures, please be patient.<br><br>When you visit this screen for the first time during a campaign setup, you will be presented with a wizard that requests specific valuations (ideal and maximum) for 9-12 inventory definitions.  Giving pricing inputs for the wizard is required, this should only take a few minutes.<br><br>Once you\'ve completed this wizard, you can leave this page and be done with your campaign configuration.  However, we do give you additional valuation control for advanced user scenarios as well, should you choose to use them. THIS IS NOT REQUIRED.<br><br>This screen shows the full graph of possible combinations of measures that could be found in an inventory source. Each square is an inventory definition (line item) that will have a price assigned. You can select any node, and input your ideal and maximum valuation on any node.  Note that all the parents and children of that node are also highlighted any time you select a node.',
-            
+            HelpNodeOverrideRecommended: '',
             HelpReportDelivery: '<table width="100%" style="font:13px Tahoma">' +
                 '<tr><td style="background:#804020;height:20px;width:20px" /></tr><tr><td>Never Exported</td></tr>' +
                 '<tr><td style="background:#FF0000;height:20px;width:20px" /></tr><tr><td>Known Non-Delivery</td></tr>' +

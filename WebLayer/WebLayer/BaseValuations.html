@@ -18,8 +18,6 @@
     <script type="text/javascript">
     helpTopic = "MeasureValuation";
 
-    var maxSlider = 10;
-    var sliders = [];
     function pageExit() {
         if ($RCUI.isDirty) { saveValuations(); }
     }
@@ -31,14 +29,19 @@
         setMeasureInfoSet(cClient, getBaseValuationsFromInput(getMeasureInfoSetFromCampaign(cClient)));
         cClient.Save();
         $RCUI.isDirty = false;
+        navToOverrides();
         workarea.progressOff();
+    }
+
+    function navToOverrides() {
+        location.href = 'overrides.html?' + location.search;
     }
 
 //UI Functions
     function addButton(destinationObject) {
         var valuationFormData = [
                     { type: "settings", position: "label-left", labelWidth: 165 },
-                    { type: "button", name: "valuationSubmit", value: 'Save Measure Weights'}];
+                    { type: "button", name: "valuationSubmit", value: 'Next'}];
         var valuationForm = new dhtmlXForm(destinationObject);
         valuationForm.setSkin("dhx_web");
         valuationForm.loadStruct(valuationFormData, 'json');
@@ -52,7 +55,6 @@
         newTable = addMeasureRows(valuationList, "Pinned", newTable);
         newTable = addMeasureRows(valuationList, "UnPinned", newTable);
         document.getElementById('sliderCell').innerHTML = '<table style="font:Tahoma; font-size: 12px;">' + newTable.innerHTML + '<\/table>'
-        addSliders(getMeasuresFromCampaign(cClient));
         updateValuations(getMeasuresFromCampaign(cClient));
         addButton("buttonCell");
     }
@@ -115,13 +117,13 @@
     }
 
     function sumValuations(list, filterList) {
-        if (filterList == false || filterList == undefined) {
+        if (filterList === false || filterList === undefined) {
             return 0;
         }
         var sum = 0;
         for (var index in list) {
             for (var filterIndex in filterList) {
-                if (filterList[filterIndex].measureId == list[index].measureId) {
+                if (filterList[filterIndex].measureId === list[index].measureId) {
                     sum += parseFloat(list[index].valuation);
                     break;
                 }
@@ -131,7 +133,7 @@
     }
 
     function addMeasureRows(list, node, newTable) {
-        if (list[node] == undefined) {
+        if (list[node] === undefined) {
             return newTable;
         }
         var tempObj = document.createElement('tr');
@@ -174,12 +176,8 @@
             tempCell.innerHTML = list[i].MeasureName;
             newTableRow.appendChild(tempCell);
 
-            var tempCell2 = document.createElement('td');
-            tempCell2.setAttribute('id', 'slider' + measureId);
-            tempCell2.setAttribute('width', '325');
-            newTableRow.appendChild(tempCell2);
-
             var tempCell5 = document.createElement('td');
+            tempCell5.setAttribute('style', 'padding-left:5px');
             var hiddenField = document.createElement('input');
             hiddenField.setAttribute("type", "hidden");
             hiddenField.setAttribute('id', "value" + measureId);
@@ -189,58 +187,13 @@
             inputField.setAttribute("type", "text");
             inputField.setAttribute('id', measureId);
             inputField.setAttribute('style', 'font:8pt tahoma;height:16px;width:50px;');
-            inputField.setAttribute('onchange', 'updateSliderMax(this.value); document.getElementById("value' + measureId + '").value = this.value;updatePersonaValuation();');
+            inputField.setAttribute('onchange', 'document.getElementById("value' + measureId + '").value = this.value;updatePersonaValuation();');
             tempCell5.appendChild(inputField);
             newTableRow.appendChild(tempCell5);
 
             newRow.appendChild(newTableRow);
         }
         return newRow;
-    }
-
-    function updateSliderMax(newMax) {
-        newMax = parseFloat(newMax);
-        var updateMax = false;
-        if (newMax > maxSlider) {
-            updateMax = true;
-            maxSlider = newMax;
-        }
-        var inputBaseVals = getBaseValuationsFromInput(getMeasureInfoSetFromCampaign(cClient));
-        for (var slider in sliders) {
-            if (updateMax) {
-                sliders[slider].sliderObject.setMax(maxSlider);
-            }
-            for (var valuation in inputBaseVals) {
-                if (inputBaseVals[valuation].measureId == sliders[slider].sliderMeasureId) {
-                    sliders[slider].sliderObject.setValue((inputBaseVals[valuation].valuation / 200).toFixed(2));
-                    break;
-                }
-            }
-        }
-    }
-
-    function addSliders(list) {
-        for (var valuation in list) {
-            if (list[valuation].valuation / 200 > maxSlider) {
-                maxSlider = list[valuation].valuation / 200;
-            }
-        }
-        for (var i = 0; i < list.length; i++) {
-            var id = list[i].measureId;
-            var valuation = list[i].valuation / 200;
-            var slider = new dhtmlxSlider('slider' + id, { min: .1, max: maxSlider, step: .01, size: 300, vertical: false });
-            slider.setSkin("arrow");
-            slider.attachEvent('onChange', function (a, b) { $RCUI.isDirty = true; updatePersonaValuation(); });
-            if (valuation) {
-                slider.setValue(valuation);
-            }
-            else {
-                slider.setValue(50);
-            }
-            slider.init();
-            slider.linkTo('value' + id);
-            sliders.push({ sliderMeasureId: id, sliderObject: slider });
-        }
     }
 
     function getBaseValuationsFromInput(list) {

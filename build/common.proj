@@ -32,8 +32,8 @@ must be replaced with a reference to this file:
   <PropertyGroup>
     <BuildTools>$(SolutionDir)..\build\</BuildTools>
     <TargetProfile Condition=" '$(TargetProfile)' == '' ">Local</TargetProfile>
+    <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(OpenAdStack_PrivateConfig)</PrivateConfig>
     <CommonConfig>$(BuildTools)Config</CommonConfig>
-    <PrivateConfig Condition=" '$(PrivateConfig)' == '' ">$(OpenAdStack.PrivateConfig)</PrivateConfig>
     <EnvironmentSettings>EnvironmentSettings.$(TargetProfile).proj</EnvironmentSettings>
   </PropertyGroup>
   <Import Project="$(PrivateConfig)\EnvironmentSettings\$(EnvironmentSettings)"/>

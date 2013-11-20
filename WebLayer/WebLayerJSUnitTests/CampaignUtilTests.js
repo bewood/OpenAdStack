@@ -10,7 +10,7 @@ describe("Campaign Utils", function () {
     it("should return empty measusureInfoSet when null params are passed", function () {
         var measureSet = getEmptyMeasureInfoSet(null, null, null);
 
-        expect(measureSet).toEqual({ IdealValuation: 0, MaxValuation: 0, Measures: [] });
+        expect(measureSet).toEqual({ MaxValuation: 0, Measures: [] });
     });
 
     describe("getDAAllocationIndex", function () {

@@ -26,11 +26,6 @@ namespace DynamicAllocation
     public class MeasureSetsInput
     {
         /// <summary>
-        /// Gets or sets the IdealValuation
-        /// </summary>
-        public decimal IdealValuation { get; set; }
-     
-        /// <summary>
         /// Gets or sets the MaxValuation
         /// </summary>
         public decimal MaxValuation { get; set; }
