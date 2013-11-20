@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- For more information on using web.config transformation visit http://go.microsoft.com/fwlink/?LinkId=125889 -->
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <location path="api">
+    <system.web>
+      <authorization xdt:Transform="Replace">
+        <allow users="*" />
+      </authorization>
+    </system.web>
+  </location>
+  <system.webServer>
+    <modules xdt:Transform="Remove" />
+  </system.webServer>
+  <system.identityModel xdt:Transform="Remove" />
+  <system.identityModel.services xdt:Transform="Remove" />
+</configuration>

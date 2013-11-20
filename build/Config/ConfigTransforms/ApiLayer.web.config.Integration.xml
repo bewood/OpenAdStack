@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- For more information on using web.config transformation visit http://go.microsoft.com/fwlink/?LinkId=125889 -->
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <system.web>
+    <authorization xdt:Transform="Replace">
+      <allow users="*" />
+    </authorization>
+  </system.web>
+
+  <appSettings>
+    <add key="Testing.DefaultClaim" value="$(DefaultUserId)" xdt:Transform="Insert"/>
+  </appSettings>
+
+  <system.identityModel.services xdt:Transform="Remove" />
+
+  <system.webServer>
+    <tracing xdt:Transform="Insert">
+      <traceFailedRequests>
+        <add path="*">
+          <traceAreas>
+            <add provider="ASP" verbosity="Verbose" />
+            <add provider="ASPNET" areas="Infrastructure,Module,Page,AppServices" verbosity="Verbose" />
+            <add provider="ISAPI Extension" verbosity="Verbose" />
+            <add provider="WWW Server"
+                 areas="Authentication, Security, Filter, StaticFile, CGI, Compression, Cache, RequestNotifications, Module, Rewrite"
+                 verbosity="Verbose" />
+          </traceAreas>
+          <failureDefinitions statusCodes="400-599" />
+        </add>
+      </traceFailedRequests>
+    </tracing>
+  </system.webServer>
+</configuration>
