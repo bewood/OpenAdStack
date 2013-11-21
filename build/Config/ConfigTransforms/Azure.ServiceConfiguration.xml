@@ -4,6 +4,12 @@
                       xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <Role name="WebRole">
     <Certificates>
+      <Certificate name="Website SSL" thumbprint="$(WebsiteSslThumbprint)" thumbprintAlgorithm="sha1"
+                   xdt:Transform="Replace" xdt:Locator="Match(name)" />
+      <Certificate name="Intermediate CA" thumbprint="$(IntermediateCaThumbprint)" thumbprintAlgorithm="sha1"
+                   xdt:Transform="Replace" xdt:Locator="Match(name)" />
+      <Certificate name="JWT" thumbprint="$(AcsIssuerThumbprint)" thumbprintAlgorithm="sha1"
+                   xdt:Transform="Replace" xdt:Locator="Match(name)" />
       <Certificate name="RSA Cookies" thumbprint="$(RsaCookieThumbprint)" thumbprintAlgorithm="sha1"
                    xdt:Transform="Replace" xdt:Locator="Match(name)" />
     </Certificates>
