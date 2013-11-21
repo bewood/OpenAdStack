@@ -17,10 +17,6 @@
       <Setting name="ACS.SecurityTokenDuration" value="03:00:00" />
       <Setting name="ApiLayer.QueueResponsePollTime" value="70" />
       <Setting name="ApiLayer.MaxQueueResponseWaitTime" value="12000" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="lucyRdc" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEDvmwNOOEQqLSYE7wIhSkDYwDQYJKoZIhvcNAQEBBQAEggEASamZe3bdd4ZWaZ5+TixnPNrEQtyj12D22NIoF8osp4fJy/vFBlYFiy1L3ugHdPcCeFwbutmE6byBEPum4s1N63hyAd4GFpK+sfC6B4TZRDExinG23Z+WzPoGV9il/rGgX9SniatS1yediyIM7E4IMIpd7XOiX4rvKZ5yyb1du8yXxmTQ8TfBn7VYdzjjgRrOFCXXwfE/UqyaYeuxPRKikDXnpY/u56uHzvOz2LrjyXd79xyGe8s0xQic3nIc6hAcOLmkaMN0SZ+cnJQKmLw66HnoPkBtFdK8813Xqyg+k5ceP98Nq1uK8n+eGTwAz5jfP/jITHCr3mVCCEsoWbhLezA7BgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECLRcYhcJ35DZgBhkT/4RiV86GIjVKhOvM4f2opOP7MW4kcw=" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2013-03-20T23:59:59.0000000-07:00" />
       <Setting name="PersistentDictionary.CompressionThresholdBytes" value="5120" />
       <Setting name="PersistentDictionary.DefaultType" value="Sql" />
       <Setting name="Dictionary.Blob.ConnectionString" value="$(AzureConnectionString)" />
@@ -28,8 +24,6 @@
       <Setting name="Logging.LocalResource" value="DiagnosticsStore" />
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="$(AzureConnectionString)" />
       <Setting name="Testing.HttpHeaderClaimOverrides" value="false" />
-      <Setting name="Microsoft.Doppler.EnvironmentId" value="Integration" />
-      <Setting name="Microsoft.Doppler.UnprocessedDataStore.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=rarecrowdsstore;AccountKey=YOWtq900BMOCMeEKP4arMTSOvmiSRohrM/ajYwRTrdnYGKmPW32iXmDnYfidJ8mOkJQvVFgtiSVC4PsJJOHrcg==" />
       <Setting name="AppNexus.IsApp" value="false" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" value="15000" />
       <Setting name="ACS.SecurityTokenAutoRenew" value="00:05:00" />
@@ -37,11 +31,11 @@
       <Setting name="ApplicationSecurityMode" value="AcsTokens" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="Website SSL" thumbprint="27C48B948DAA2B4A8A4EF02C96A8E28BF88338DA" thumbprintAlgorithm="sha1" />
-      <Certificate name="Intermediate CA" thumbprint="3E4B4FBD77E5A8A89D58E835B9652E8BCFA2C3FA" thumbprintAlgorithm="sha1" />
-      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="8FE52936F15FCBAE28B77738AE28752E08048825" thumbprintAlgorithm="sha1" />
-      <Certificate name="JWT" thumbprint="328BE14E5A63DA4FBFF5EE14B353B45C83E61405" thumbprintAlgorithm="sha1" />
-      <Certificate name="RSA Cookies" thumbprint="FF2A45707AE236888AC09B2EEAE557B970DD3A99" thumbprintAlgorithm="sha1" />
+      <!-- Thumbprints are token replaced with values from EnvironmentSettings -->
+      <Certificate name="Website SSL" thumbprint="0000000000000000000000000000000000000000" thumbprintAlgorithm="sha1" />
+      <Certificate name="Intermediate CA" thumbprint="0000000000000000000000000000000000000000" thumbprintAlgorithm="sha1" />
+      <Certificate name="JWT" thumbprint="0000000000000000000000000000000000000000" thumbprintAlgorithm="sha1" />
+      <Certificate name="RSA Cookies" thumbprint="0000000000000000000000000000000000000000" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <Role name="WorkerRole">
@@ -96,11 +90,6 @@
       <Setting name="Delivery.CreativeStatusUpdateRequestExpiry" value="00:30:00" />
       <Setting name="AppNexus.Sandbox" value="$(AppNexusSandbox)" />
       <Setting name="Delivery.ReportsRetrieveExpiry" value="00:10:00" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="lucyRdc" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEDvmwNOOEQqLSYE7wIhSkDYwDQYJKoZIhvcNAQEBBQAEggEASamZe3bdd4ZWaZ5+TixnPNrEQtyj12D22NIoF8osp4fJy/vFBlYFiy1L3ugHdPcCeFwbutmE6byBEPum4s1N63hyAd4GFpK+sfC6B4TZRDExinG23Z+WzPoGV9il/rGgX9SniatS1yediyIM7E4IMIpd7XOiX4rvKZ5yyb1du8yXxmTQ8TfBn7VYdzjjgRrOFCXXwfE/UqyaYeuxPRKikDXnpY/u56uHzvOz2LrjyXd79xyGe8s0xQic3nIc6hAcOLmkaMN0SZ+cnJQKmLw66HnoPkBtFdK8813Xqyg+k5ceP98Nq1uK8n+eGTwAz5jfP/jITHCr3mVCCEsoWbhLezA7BgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECLRcYhcJ35DZgBhkT/4RiV86GIjVKhOvM4f2opOP7MW4kcw=" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2013-03-20T23:59:59.0000000-07:00" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
       <Setting name="PersistentDictionary.CompressionThresholdBytes" value="5120" />
       <Setting name="QueueProcessor.LogStatsFrequency" value="00:15:00" />
       <Setting name="Delivery.CleanupCampaignsSchedule" value="02:00:00" />
@@ -137,8 +126,6 @@
       <Setting name="QueueProcessor.DrainStabilizationPeriod" value="00:07:30" />
       <Setting name="Logging.AlertRecipients" value="$(AlertRecipients)" />
       <Setting name="Logging.MailAlerts" value="true" />
-      <Setting name="Microsoft.Doppler.EnvironmentId" value="production" />
-      <Setting name="Microsoft.Doppler.UnprocessedDataStore.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=rarecrowdsstore;AccountKey=YOWtq900BMOCMeEKP4arMTSOvmiSRohrM/ajYwRTrdnYGKmPW32iXmDnYfidJ8mOkJQvVFgtiSVC4PsJJOHrcg==" />
       <Setting name="GoogleDfp.TraffickerId" value="$(GoogleDfpTraffickerId)" />
       <Setting name="GoogleDfp.NetworkTimezone" value="$(GoogleDfpNetworkTimezone)" />
       <Setting name="GoogleDfp.ApplicationName" value="$(GoogleApplicationName)" />
@@ -180,7 +167,6 @@
       <Setting name="AppNexus.ReportInterval" value="Last48Hours" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="8FE52936F15FCBAE28B77738AE28752E08048825" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
 </ServiceConfiguration>

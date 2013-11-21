@@ -40,7 +40,11 @@ Copyright 2012-2013 Rare Crowds, Inc.
   <Import Project="$(BuildTools)\MSBuildExtensionPack\MSBuild.ExtensionPack.tasks" />
   <Import Project="$(PrivateConfig)\EnvironmentSettings\$(EnvironmentSettings)" />
 
-  <!-- Transform the service configuration -->
+  <!--
+  ======================================================================
+   Transform the service configuration
+  ======================================================================
+  -->
   <UsingTask TaskName="TransformXml"
              AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll"/>
   <PropertyGroup>
@@ -54,13 +58,15 @@ Copyright 2012-2013 Rare Crowds, Inc.
     </PropertyGroup>
     <Message Importance="high" Text="Transforming $(TransformDestination) using $(ServiceConfigurationTransformXml)" />
     <TransformXml Source="$(TransformSource)"
-                  Destination="bin\$(Configuration)\ServiceConfiguration.cscfg"
+                  Destination="$(TransformDestination)"
                   Transform="$(ServiceConfigurationTransformXml)"
                   StackTrace="true" />
   </Target>
-  
+
   <!--
+  ======================================================================
   Detokenise the target service definition and configuration.
+  ======================================================================
   -->
   <Target Name="DetokeniseServiceModel" AfterTargets="GenerateServiceModel">
     <ItemGroup>
@@ -87,104 +93,5 @@ Copyright 2012-2013 Rare Crowds, Inc.
                                                  CommandLineValues="$(ProjectTokens)"
                                                  ReplacementValues="@(TokenValues)"
                                                  DisplayFiles="true" />
-
-    <!--
-    <ItemGroup>
-      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'!='true'">
-        <Replacement>..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="PublishedWebsites" Condition=" '$(BuildingInsideVisualStudio)'=='true'">
-        <Replacement>..\..\..\..\Public\bin\$(Configuration)\_PublishedWebsites</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="RsaCookieThumbprint">
-        <Replacement>$(RsaCookieThumbprint)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="DeployedWebsiteAddress">
-        <Replacement>$(DeployedWebsiteAddress)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="RegistrationEmailFromAddress">
-        <Replacement>$(RegistrationEmailFromAddress)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AlertRecipients">
-        <Replacement>$(AlertRecipients)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureConnectionString">
-        <Replacement>$(AzureConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureConnectActivationToken">
-        <Replacement>$(AzureConnectActivationToken)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureSqlConnectionString">
-        <Replacement>$(AzureSqlConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="Configuration">
-        <Replacement>$(Configuration)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusEndpoint">
-        <Replacement>$(AppNexusEndpoint)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusUsername">
-        <Replacement>$(AppNexusUsername)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusPassword">
-        <Replacement>$(AppNexusPassword)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusSandbox">
-        <Replacement>$(AppNexusSandbox)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AzureSqlDictionaryConnectionString">
-        <Replacement>$(AzureSqlDictionaryConnectionString)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleApplicationName">
-        <Replacement>$(GoogleApplicationName)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpNetworkId">
-        <Replacement>$(GoogleDfpNetworkId)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpUsername">
-        <Replacement>$(GoogleDfpUsername)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpPassword">
-        <Replacement>$(GoogleDfpPassword)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpTraffickerId">
-        <Replacement>$(GoogleDfpTraffickerId)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="GoogleDfpNetworkTimezone">
-        <Replacement>$(GoogleDfpNetworkTimezone)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="MailSmtpHost">
-        <Replacement>$(MailSmtpHost)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="MailUsername">
-        <Replacement>$(MailUsername)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="MailPassword">
-        <Replacement>$(MailPassword)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusAppPrivateKey">
-        <Replacement>$(AppNexusAppPrivateKey)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="AppNexusAppPrivateKeyPassword">
-        <Replacement>$(AppNexusAppPrivateKeyPassword)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="PaymentProcessorApiSecretKey">
-        <Replacement>$(PaymentProcessorApiSecretKey)</Replacement>
-      </EnvironmentTokenValues>
-      <EnvironmentTokenValues Include="PaymentProcessorApiPublicKey">
-        <Replacement>$(PaymentProcessorApiPublicKey)</Replacement>
-      </EnvironmentTokenValues>
-    </ItemGroup>
-    <MSBuild.ExtensionPack.FileSystem.Detokenise
-      TaskAction="Analyse"
-      TargetFiles="@(DetokeniseFiles)"
-      ReplacementValues="@(EnvironmentTokenValues)"
-      DisplayFiles="true" />
-    <MSBuild.ExtensionPack.FileSystem.Detokenise
-      TaskAction="Detokenise"
-      TargetFiles="@(DetokeniseFiles)"
-      ReplacementValues="@(EnvironmentTokenValues)"
-      DisplayFiles="true" />
-      -->
   </Target>
 </Project>
