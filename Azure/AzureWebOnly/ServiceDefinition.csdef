@@ -15,9 +15,7 @@
       <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="Website SSL" />
     </Endpoints>
     <Imports>
-      <Import moduleName="RemoteAccess" />
       <Import moduleName="Diagnostics" />
-      <Import moduleName="RemoteForwarder" />
     </Imports>
     <ConfigurationSettings>
       <Setting name="Queue.ConnectionString" />
@@ -39,8 +37,6 @@
       <Setting name="Dictionary.Sql.ConnectionString" />
       <Setting name="Logging.LocalResource" />
       <Setting name="Testing.HttpHeaderClaimOverrides" />
-      <Setting name="Microsoft.Doppler.EnvironmentId" />
-      <Setting name="Microsoft.Doppler.UnprocessedDataStore.ConnectionString" />
       <Setting name="AppNexus.IsApp" />
       <Setting name="ApiLayer.DataService.MaxQueueResponseWaitTime" />
       <Setting name="ACS.SecurityTokenAutoRenew" />
